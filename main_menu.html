@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Classics - JindoBlu</title>
+    <style>
+        /* General Body & HTML Reset */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Montserrat', 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Common web fonts */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            background-color: #eef2f7; /* Light background for the area *outside* the app container */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align content to top for mobile look */
+        }
+
+        /* --- Splash Screen CSS (Copied from Tic-Tac-Toe) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #0d0221; /* Dark neon background from Tic-Tac-Toe */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+        #splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none; /* Makes content behind it clickable when hidden */
+        }
+        #splash-screen img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; /* Neon Magenta and Cyan for the logo glow */
+        }
+
+        /* App Container - Mimics the mobile screen with Indian flag background */
+        #app-container {
+            width: 100%;
+            max-width: 420px; /* Typical phone width */
+            /* Indian Flag inspired background for the entire app container */
+            background: linear-gradient(to bottom,
+                        #FF9933 0%,   /* Saffron top (approx 1/3) */
+                        #FF9933 33%,
+                        #FFFFFF 33%,  /* White middle (approx 1/3) */
+                        #FFFFFF 66%,
+                        #138808 66%,  /* Green bottom (approx 1/3) */
+                        #138808 100%
+                    );
+            min-height: 100vh; /* Full height on smaller screens */
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 20px; /* Padding at the bottom for content */
+            box-sizing: border-box;
+            /* Initially hidden, will be shown by JS after splash */
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        #app-container.visible {
+            opacity: 1;
+        }
+
+        /* Top Bar */
+        #top-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #eef2f7; /* Keep the header bar light and opaque */
+            position: relative;
+            z-index: 10;
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        #title-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        #main-title {
+            font-size: 1.8em;
+            font-weight: 900; /* Extra bold */
+            color: #000080; /* Navy Blue, inspired by Ashoka Chakra */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Game Grid */
+        #game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 15px; /* Space between cards */
+            padding: 0 20px;
+        }
+
+        .game-card {
+            background-color: white; /* Keep cards white for contrast */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            border: 4px solid #37474F; /* Default border color */
+            user-select: none;
+        }
+        .game-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .game-card-image {
+            width: 100%;
+            padding-bottom: 90%; /* Aspect ratio 100:90 for image area */
+            background-color: #f0f0f0; /* Placeholder color */
+            background-size: cover;
+            background-position: center;
+            border-bottom: 4px solid #37474F; /* Matches card border */
+        }
+
+        /* Specific card colors and placeholder images based on the reference image */
+        .game-card.crash-it .game-card-image {
+            background-color: #f7e0e0; /* Pale pink */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 90"><rect width="100" height="90" fill="%23f7e0e0"/><path d="M0,70 L20,60 L80,60 L100,70 L100,90 L0,90 Z" fill="%2378909C"/><path d="M20,60 C30,55 70,55 80,60" fill="none" stroke="%23546e7a" stroke-width="2"/><circle cx="28" cy="65" r="5" fill="%232196F3"/><circle cx="72" cy="65" r="5" fill="%232196F3"/><rect x="25" y="45" width="50" height="15" fill="%232196F3" rx="5" ry="5"/><circle cx="35" cy="50" r="3" fill="%23f7e0e0"/><circle cx="65" cy="50" r="3" fill="%23f7e0e0"/><circle cx="28" cy="35" r="5" fill="%23F44336"/><circle cx="72" cy="35" r="5" fill="%23F44336"/><rect x="25" y="25" width="50" height="15" fill="%23F44336" rx="5" ry="5"/><circle cx="35" cy="30" r="3" fill="%23f7e0e0"/><circle cx="65" cy="30" r="3" fill="%23f7e0e0"/><path d="M40,50 L45,45 L50,50 L45,55 Z" fill="orange"/><path d="M40,30 L45,25 L50,30 L45,35 Z" fill="orange"/><text x="50" y="20" font-family="Arial" font-size="10" fill="%23546e7a" text-anchor="middle">CITY</text></svg>');
+        }
+        .game-card.crash-it { border-color: #37474F; } /* Dark blue/grey border */
+
+
+        .game-card.slot-cars .game-card-image {
+            background-color: #263238; /* Dark grey */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 90"><rect width="100" height="90" fill="%23263238"/><path d="M10,80 Q20,20 90,10" fill="none" stroke="%23FFF" stroke-width="12" stroke-dasharray="10 10"/><path d="M10,80 Q20,20 90,10" fill="none" stroke="%23F44336" stroke-width="6" stroke-dasharray="0 10 10 0" stroke-linecap="round"/><rect x="70" y="30" width="15" height="8" fill="%23F44336" rx="2" ry="2"/><circle cx="72" cy="38" r="3" fill="%23333"/><circle cx="83" cy="38" r="3" fill="%23333"/><rect x="60" y="45" width="15" height="8" fill="%232196F3" rx="2" ry="2"/><circle cx="62" cy="53" r="3" fill="%23333"/><circle cx="73" cy="53" r="3" fill="%23333"/></svg>');
+        }
+        .game-card.slot-cars { border-color: #37474F; } /* Dark blue/grey border */
+
+        .game-card.archery .game-card-image {
+            background-color: #e0f2f7; /* Light blue */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 90"><rect width="100" height="90" fill="%23e0f2f7"/><rect x="0" y="60" width="100" height="30" fill="%238BC34A"/><rect x="0" y="55" width="100" height="5" fill="%23689F38"/><line x1="50" y1="50" x2="50" y2="90" stroke="%23FFF" stroke-width="2"/><path d="M40,55 L40,75 L60,75 L60,55 Z" fill="%238B4513"/><rect x="42" y="58" width="16" height="15" fill="%23D2B48C" rx="3" ry="3"/><circle cx="50" cy="40" r="15" fill="%23FFF"/><circle cx="50" cy="40" r="12" fill="%232196F3"/><circle cx="50" cy="40" r="9" fill="%23F44336"/><circle cx="50" cy="40" r="6" fill="%23FFC107"/><circle cx="50" cy="40" r="3" fill="%23263238"/><path d="M45,35 L60,30 L55,45 Z" fill="%23F44336"/><path d="M45,35 L30,40 L35,25 Z" fill="%232196F3"/></svg>');
+        }
+        .game-card.archery { border-color: #37474F; }
+
+        .game-card.gravity-run .game-card-image {
+            background-color: #81D4FA; /* Light blue */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 90"><rect width="100" height="90" fill="%2381D4FA"/><rect x="0" y="60" width="100" height="30" fill="%238B4513"/><path d="M40,20 C45,10 55,10 60,20 C65,30 60,40 50,40 C40,40 35,30 40,20 Z" fill="%23263238" stroke="%23333" stroke-width="2"/><circle cx="50" cy="25" r="3" fill="white"/><path d="M30,50 C35,40 45,40 50,50 C55,60 50,70 40,70 C30,70 25,60 30,50 Z" fill="%23263238" stroke="%23333" stroke-width="2"/><circle cx="40" cy="55" r="3" fill="white"/><path d="M35,65 C38,68 45,68 48,65 Z" fill="%23FDD835" stroke="%23333" stroke-width="1"/><path d="M45,35 C48,38 55,38 58,35 Z" fill="%23FDD835" stroke="%23333" stroke-width="1"/><path d="M38,60 C40,63 43,63 45,60 Z" fill="%23F44336" stroke="%23333" stroke-width="1"/><path d="M48,30 C50,33 53,33 55,30 Z" fill="%23F44336" stroke="%23333" stroke-width="1"/><rect x="0" y="58" width="10" height="2" fill="%23333"/></svg>');
+        }
+        .game-card.gravity-run { border-color: #37474F; }
+
+        /* New Tic-Tac-Toe Card Image */
+        .game-card.tic-tac-toe .game-card-image {
+            background-color: #241744; /* Dark purple from Tic-Tac-Toe's cell border */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 90"><rect width="100" height="90" fill="%23241744"/><line x1="33" y1="0" x2="33" y2="90" stroke="%2300ffff" stroke-width="4"/><line x1="66" y1="0" x2="66" y2="90" stroke="%2300ffff" stroke-width="4"/><line x1="0" y1="30" x2="100" y2="30" stroke="%2300ffff" stroke-width="4"/><line x1="0" y1="60" x2="100" y2="60" stroke="%2300ffff" stroke-width="4"/><text x="17" y="53" font-family="Audiowide, sans-serif" font-size="40" fill="%23ff00ff" text-anchor="middle" dominant-baseline="middle">X</text><text x="82" y="53" font-family="Audiowide, sans-serif" font-size="40" fill="%2300ffff" text-anchor="middle" dominant-baseline="middle">O</text></svg>');
+            background-position: center;
+            background-size: 90%; /* Make grid smaller to fit */
+            background-repeat: no-repeat;
+        }
+        .game-card.tic-tac-toe { border-color: #00ffff; } /* Neon Cyan border */
+
+
+        .game-card-title {
+            padding: 15px 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #37474F; /* Dark text */
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Utility class to hide elements */
+        .hidden { display: none !important; }
+
+        /* Basic responsiveness */
+        @media (max-width: 375px) {
+            #main-title {
+                font-size: 1.5em;
+            }
+            #game-grid {
+                gap: 10px;
+                padding: 0 15px;
+            }
+            .game-card-title {
+                font-size: 1.1em;
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Splash Screen for the entire app -->
+    <div id="splash-screen">
+        <!-- Make sure this URL is correct and accessible -->
+        <img src="https://gamingnetindia.great-site.net/wp-content/uploads/2025/01/Logo-scaled.jpg" alt="Pocket Classics Logo">
+    </div>
+
+    <div id="app-container" class="hidden"> <!-- Initially hidden -->
+        <div id="top-bar">
+            <div id="title-area">
+                <div id="main-title">Pocket Classics</div>
+            </div>
+        </div>
+
+        <div id="game-grid">
+            <div class="game-card crash-it" id="crash-it-card">
+                <div class="game-card-image"></div>
+                <div class="game-card-title">CRASH IT</div>
+            </div>
+            <div class="game-card slot-cars" id="slot-cars-card">
+                <div class="game-card-image"></div>
+                <div class="game-card-title">SLOT CARS</div>
+            </div>
+            <div class="game-card archery" id="archery-card">
+                <div class="game-card-image"></div>
+                <div class="game-card-title">ARCHERY</div>
+            </div>
+            <div class="game-card gravity-run" id="gravity-run-card">
+                <div class="game-card-image"></div>
+                <div class="game-card-title">GRAVITY RUN</div>
+            </div>
+            <!-- TIC-TAC-TOE GAME CARD -->
+            <div class="game-card tic-tac-toe" id="tic-tac-toe-card">
+                <div class="game-card-image"></div>
+                <div class="game-card-title">TIC-TAC-TOE</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            const appContainer = document.getElementById('app-container');
+
+            // --- Splash Screen Logic ---
+            // The splash screen is visible by default due to its initial HTML structure.
+            // Hide it after a delay and show the main app content.
+            setTimeout(() => {
+                splashScreen.classList.add('hidden'); // Fade out splash screen
+                // After fade-out transition, make it truly disappear
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    appContainer.classList.remove('hidden'); // Show main app content
+                    appContainer.classList.add('visible'); // Start fade-in transition for app content
+                }, 1000); // This should match the splashScreen transition duration
+            }, 2000); // How long the splash screen is fully visible (2 seconds)
+
+            // --- Game Card Click Handlers ---
+            document.getElementById('crash-it-card').addEventListener('click', () => {
+                window.location.href = 'crash_it_game.html'; // Change 'crash_it_game.html' to your actual file name
+            });
+            document.getElementById('slot-cars-card').addEventListener('click', () => {
+                window.location.href = 'slot_cars_game.html'; // Change 'slot_cars_game.html' to your actual file name
+            });
+            document.getElementById('archery-card').addEventListener('click', () => {
+                window.location.href = 'archery_game.html'; // Change 'archery_game.html' to your actual file name
+            });
+            document.getElementById('gravity-run-card').addEventListener('click', () => {
+                window.location.href = 'gravity_run_game.html'; // Change 'gravity_run_game.html' to your actual file name
+            });
+            document.getElementById('tic-tac-toe-card').addEventListener('click', () => {
+                window.location.href = 'tic_tac_toe_game.html'; // This will open your modified Tic-Tac-Toe game
+            });
+        });
+    </script>
+
+</body>
+</html>
