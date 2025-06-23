@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe: AI NEON</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap'); /* Note: This font requires an internet connection */
 
         :root {
             --neon-bg: #0d0221;
@@ -31,13 +31,13 @@
             overflow: hidden;
         }
 
-        /* --- Splash Screen (REMOVED HTML, KEEPING CSS FOR SAFETY IF RE-ADDED) --- */
+        /* --- Splash Screen CSS (Removed HTML, kept CSS for safety if re-added elsewhere) --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: var(--neon-bg);
-            display: none; /* Hide it by default now */
+            display: none; /* Hidden by default as main menu handles app splash */
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -154,12 +154,10 @@
     </style>
 </head>
 <body>
-    <!-- Splash screen HTML removed - the main menu is the new entry point -->
+    <!-- Splash screen HTML removed - the main menu (index.html) is the new entry point -->
 
-    <!-- Background Music & Sound Effects (Embedded for Offline Use) -->
-    <!-- NOTE: External audio/image links will only work with an internet connection.
-               For true offline, these assets need to be local or base64 encoded. -->
-    <audio id="background-music" loop src="https://gamingnetindia.great-site.net/wp-content/uploads/2025/06/puzzle-loop-67641.mp3"></audio>
+    <!-- Background Music & Sound Effects (Note: external MP3 requires internet connection, WAVs are embedded) -->
+    <audio id="background-music" loop src="puzzle-loop-67641.mp3"></audio> <!-- Assuming this MP3 is in the same folder -->
     <audio id="ui-sound" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"></audio>
     <audio id="click-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU9vT18AAACs9f/l/f///wH//gH//gH//gH//gH//gH//gL//gL//gP//gP//gP//gP//gP//gP//gP//gP//gP//gP//gP//gP//gL//gL//gH//gH//f/9//3//f/9///8="></audio>
     <audio id="win-sound" src="data:audio/wav;base64,UklGRlAFAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAATElTVBoAAABJTkZPSVNGVAAAAA4AAABDcmVhdGlvbiB0aW1lIBAAAAAwMS8yMS8yNCAyMTozMzozMgBkYXRhgAQAAPb/5P/U/rD/OP8z/zb/Pv9C/0f/Sv9Q/1b/V/9a/13/X/9g/2L/Yv9l/2b/Zv9q/2v/b/9x/3L/cv9z/3T/c/9x/3D/c/9v/3H/c/90/3T/df92/3b/d/95/3n/ef97/3z/ev97/3v/e/98/3z/e/98/3z/e/98/3z/e/98/3v/e/97/3r/ev96/3n/d/9z/2r/Zf9c/1T/SP9B/zz/NP8r/if/Hf8Z/xb/Fv8Y/xn/G/8d/x//If8l/yz/MC8yLzMvNi83LzgvOy8+L0AvQi9FL0gvSi9NL1IvVC9YL1ovXS9fL2EvYy9mL2kvbC9uL3Avci91L3kvfS+CL4gvii+OL5EvlS+ZL58voS+rL7Evuy/BL8kvzS/UL9kv3S/iL+sv8z/4X/sf/T/+X//P8E/yH/N/9T/4H/wf/Z//r/Bv8v/2f/5P8Y/7H/EAAA/wH/Af8B/wH/Af8B/wH/Av8C/wL/Av8D/wP/A/8E/wT/BP8F/wX/Bv8G/wb/Bv8H/wf/B/8I/wj/CP8I/wj/CP8I/wj/CP8I/wj/CP8I/wj/CP8I/wj/CP8I/wf/B/8H/wf/B/8G/wb/Bv8F/wX/BP8E/wP/Av8B/wD//P/6//f/8f/p/+b/4//h/+D/4P/f/9//3v/c/9v/2f/Y/9f/1f/U/9P/0f/R/9H/0f/S/9L/0v/S/9L/0v/S/9L/0v/S/9L/0v/R/9H/0f/Q/8//zv/N/8v/yv/J/8f/wf/A/7//uv+5/7f/tP+x/6//qP+m/6T/ov+g/5//mv+X/5T/kv+Q/43/jP+L/4r/if+H/4b/hP+C/4H/f/99/3v/df9x/2n/Y/9V/0v/Q/86/yj/HP8S/wn/Af/5/uj+3P7S/s/+wv67/rf+sP6u/qj+p/6c/p/+ov6l/qr+rf6z/rj+u/68/rz+vP68/rz+u/65/rn+tf6r/qX+of6b/pL+if6D/oD+fP58/nz+fP5+/oD+gP6B/oH+gf6C/oP+hf6H/oj+iv6M/o3+jf6O/o/+kP6S/pL+k/6U/pT+lP6V/pX+lf6V/pX+lf6V/pX+lf6T/pL+kf6N/ov+iP6F/oH+fP53/mr+Yf5U/kn+QP45/in+Gf4S/gH98v25/an9o/2U/Yn9f/13/W/9Y/1T/UP9M/0n/Rv9C/z3/Of80/yz/KQAnASwBNQE+AVYBaAF5AYsBmwGjAasBswG9AcEBxwHTAdkB4AHrAf0CBQMcAzkDUQNiA38EmATKBPkFigXCBcsF5QYNBjEGWgZzBocGqwbGBuwG+gcYBy0HUAdhB34HjgehB6wHsge+B84H4wfuCAYIJwgtCDsISwhcCHoIlAiqCLYIyAjmCPwJCgk2CVYJcAl6CaQJsgm8CcwJ3gntCgAKFAooCj0KVgpoCnsKpgrMCuQK+gscCzsLXgt6C6ULvgvbDAUMGQwuDDsMUwxZDGkMggymDNMM5A0GDSYNPQ1XDWANfA2MDakNuQ3lDhAOHw4zDlMOZw6aDrYPAA8ZDyUPPg9ZD38PjA+tD8MP5RAFEBEQGRENExUXGRoaGxwdHiAhIiMkJSYnKCorLC0uLzAzNDU2Nzg5Ojw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1TVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5/gIGCg4SFhoeIiYqLjI2Oj5CRkpOU1ZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8AAAD/AP8A/wD/AP8A/wD/AP8A/wD/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8B/wH/Af8A/wD/AP8A/wD//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//z//P/8//w="></audio>
@@ -167,7 +165,7 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <div id="main-menu" class="container"> <!-- Removed 'hidden' class from here -->
+    <div id="main-menu" class="container"> <!-- No 'hidden' class here, it's the game's own initial screen -->
         <h1>Tic-Tac-Toe</h1><h2>NEON FX</h2>
         <div class="button-group"><button id="vs-player-btn" class="button">VS Player</button><button id="vs-ai-btn" class="button button-secondary">VS AI</button></div>
     </div>
@@ -191,7 +189,7 @@
 
     <script>
         // --- DOM & SOUND REFERENCES ---
-        // Removed splashScreen reference
+        // splashScreen reference is removed as the main menu now handles it
         const mainMenu = document.querySelector('#main-menu');
         const difficultyScreen = document.querySelector('#difficulty-screen');
         const gameScreen = document.querySelector('#game-screen');
@@ -228,11 +226,11 @@
             { combo: [0, 4, 8], class: 'd-down' }, { combo: [2, 4, 6], class: 'd-up' }
         ];
 
-        // --- AUDIO & SPLASH (MODIFIED) ---
+        // --- AUDIO & SPLASH ---
         function playSound(sound) {
             if (sound) {
                 sound.currentTime = 0;
-                sound.play().catch(e => { console.log("Audio play failed, user interaction may be required."); });
+                sound.play().catch(e => { console.log("Audio play failed, user interaction may be required: " + e); });
             }
         }
 
@@ -243,9 +241,8 @@
             }
         }
 
-        // Removed the window.onload listener for the splash screen.
-        // The main menu will now be visible immediately when this HTML is loaded.
-        // We ensure background music plays when game buttons are clicked.
+        // Removed the window.onload listener for the splash screen as the main app handles it.
+        // This game's main menu will now be visible immediately when its HTML is loaded.
 
         // --- EVENT LISTENERS ---
         vsPlayerBtn.addEventListener('click', () => { playSound(uiSound); playBackgroundMusic(); gameMode = 'vsPlayer'; startGame(); });
@@ -259,13 +256,17 @@
                 startGame();
             });
         });
-        // IMPORTANT CHANGE: Navigate back to the main menu HTML file
+
+        // ⭐⭐⭐ CRITICAL CHANGE HERE ⭐⭐⭐
+        // This button now correctly navigates back to your main menu (index.html)
         backToMenuBtn.addEventListener('click', () => { 
             playSound(uiSound); 
             // Stop background music when returning to main menu (optional)
             if (backgroundMusic) backgroundMusic.pause(); 
-            window.location.href = 'main_menu.html'; // Assuming your main menu is named main_menu.html
+            window.location.href = 'index.html'; // Changed from 'main_menu.html'
         });
+        // ⭐⭐⭐ END CRITICAL CHANGE ⭐⭐⭐
+
         restartButton.addEventListener('click', () => { playSound(uiSound); playBackgroundMusic(); resetGame(false); });
         popupRestartButton.addEventListener('click', () => { playSound(uiSound); playBackgroundMusic(); resetGame(false); });
         
@@ -284,9 +285,11 @@
             const winLine = document.getElementById('win-line'); if(winLine) winLine.style.cssText = 'transform: scaleX(0);';
             popupOverlay.classList.remove('visible');
             clearConfetti();
+            // This 'returnToMenu' logic for this specific file should now mostly rely on the backToMenuBtn
             if (returnToMenu) {
-                // This block is now handled by window.location.href in backToMenuBtn listener
-                // No need to hide/show within the same HTML for menu transition
+                // If resetGame is called with true (e.g. from popup and deciding to go to menu)
+                // it will now directly navigate away.
+                window.location.href = 'index.html';
             }
         }
         function updateStatus() {
