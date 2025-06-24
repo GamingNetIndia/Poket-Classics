@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+
+        :root {
+            --love-pink: #E91E63;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -14,13 +20,38 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        /* Main container for the logo and tagline */
+        .splash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
-        .splash-image {
-            max-width: 180px;
-            width: 50%;
-            height: auto;
-            animation: fadeIn 1.5s ease-in-out;
+        /* Pure CSS logo */
+        .splash-logo {
+            width: 180px;
+            height: 180px;
+            background-color: #448aff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 5em;
+            font-weight: 900;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Style for the new tagline */
+        .tagline {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--love-pink);
         }
 
         @keyframes fadeIn {
@@ -31,15 +62,15 @@
 </head>
 <body>
 
-    <img class="splash-image" src="logo.png" alt="Pocket Classics Logo">
-
+    <div class="splash-container">
+        <div class="splash-logo">PC</div>
+        <p class="tagline">#CodedWithLove</p>
+    </div>
 
     <script>
-        // Wait for 3 seconds then redirect.
+        // Wait for 3 seconds then redirect to the home page.
         setTimeout(() => {
-            // THE ONLY CHANGE IS HERE:
-            // The link now points to the renamed "home.html" file.
-            window.location.href = 'home/home.html';
+            window.location.href = 'home.html';
         }, 3000); 
     </script>
 
