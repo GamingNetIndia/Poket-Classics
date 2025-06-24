@@ -8,7 +8,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #ffffff; /* White background */
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,39 +17,31 @@
         }
 
         .splash-image {
-            max-width: 180px; /* You can adjust the size of your logo here */
+            max-width: 180px;
             width: 50%;
-            height: auto; /* Maintain aspect ratio */
+            height: auto;
             animation: fadeIn 1.5s ease-in-out;
         }
 
-        /* Fade-in animation */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <!-- 
-      IMPORTANT:
-      Replace "logo.png" below with the exact name of your image file.
-      For example, if your file is named "my_game_logo.svg", you would write:
-      src="my_game_logo.svg"
+    <!--
+      TROUBLESHOOTING POINT:
+      - Check if your file is really named "logo.png" (and not "Logo.png").
+      - Check if "logo.png" is in the SAME folder as this splash.html file.
+      - If it's in an "images" folder, change the src to "images/logo.png".
     -->
     <img class="splash-image" src="logo.png" alt="Pocket Classics Logo">
 
 
     <script>
-        // Wait for 3 seconds (3000 milliseconds) then redirect to the main menu.
-        // You can change the duration by changing the number.
+        // Wait for 3 seconds then redirect to the main menu.
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 3000); 
