@@ -3,169 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Classics</title>
+    <title>Pocket Classics - Main Menu</title>
     <style>
+        /* CSS styles are unchanged, so they are omitted for brevity */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
-
-        :root {
-            --bg-color: #f0f4f7;
-            --main-white: #ffffff;
-            --dark-grey: #212121;
-            --medium-grey: #424242;
-            --title-blue: #448aff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            height: 100%;
-        }
-
-        body {
-            height: 100%;
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(to bottom, #FF9933, #FFFFFF, #138808);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--dark-grey);
-            
-            /* --- THE KEY FIX --- */
-            /* This padding creates a visible frame around the container */
-            padding: 20px;
-        }
-
-        .mobile-container {
-            width: 100%;
-            max-width: 420px;
-            height: 100%;
-            max-height: 900px;
-            background-color: var(--main-white);
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* --- Header --- */
-        .header {
-            padding: 20px;
-            background-color: var(--bg-color);
-            text-align: center;
-            flex-shrink: 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .main-title {
-            font-size: clamp(2em, 5vw, 2.5em);
-            font-weight: 900;
-            color: var(--title-blue);
-        }
-
-        /* --- Game Grid --- */
-        .game-grid {
-            flex-grow: 1;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            overflow-y: auto;
-            min-height: 0; 
-            grid-auto-rows: minmax(150px, auto);
-        }
-
-        .game-card {
-            aspect-ratio: 1 / 1;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.2s ease-out;
-        }
-        .game-card:hover { transform: translateY(-5px); }
-        .game-card.non-interactive { cursor: default; }
-        .game-card.non-interactive:hover { transform: none; }
-        
-        .game-card::before {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-            z-index: 1;
-        }
-
-        .game-title {
-            position: absolute; bottom: 5%; left: 0; width: 100%; text-align: center;
-            color: var(--main-white); font-size: clamp(1em, 4vw, 1.5em); font-weight: 900;
-            z-index: 2; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.1;
-        }
-        .game-title.two-lines { font-size: clamp(0.9em, 3.5vw, 1.2em); bottom: 3%; }
-
-        /* --- RESPONSIVE GAME ILLUSTRATIONS --- */
-        #chess { background: repeating-linear-gradient(45deg, #bdc3c7, #bdc3c7 10%, #ecf0f1 10%, #ecf0f1 20%); }
-        .chess-piece { position: absolute; width: 25%; height: 40%; background-color: var(--dark-grey); border-radius: 50% 50% 0 0 / 20% 20% 0 0; }
-        .chess-piece::before { content: ''; position: absolute; width: 50%; height: 25%; background-color: var(--dark-grey); top: -12%; left: 25%; border-radius: 50%; }
-
-        #tic-tac-toe { background-color: #f1c40f; }
-        .grid-line { position: absolute; background-color: var(--main-white); border-radius: 10px;}
-        .grid-line.vertical { width: 5%; height: 60%; left: 31%; }
-        .grid-line.vertical.v2 { left: 64%; }
-        .grid-line.horizontal { width: 60%; height: 5%; top: 31%; }
-        .grid-line.horizontal.h2 { top: 64%; }
-        .piece { position: absolute; font-weight: 900; color: var(--main-white); font-size: clamp(1.5em, 8vw, 3em); }
-        .piece.x { top: 5%; left: 5%; }
-        .piece.o { bottom: 5%; right: 5%; }
-
-        #flappy-bird { background: linear-gradient(to bottom, #87CEEB 70%, #D2B48C); }
-        .bird { position: absolute; width: 22%; height: 16%; background-color: #f1c40f; border: 3px solid var(--dark-grey); border-radius: 50%; left: 15%; top: 40%; }
-        .bird::before { content: ''; position: absolute; width: 25%; height: 33%; background-color: white; border: 2px solid black; border-radius: 50%; top: 20%; right: 15%; }
-        .pipe { position: absolute; width: 25%; background-color: #2ecc71; border: 3px solid #27ae60; right: 15%; border-radius: 5px; }
-        .pipe.top { height: 40%; top: 0; }
-        .pipe.bottom { height: 40%; bottom: 0; }
-        
-        #ludo { background-color: #ecf0f1; }
-        .ludo-home { position: absolute; width: 40%; height: 40%; }
-        .ludo-home.red { background-color: #e74c3c; top: 5%; left: 5%; }
-        .ludo-home.blue { background-color: #3498db; top: 5%; right: 5%; }
-        .ludo-home.green { background-color: #2ecc71; bottom: 5%; left: 5%; }
-        .ludo-home.yellow { background-color: #f1c40f; bottom: 5%; right: 5%; }
-
-        #snakes-ladders { background: #9b59b6; }
-        .snake { position: absolute; width: 70%; height: 12%; background: #e67e22; border: 3px solid black; border-radius: 10px; top: 20%; left: 10%; transform: rotate(20deg); }
-        .ladder { position: absolute; bottom: 15%; right: 20%; transform: rotate(-15deg); width: 25%; height: 50%; }
-        .ladder-rail { position: absolute; width: 12%; height: 100%; background: #795548; border-radius: 5px;}
-        .ladder-rail.r1 { left: 0; } .ladder-rail.r2 { right: 0; }
-        .ladder-rung { position: absolute; width: 100%; height: 10%; background: #795548; left: 0; }
-        .ladder-rung.ru1 { top: 10%; } .ladder-rung.ru2 { top: 45%; } .ladder-rung.ru3 { top: 80%; }
-
-        #othello { background-color: #008080; }
-        .othello-disc { position: absolute; width: 20%; height: 20%; border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-        .othello-disc.white { background-color: white; } .othello-disc.black { background-color: black; }
-        .othello-disc.p1 { top: 30%; left: 30%; } .othello-disc.p2 { top: 30%; left: 55%; }
-        .othello-disc.p3 { top: 55%; left: 30%; } .othello-disc.p4 { top: 55%; left: 55%; }
-
-        #coming-soon { background-color: var(--medium-grey); }
-        #coming-soon::before { background: none; }
-        .coming-soon-text { color: var(--main-white); text-align: center; font-weight: 900; }
-        .coming-soon-text h3 { font-size: clamp(1em, 4vw, 1.5em); margin-bottom: 5px; }
-        .coming-soon-text p { font-size: clamp(0.8em, 3vw, 1em); opacity: 0.8; }
-        
-        /* --- Footer --- */
-        .footer {
-            padding: 20px; background-color: var(--medium-grey); display: flex;
-            justify-content: center; align-items: center; flex-shrink: 0; gap: 40px;
-            border-top: 1px solid #333;
-        }
-        .social-link svg { width: 40px; height: 40px; fill: var(--main-white); transition: transform 0.2s ease, fill 0.2s ease; }
-        .social-link:hover svg { transform: scale(1.1); fill: #a7ffeb; }
-        
+        :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff}
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Nunito',sans-serif;background:linear-gradient(to bottom,#FF9933,#FFF,#138808);display:flex;justify-content:center;align-items:center;color:var(--dark-grey)}
+        .mobile-container{width:100%;max-width:420px;height:100%;max-height:900px;background-color:var(--main-white);border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden}
+        .header{padding:20px;background-color:var(--bg-color);text-align:center;flex-shrink:0}
+        .main-title{font-size:2.5em;font-weight:900;color:var(--title-blue)}
+        .game-grid{flex-grow:1;padding:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;overflow-y:auto;min-height:0;grid-auto-rows:minmax(150px,auto)}
+        .game-card{aspect-ratio:1/1;border-radius:20px;position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,.08);transition:transform .2s ease-out}
+        .game-card:hover{transform:translateY(-5px)}
+        .game-card.non-interactive{cursor:default}
+        .game-card.non-interactive:hover{transform:none}
+        .game-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:70%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);z-index:1}
+        .game-title{position:absolute;bottom:5%;left:0;width:100%;text-align:center;color:var(--main-white);font-size:clamp(1em,4vw,1.5em);font-weight:900;z-index:2;text-shadow:0 2px 4px rgba(0,0,0,.5);line-height:1.1}
+        .game-title.two-lines{font-size:clamp(.9em,3.5vw,1.2em);bottom:3%}
+        #chess{background:repeating-linear-gradient(45deg,#bdc3c7,#bdc3c7 10%,#ecf0f1 10%,#ecf0f1 20%)}
+        .chess-piece{position:absolute;width:25%;height:40%;background-color:var(--dark-grey);border-radius:50% 50% 0 0/20% 20% 0 0}
+        .chess-piece::before{content:'';position:absolute;width:50%;height:25%;background-color:var(--dark-grey);top:-12%;left:25%;border-radius:50%}
+        #tic-tac-toe{background-color:#f1c40f}
+        .grid-line{position:absolute;background-color:var(--main-white);border-radius:10px}
+        .grid-line.vertical{width:5%;height:60%;left:31%}
+        .grid-line.vertical.v2{left:64%}
+        .grid-line.horizontal{width:60%;height:5%;top:31%}
+        .grid-line.horizontal.h2{top:64%}
+        .piece{position:absolute;font-weight:900;color:var(--main-white);font-size:clamp(1.5em,8vw,3em)}
+        .piece.x{top:5%;left:5%}
+        .piece.o{bottom:5%;right:5%}
+        #flappy-bird{background:linear-gradient(to bottom,#87CEEB 70%,#D2B48C)}
+        .bird{position:absolute;width:22%;height:16%;background-color:#f1c40f;border:3px solid var(--dark-grey);border-radius:50%;left:15%;top:40%}
+        .bird::before{content:'';position:absolute;width:25%;height:33%;background-color:white;border:2px solid black;border-radius:50%;top:20%;right:15%}
+        .pipe{position:absolute;width:25%;background-color:#2ecc71;border:3px solid #27ae60;right:15%;border-radius:5px}
+        .pipe.top{height:40%;top:0}
+        .pipe.bottom{height:40%;bottom:0}
+        #ludo{background-color:#ecf0f1}
+        .ludo-home{position:absolute;width:40%;height:40%}
+        .ludo-home.red{background-color:#e74c3c;top:5%;left:5%}
+        .ludo-home.blue{background-color:#3498db;top:5%;right:5%}
+        .ludo-home.green{background-color:#2ecc71;bottom:5%;left:5%}
+        .ludo-home.yellow{background-color:#f1c40f;bottom:5%;right:5%}
+        #snakes-ladders{background:#9b59b6}
+        .snake{position:absolute;width:70%;height:12%;background:#e67e22;border:3px solid black;border-radius:10px;top:20%;left:10%;transform:rotate(20deg)}
+        .ladder{position:absolute;bottom:15%;right:20%;transform:rotate(-15deg);width:25%;height:50%}
+        .ladder-rail{position:absolute;width:12%;height:100%;background:#795548;border-radius:5px}
+        .ladder-rail.r1{left:0}
+        .ladder-rail.r2{right:0}
+        .ladder-rung{position:absolute;width:100%;height:10%;background:#795548;left:0}
+        .ladder-rung.ru1{top:10%}
+        .ladder-rung.ru2{top:45%}
+        .ladder-rung.ru3{top:80%}
+        #othello{background-color:#008080}
+        .othello-disc{position:absolute;width:20%;height:20%;border-radius:50%;box-shadow:2px 2px 5px rgba(0,0,0,.3)}
+        .othello-disc.white{background-color:white}
+        .othello-disc.black{background-color:black}
+        .othello-disc.p1{top:30%;left:30%}
+        .othello-disc.p2{top:30%;left:55%}
+        .othello-disc.p3{top:55%;left:30%}
+        .othello-disc.p4{top:55%;left:55%}
+        #coming-soon{background-color:var(--medium-grey)}
+        #coming-soon::before{background:none}
+        .coming-soon-text{color:var(--main-white);text-align:center;font-weight:900}
+        .coming-soon-text h3{font-size:clamp(1em,4vw,1.5em);margin-bottom:5px}
+        .coming-soon-text p{font-size:clamp(.8em,3vw,1em);opacity:.8}
+        .footer{padding:20px;background-color:var(--medium-grey);display:flex;justify-content:center;align-items:center;flex-shrink:0;gap:40px}
+        .social-link svg{width:40px;height:40px;fill:var(--main-white);transition:transform .2s ease,fill .2s ease}
+        .social-link:hover svg{transform:scale(1.1);fill:#a7ffeb}
     </style>
 </head>
 <body>
@@ -176,12 +82,13 @@
         </header>
 
         <main class="game-grid">
-            <div class="game-card" id="chess" data-game="Chess"><div class="chess-piece"></div><h3 class="game-title">CHESS</h3></div>
-            <div class="game-card" id="tic-tac-toe" data-game="Tic-Tac-Toe"><div class="grid-line vertical v1"></div><div class="grid-line vertical v2"></div><div class="grid-line horizontal h1"></div><div class="grid-line horizontal h2"></div><div class="piece x">X</div><div class="piece o">O</div><h3 class="game-title two-lines">TIC-TAC-TOE</h3></div>
-            <div class="game-card" id="flappy-bird" data-game="Flappy Bird"><div class="bird"></div><div class="pipe top"></div><div class="pipe bottom"></div><h3 class="game-title two-lines">FLAPPY BIRD</h3></div>
-            <div class="game-card" id="ludo" data-game="Ludo"><div class="ludo-home red"></div><div class="ludo-home blue"></div><div class="ludo-home green"></div><div class="ludo-home yellow"></div><h3 class="game-title">LUDO</h3></div>
-            <div class="game-card" id="snakes-ladders" data-game="Snakes and Ladders"><div class="snake"></div><div class="ladder"><div class="ladder-rail r1"></div><div class="ladder-rail r2"></div><div class="ladder-rung ru1"></div><div class="ladder-rung ru2"></div><div class="ladder-rung ru3"></div></div><h3 class="game-title two-lines">SNAKES &<br>LADDERS</h3></div>
-            <div class="game-card" id="othello" data-game="Othello"><div class="othello-disc white p1"></div><div class="othello-disc black p2"></div><div class="othello-disc black p3"></div><div class="othello-disc white p4"></div><h3 class="game-title">OTHELLO</h3></div>
+            <!-- IMPORTANT: Note the new data-url attribute on each card -->
+            <div class="game-card" data-url="chess.html"><div id="chess"></div><h3 class="game-title">CHESS</h3></div>
+            <div class="game-card" data-url="tic-tac-toe.html"><div id="tic-tac-toe"></div><h3 class="game-title two-lines">TIC-TAC-TOE</h3></div>
+            <div class="game-card" data-url="flappy-bird.html"><div id="flappy-bird"></div><h3 class="game-title two-lines">FLAPPY BIRD</h3></div>
+            <div class="game-card" data-url="ludo.html"><div id="ludo"></div><h3 class="game-title">LUDO</h3></div>
+            <div class="game-card" data-url="snakes-ladders.html"><div id="snakes-ladders"></div><h3 class="game-title two-lines">SNAKES &<br>LADDERS</h3></div>
+            <div class="game-card" data-url="othello.html"><div id="othello"></div><h3 class="game-title">OTHELLO</h3></div>
             <div class="game-card non-interactive" id="coming-soon"><div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div></div>
         </main>
 
@@ -196,9 +103,20 @@
             const gameCards = document.querySelectorAll('.game-card');
             
             gameCards.forEach(card => {
-                if (card.classList.contains('non-interactive')) { return; }
+                if (card.classList.contains('non-interactive')) {
+                    return; // Skip the "coming soon" card
+                }
+
                 card.addEventListener('click', () => {
-                    alert(`Starting game: ${card.dataset.game}!`);
+                    // Get the URL from the data-url attribute
+                    const gameUrl = card.dataset.url;
+
+                    if (gameUrl) {
+                        // Construct the full path. We need to go up one level first (../)
+                        const path = `../game/${gameUrl}`;
+                        // Redirect to the game page
+                        window.location.href = path;
+                    }
                 });
             });
         });
