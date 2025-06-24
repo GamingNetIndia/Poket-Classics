@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics - Main Menu</title>
     <style>
-        /* CSS styles are unchanged, so they are omitted for brevity */
+        /* CSS is unchanged as it was already correct */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
         :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -22,6 +22,7 @@
         .game-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:70%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);z-index:1}
         .game-title{position:absolute;bottom:5%;left:0;width:100%;text-align:center;color:var(--main-white);font-size:clamp(1em,4vw,1.5em);font-weight:900;z-index:2;text-shadow:0 2px 4px rgba(0,0,0,.5);line-height:1.1}
         .game-title.two-lines{font-size:clamp(.9em,3.5vw,1.2em);bottom:3%}
+        #chess, #tic-tac-toe, #flappy-bird, #ludo, #snakes-ladders, #othello {position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;overflow:hidden;}
         #chess{background:repeating-linear-gradient(45deg,#bdc3c7,#bdc3c7 10%,#ecf0f1 10%,#ecf0f1 20%)}
         .chess-piece{position:absolute;width:25%;height:40%;background-color:var(--dark-grey);border-radius:50% 50% 0 0/20% 20% 0 0}
         .chess-piece::before{content:'';position:absolute;width:50%;height:25%;background-color:var(--dark-grey);top:-12%;left:25%;border-radius:50%}
@@ -82,14 +83,34 @@
         </header>
 
         <main class="game-grid">
-            <!-- IMPORTANT: Note the new data-url attribute on each card -->
-            <div class="game-card" data-url="chess.html"><div id="chess"></div><h3 class="game-title">CHESS</h3></div>
-            <div class="game-card" data-url="tic-tac-toe.html"><div id="tic-tac-toe"></div><h3 class="game-title two-lines">TIC-TAC-TOE</h3></div>
-            <div class="game-card" data-url="flappy-bird.html"><div id="flappy-bird"></div><h3 class="game-title two-lines">FLAPPY BIRD</h3></div>
-            <div class="game-card" data-url="ludo.html"><div id="ludo"></div><h3 class="game-title">LUDO</h3></div>
-            <div class="game-card" data-url="snakes-ladders.html"><div id="snakes-ladders"></div><h3 class="game-title two-lines">SNAKES &<br>LADDERS</h3></div>
-            <div class="game-card" data-url="othello.html"><div id="othello"></div><h3 class="game-title">OTHELLO</h3></div>
-            <div class="game-card non-interactive" id="coming-soon"><div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div></div>
+            <!-- UPDATED: data-url now points to the game's subfolder -->
+            <div class="game-card" data-url="../game/chess/">
+                <div id="chess"><div class="chess-piece"></div></div>
+                <h3 class="game-title">CHESS</h3>
+            </div>
+            <div class="game-card" data-url="../game/tictactoe/">
+                <div id="tic-tac-toe"><div class="grid-line vertical v1"></div><div class="grid-line vertical v2"></div><div class="grid-line horizontal h1"></div><div class="grid-line horizontal h2"></div><div class="piece x">X</div><div class="piece o">O</div></div>
+                <h3 class="game-title two-lines">TIC-TAC-TOE</h3>
+            </div>
+            <div class="game-card" data-url="../game/flappybird/">
+                <div id="flappy-bird"><div class="bird"></div><div class="pipe top"></div><div class="pipe bottom"></div></div>
+                <h3 class="game-title two-lines">FLAPPY BIRD</h3>
+            </div>
+            <div class="game-card" data-url="../game/ludo/">
+                <div id="ludo"><div class="ludo-home red"></div><div class="ludo-home blue"></div><div class="ludo-home green"></div><div class="ludo-home yellow"></div></div>
+                <h3 class="game-title">LUDO</h3>
+            </div>
+            <div class="game-card" data-url="../game/snakes-ladders/">
+                <div id="snakes-ladders"><div class="snake"></div><div class="ladder"><div class="ladder-rail r1"></div><div class="ladder-rail r2"></div><div class="ladder-rung ru1"></div><div class="ladder-rung ru2"></div><div class="ladder-rung ru3"></div></div></div>
+                <h3 class="game-title two-lines">SNAKES &<br>LADDERS</h3>
+            </div>
+            <div class="game-card" data-url="../game/othello/">
+                <div id="othello"><div class="othello-disc white p1"></div><div class="othello-disc black p2"></div><div class="othello-disc black p3"></div><div class="othello-disc white p4"></div></div>
+                <h3 class="game-title">OTHELLO</h3>
+            </div>
+            <div class="game-card non-interactive" id="coming-soon">
+                <div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div>
+            </div>
         </main>
 
         <footer class="footer">
@@ -97,28 +118,29 @@
             <a href="#" target="_blank" class="social-link" aria-label="Website"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
         </footer>
     </div>
+    
+    <!-- UPDATED: Music file now loads from the same 'home' folder -->
+    <audio id="background-music" src="background.mp3" loop></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const gameCards = document.querySelectorAll('.game-card');
             
             gameCards.forEach(card => {
-                if (card.classList.contains('non-interactive')) {
-                    return; // Skip the "coming soon" card
-                }
+                if (card.classList.contains('non-interactive')) { return; }
 
                 card.addEventListener('click', () => {
-                    // Get the URL from the data-url attribute
                     const gameUrl = card.dataset.url;
-
                     if (gameUrl) {
-                        // Construct the full path. We need to go up one level first (../)
-                        const path = `../game/${gameUrl}`;
-                        // Redirect to the game page
-                        window.location.href = path;
+                        window.location.href = gameUrl;
                     }
                 });
             });
+
+            const backgroundMusic = document.getElementById('background-music');
+            document.body.addEventListener('click', () => {
+                backgroundMusic.play().catch(e => console.log("Music could not be played automatically."));
+            }, { once: true });
         });
     </script>
 
