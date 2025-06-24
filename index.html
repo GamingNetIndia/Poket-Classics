@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Classics</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff; /* White background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .splash-image {
+            max-width: 180px; /* You can adjust the size of your logo here */
+            width: 50%;
+            height: auto; /* Maintain aspect ratio */
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      IMPORTANT:
+      Replace "logo.png" below with the exact name of your image file.
+      For example, if your file is named "my_game_logo.svg", you would write:
+      src="my_game_logo.svg"
+    -->
+    <img class="splash-image" src="logo.png" alt="Pocket Classics Logo">
+
+
+    <script>
+        // Wait for 3 seconds (3000 milliseconds) then redirect to the main menu.
+        // You can change the duration by changing the number.
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000); 
+    </script>
+
+</body>
+</html>
