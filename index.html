@@ -31,19 +31,15 @@
 </head>
 <body>
 
-    <!--
-      TROUBLESHOOTING POINT:
-      - Check if your file is really named "logo.png" (and not "Logo.png").
-      - Check if "logo.png" is in the SAME folder as this splash.html file.
-      - If it's in an "images" folder, change the src to "images/logo.png".
-    -->
     <img class="splash-image" src="logo.png" alt="Pocket Classics Logo">
 
 
     <script>
-        // Wait for 3 seconds then redirect to the main menu.
+        // Wait for 3 seconds then redirect.
         setTimeout(() => {
-            window.location.href = 'index.html';
+            // THE ONLY CHANGE IS HERE:
+            // The link now points to the renamed "home.html" file.
+            window.location.href = 'home/home.html';
         }, 3000); 
     </script>
 
