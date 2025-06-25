@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Snake and Ladder</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-menu" class="container">
+        <button id="settings-btn" class="sound-on">🔊</button>
+        <h1>Snake & Ladder</h1>
+        <div class="menu-options">
+            <div class="option-group">
+                <label for="game-mode">Game Mode:</label>
+                <select id="game-mode">
+                    <option value="pvp">Player vs Player</option>
+                    <option value="pva">Player vs AI</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="player-count">Number of Players:</label>
+                <select id="player-count">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <button id="start-game-btn">Start Game</button>
+        <!-- NEW "HOME" BUTTON ADDED -->
+        <button id="home-btn" class="home-button">Home</button>
+    </div>
+
+    <div id="game-container" class="container hidden">
+        <div id="game-board"></div>
+        <div id="game-controls">
+            <div id="turn-info">Player 1's Turn</div>
+            <div class="dice-container">
+                <div id="dice"><div class="dice-face" data-face="1">⚀</div><div class="dice-face" data-face="2">⚁</div><div class="dice-face" data-face="3">⚂</div><div class="dice-face" data-face="4">⚃</div><div class="dice-face" data-face="5">⚄</div><div class="dice-face" data-face="6">⚅</div></div>
+            </div>
+            <button id="roll-dice-btn">Roll Dice</button>
+            <div id="message-log"></div>
+            <button id="back-to-menu-btn">Back to Menu</button>
+        </div>
+    </div>
+
+    <div id="win-popup" class="popup-overlay hidden">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="popup-content">
+            <h2 id="win-message">Player 1 Wins!</h2><p>Congratulations!</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Audio paths now point to the 'assets' subfolder -->
+    <audio id="bg-music" src="assets/music.mp3" loop></audio>
+    <audio id="dice-sound" src="assets/dice.mp3"></audio>
+    <audio id="move-sound" src="assets/move.mp3"></audio>
+    <audio id="ladder-sound" src="assets/ladder.mp3"></audio>
+    <audio id="snake-sound" src="assets/snake.mp3"></audio>
+    <audio id="win-sound" src="assets/win.mp3"></audio>
+    <audio id="click-sound" src="assets/click.mp3"></audio>
+
+    <!-- Link to external JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
