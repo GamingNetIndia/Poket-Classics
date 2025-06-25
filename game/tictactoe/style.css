@@ -1,0 +1,189 @@
+/* General Styling */
+:root {
+    --bg-color: #1a1a2e;
+    --primary-color: #16213e;
+    --secondary-color: #0f3460;
+    --accent-color: #e94560;
+    --text-color: #dcdcdc;
+    --x-color: #3498db;
+    --o-color: #f1c40f;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 2px solid var(--accent-color);
+    background-color: transparent;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+    display: block;
+    width: 250px;
+}
+
+button:hover {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 20px var(--accent-color);
+}
+
+/* Screen Management */
+.screen {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* AI Difficulty */
+#ai-difficulty-selection {
+    margin-top: 20px;
+}
+#ai-difficulty-selection.hidden {
+    display: none;
+}
+#ai-difficulty-selection h3 {
+    margin-bottom: 10px;
+}
+#ai-difficulty-selection button {
+    width: 150px;
+    margin: 5px;
+}
+
+/* Settings Screen */
+#settings-screen {
+    background-color: var(--primary-color);
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 20px 0;
+    font-size: 1.2rem;
+}
+#back-to-menu-btn {
+    margin-top: 20px;
+}
+
+/* Toggle Switch CSS */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--accent-color);
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+#status-display {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    text-shadow: none;
+}
+#main-menu-btn {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+/* Board */
+#board-container { position: relative; width: 320px; height: 320px; }
+.board { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); width: 100%; height: 100%; background-color: var(--primary-color); border: 5px solid var(--secondary-color); box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+.cell { width: 100%; height: 100%; border: 4px solid var(--secondary-color); cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 4rem; font-weight: bold; transition: background-color 0.2s ease; }
+.cell:not(.x):not(.o):hover { background-color: var(--secondary-color); }
+.cell.x { color: var(--x-color); }
+.cell.o { color: var(--o-color); }
+
+/* Winning Line & Particle Canvases */
+#line-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+#particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; }
+
+/* Win Popup */
+.popup-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.popup-content { background-color: var(--primary-color); padding: 40px; border-radius: 15px; border: 3px solid var(--accent-color); text-align: center; box-shadow: 0 0 30px var(--accent-color); position: relative; z-index: 1001; }
+#win-message { font-size: 2.5rem; margin-bottom: 20px; }
