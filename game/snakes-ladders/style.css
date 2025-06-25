@@ -1,0 +1,46 @@
+:root { /* CSS variables are unchanged */ }
+body { /* body style is unchanged */ }
+.container { /* .container style is unchanged */ }
+#main-menu h1 { /* h1 style is unchanged */ }
+.menu-options { margin: 20px 0; display: flex; flex-direction: column; gap: 15px; }
+.option-group { display: flex; justify-content: space-between; align-items: center; }
+select { padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
+#settings-btn { position: absolute; top: 10px; right: 10px; font-size: 1.5em; background: none; border: none; cursor: pointer; padding: 5px; }
+#settings-btn.sound-off::after { content: '/'; position: absolute; color: red; font-weight: bold; top: 5px; right: 8px; transform: rotate(20deg); }
+#game-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1000px; }
+#game-board { display: grid; grid-template-columns: repeat(10, 1fr); width: 60vmin; height: 60vmin; max-width: 600px; max-height: 600px; border: 5px solid #4a4a4a; background-color: var(--board-bg); }
+.cell { position: relative; display: flex; justify-content: center; align-items: center; font-size: 1.8vmin; font-weight: bold; border: 1px solid #757575; box-sizing: border-box; }
+.cell:nth-child(odd) { background-color: var(--cell-bg-1); }
+.cell:nth-child(even) { background-color: var(--cell-bg-2); }
+.snake-head { background-color: var(--snake-head); }
+.snake-tail { background-color: var(--snake-tail); }
+.ladder-start { background-color: var(--ladder-start); }
+.ladder-end { background-color: var(--ladder-end); }
+.snake-head::before, .ladder-start::before { content: attr(data-goto); position: absolute; bottom: 2px; right: 3px; font-size: 1.5vmin; color: white; background: rgba(0,0,0,0.5); padding: 1px 3px; border-radius: 3px; }
+.player-token { position: absolute; width: 30%; height: 30%; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.4); transition: all 0.25s ease-in-out; z-index: 10; }
+.player-0 { background-color: var(--player1-color); top: 15%; left: 15%; }
+.player-1 { background-color: var(--player2-color); top: 15%; right: 15%; }
+.player-2 { background-color: var(--player3-color); bottom: 15%; left: 15%; }
+.player-3 { background-color: var(--player4-color); bottom: 15%; right: 15%; }
+#game-controls { display: flex; flex-direction: column; justify-content: center; gap: 15px; width: 250px; }
+#turn-info { font-size: 1.5em; font-weight: bold; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+#dice { font-size: 5em; height: 1em; position: relative; }
+.dice-face { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 0.3s; }
+.dice-face.active { opacity: 1; }
+button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px; border: none; color: white; background-color: #4CAF50; }
+#roll-dice-btn { background-color: #2196F3; }
+#roll-dice-btn:disabled { background-color: #9e9e9e; cursor: not-allowed; }
+#back-to-menu-btn { background-color: #f44336; margin-top: auto; }
+#message-log { height: 80px; overflow-y: auto; background: #eee; padding: 8px; border-radius: 5px; text-align: left; font-size: 0.9em; }
+.popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.popup-content { background: white; padding: 30px 50px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; z-index: 1001; }
+.popup-content h2 { margin-top: 0; font-size: 2.5em; color: #4CAF50; }
+#play-again-btn { margin-top: 15px; font-size: 1.2em; }
+#confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; }
+.hidden { display: none !important; }
+
+/* NEW STYLE FOR THE HOME BUTTON */
+.home-button {
+    background-color: #607D8B; /* A neutral color */
+    margin-top: 10px;
+}
