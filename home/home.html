@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics - Main Menu</title>
     <style>
+        /* CSS is unchanged as it was correct */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
         :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff; --play-green: #2ed573;}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -48,8 +49,6 @@
         .slider:before{position:absolute;content:"";height:20px;width:20px;left:4px;bottom:4px;background-color:white;transition:.4s;border-radius:50%;}
         input:checked+.slider{background-color:var(--title-blue);}
         input:checked+.slider:before{transform:translateX(22px);}
-        
-        /* --- Game Details Modal Styles --- */
         .details-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background-color:var(--bg-color);z-index:900;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s ease-in-out;}
         .details-overlay.visible{transform:translateX(0%);}
         .details-header{position:relative;width:100%;height:40%;flex-shrink:0;}
@@ -58,11 +57,8 @@
         #details-image{width:100%;height:100%;object-fit:cover;}
         .details-content{padding:20px;flex-grow:1;display:flex;flex-direction:column;overflow-y:auto;}
         #details-title{font-size:2em;font-weight:900;margin-bottom:15px;color:var(--dark-grey);}
-        
-        /* --- NEW: Thumbnail Gallery Styles --- */
         .details-thumbnails {display:flex;gap:10px;overflow-x:auto;padding-bottom:15px;margin-bottom:15px;}
         .thumbnail-image {height:100px;border-radius:8px;aspect-ratio:16/9;object-fit:cover;border:2px solid #ddd;}
-        
         #details-description{font-size:1em;color:var(--medium-grey);line-height:1.6;flex-grow:1;}
         #details-play-btn{display:block;width:100%;padding:15px;margin-top:20px;background-color:var(--play-green);color:white;font-size:1.2em;font-weight:bold;text-align:center;border:none;border-radius:12px;cursor:pointer;transition:background-color .2s ease; flex-shrink:0;}
         #details-play-btn:hover{background-color:#20bf6b;}
@@ -74,11 +70,10 @@
         <header class="header">
             <div class="header-placeholder"></div>
             <h1 class="main-title">Pocket Classics</h1>
-            <button class="settings-btn" id="settings-btn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23-.09.49 0 .61-.22l2-3.46c.12-.22.07.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></button>
+            <button class="settings-btn" id="settings-btn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17-.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23-.09.49 0 .61-.22l2-3.46c.12-.22.07.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></button>
         </header>
 
         <main class="game-grid">
-            <!-- UPDATED: Added data-screenshots with comma-separated paths -->
             <div class="game-card" data-url="../game/chess/" data-title="Chess" data-image="chess.png" data-description="A classic strategy game. The goal is to checkmate the opponent's king, putting it under an inescapable threat of capture." data-screenshots="../game/chess/ss1.png,../game/chess/ss2.png">
                 <img src="chess.png" alt="Chess" class="game-card-image"><h3 class="game-title">CHESS</h3>
             </div>
@@ -105,17 +100,7 @@
             <a href="#" target="_blank" class="social-link" aria-label="Website"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
         </footer>
 
-        <!-- Game Details Modal HTML -->
-        <div class="details-overlay" id="details-overlay">
-            <div class="details-header"><button id="details-back-btn" aria-label="Go Back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><img src="" alt="Game Image" id="details-image"></div>
-            <div class="details-content">
-                <h2 id="details-title"></h2>
-                <!-- NEW: Thumbnail gallery container -->
-                <div class="details-thumbnails" id="details-thumbnails"></div>
-                <p id="details-description"></p>
-                <button id="details-play-btn">PLAY</button>
-            </div>
-        </div>
+        <div class="details-overlay" id="details-overlay"><div class="details-header"><button id="details-back-btn" aria-label="Go Back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><img src="" alt="Game Image" id="details-image"></div><div class="details-content"><h2 id="details-title"></h2><div class="details-thumbnails" id="details-thumbnails"></div><p id="details-description"></p><button id="details-play-btn">PLAY</button></div></div>
     </div>
     
     <div class="settings-overlay" id="settings-overlay"><div class="settings-panel"><h2>Settings</h2><div class="setting-item"><span>Music</span><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked><span class="slider"></span></label></div><button class="close-settings-btn" id="close-settings-btn">Close</button></div></div>
@@ -123,6 +108,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
             const gameCards = document.querySelectorAll('.game-card');
             const backgroundMusic = document.getElementById('background-music');
             const settingsBtn = document.getElementById('settings-btn');
@@ -135,66 +121,69 @@
             const detailsTitle = document.getElementById('details-title');
             const detailsDescription = document.getElementById('details-description');
             const detailsPlayBtn = document.getElementById('details-play-btn');
-            
-            // --- NEW: Thumbnail Container Element ---
             const thumbnailContainer = document.getElementById('details-thumbnails');
 
+            // --- Game Card Clicks ---
             gameCards.forEach(card => {
                 if (card.classList.contains('non-interactive')) { return; }
                 card.addEventListener('click', () => {
-                    // Populate basic details
                     detailsImage.src = card.querySelector('.game-card-image').src;
                     detailsTitle.textContent = card.dataset.title;
                     detailsDescription.textContent = card.dataset.description;
+                    
+                    // CRITICAL LOGIC POINT #1: Store the game's URL on the play button.
                     detailsPlayBtn.dataset.url = card.dataset.url;
                     
-                    // --- NEW: Thumbnail Generation Logic ---
-                    // 1. Clear any old thumbnails
                     thumbnailContainer.innerHTML = '';
-                    
-                    // 2. Get screenshot data and split into an array
                     const screenshotsData = card.dataset.screenshots;
                     if (screenshotsData) {
                         const screenshotUrls = screenshotsData.split(',');
-                        
-                        // 3. Create and append an image for each URL
                         screenshotUrls.forEach(url => {
                             const img = document.createElement('img');
-                            img.src = url.trim(); // .trim() to remove whitespace
+                            img.src = url.trim();
                             img.alt = `${card.dataset.title} Screenshot`;
                             img.className = 'thumbnail-image';
                             thumbnailContainer.appendChild(img);
                         });
                     }
                     
-                    // Show the modal
                     detailsOverlay.classList.add('visible');
                 });
             });
 
+            // --- Details Modal Logic ---
             detailsBackBtn.addEventListener('click', () => {
                 detailsOverlay.classList.remove('visible');
             });
+            
+            // CRITICAL LOGIC POINT #2: The 'click' listener for the PLAY button.
+            // This is a separate event listener that only handles this one button.
             detailsPlayBtn.addEventListener('click', function() {
+                // Read the URL that was stored on this button
                 const gameUrl = this.dataset.url;
-                if (gameUrl) { window.location.href = gameUrl; }
+                if (gameUrl) {
+                    console.log('Redirecting to:', gameUrl); // For debugging
+                    window.location.href = gameUrl;
+                }
             });
 
+            // --- Settings Menu Logic ---
             settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
             function closeMenu() { settingsOverlay.classList.remove('visible'); }
             closeSettingsBtn.addEventListener('click', closeMenu);
             settingsOverlay.addEventListener('click', (event) => { if (event.target === settingsOverlay) { closeMenu(); }});
 
+            // --- Music Control Logic ---
             musicToggle.addEventListener('change', () => {
                 if (musicToggle.checked) {
-                    backgroundMusic.play().catch(e => console.log("Music could not be played."));
+                    backgroundMusic.play().catch(e => {});
                 } else {
                     backgroundMusic.pause();
                 }
             });
             document.body.addEventListener('click', () => {
                 if (musicToggle.checked) {
-                    backgroundMusic.play().catch(e => console.log("Music could not be played automatically."));
+                    backgroundMusic.play().catch(e => {});
                 }
             }, { once: true });
         });
