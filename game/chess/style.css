@@ -1,201 +1,116 @@
-/* --- Global Styles & Variables --- */
 :root {
-    --light-square: #f0d9b5;
-    --dark-square: #b58863;
-    --selected-color: rgba(30, 144, 255, 0.5); /* DodgerBlue with transparency */
-    --valid-move-color: rgba(46, 213, 115, 0.7); /* A vibrant green */
-    --last-move-color: rgba(255, 255, 0, 0.4);
+    --light-square: #f0d9b5; --dark-square: #b58863;
+    --selected-color: rgba(46, 213, 115, 0.6); /* A more vibrant green */
+    --valid-move-color: rgba(0, 0, 0, 0.25);
+    --last-move-color: rgba(255, 204, 0, 0.5); /* A clear yellow */
     --check-color: rgba(255, 0, 0, 0.5);
-    --bg-color: #2c3e50;
-    --text-color: #ecf0f1;
+    --bg-color: #2c3e50; --text-color: #ecf0f1;
 }
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 10px;
-    box-sizing: border-box;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; background-color: var(--bg-color); color: var(--text-color);
+    margin: 0; padding: 10px; box-sizing: border-box;
 }
+h1, h2 { text-align: center; }
+button { font-family: inherit; font-size: 1rem; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; background-color: #3498db; color: white; transition: background-color 0.2s; }
+button:hover { background-color: #2980b9; }
+.hidden { display: none !important; }
 
-h1, h2 {
-    text-align: center;
-}
+/* --- Main Menu --- */
+#main-menu { background-color: rgba(0,0,0,0.2); padding: 20px 30px; border-radius: 10px; text-align: center; }
+#main-menu > button { margin-top: 10px; width: 100%; }
+.ai-options { margin-top: 15px; padding-top: 15px; border-top: 1px solid #4a657e; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#ai-difficulty-selector { display: flex; gap: 10px; align-items: center; }
 
-button {
-    font-family: inherit;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    background-color: #3498db;
-    color: white;
-    transition: background-color 0.2s;
-}
-button:hover {
-    background-color: #2980b9;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* --- OPTIMIZATION: Flexible Main Menu --- */
-#main-menu {
-    background-color: rgba(0,0,0,0.2);
-    padding: 20px 30px;
-    border-radius: 10px;
-}
-.ai-options {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #4a657e;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-#ai-difficulty-selector {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-/* --- OPTIMIZATION: Main Game Container --- */
+/* --- OPTIMIZED: Adaptive Game Container --- */
 #game-container {
-    display: flex;
-    flex-direction: column;
+    display: none; /* JS changes to flex */
+    flex-direction: column; /* Mobile first: stack vertically */
     align-items: center;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
-    max-width: 600px; /* Limits size on large screens */
+    max-width: 900px; /* Allow space for side-by-side layout */
 }
 
-/* --- OPTIMIZATION: Status Panel --- */
-#status-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.2);
-    border-radius: 8px;
-    font-size: clamp(1rem, 4vw, 1.2rem); /* Responsive font size */
-}
-#status {
-    font-weight: bold;
-}
-#sound-toggle {
-    font-size: 1.5em;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* --- OPTIMIZATION: The Chess Board --- */
+/* --- OPTIMIZED: Responsive Board --- */
 #board-container {
     position: relative;
-    /* This makes the board responsive, taking up 95% of the screen width */
-    width: 95vw; 
-    /* This CSS magic forces the board to always be a perfect square */
-    aspect-ratio: 1 / 1; 
-    /* This prevents the board from getting too big on desktops */
-    max-width: 500px; 
-    max-height: 500px;
+    /* Use the smaller of viewport width/height to size the board */
+    width: 90vmin;
+    height: 90vmin;
+    max-width: 600px;
+    max-height: 600px;
 }
-
 #board {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    width: 100%;
-    height: 100%;
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    width: 100%; height: 100%;
     border: 5px solid #3a3a3a;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3);
 }
+.square { display: flex; justify-content: center; align-items: center; position: relative; }
+.light { background-color: var(--light-square); } .dark { background-color: var(--dark-square); }
 
-.square {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-.light { background-color: var(--light-square); }
-.dark { background-color: var(--dark-square); }
-
-/* --- OPTIMIZATION: The Pieces --- */
+/* --- OPTIMIZED: Scalable Pieces --- */
 .piece {
-    /* Responsive font size for pieces. Min 4vw, preferred 8vw, max 60px */
-    font-size: clamp(4vw, 8vw, 60px); 
-    cursor: pointer;
-    user-select: none;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: clamp(30px, 9vmin, 60px); /* Responsive font size */
+    cursor: pointer; user-select: none; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.white-piece { color: #fff; }
-.black-piece { color: #000; }
+.white-piece { color: #fff; } .black-piece { color: #000; }
 
-/* --- Highlighting Styles --- */
-.selected {
-    background-color: var(--selected-color) !important;
-}
-.valid-move-dot {
-    position: absolute;
-    width: 30%;
-    height: 30%;
-    background-color: var(--valid-move-color);
-    border-radius: 50%;
-    pointer-events: none; /* Allows clicks to go through to the square */
-}
-.last-move {
-    background-color: var(--last-move-color);
-}
-.in-check {
-    background-color: var(--check-color) !important;
-}
+/* Highlighting Styles */
+.selected { background-color: var(--selected-color) !important; }
+.valid-move-dot { position: absolute; width: 30%; height: 30%; background-color: var(--valid-move-color); border-radius: 50%; pointer-events: none; }
+.last-move { background-color: var(--last-move-color); }
+.in-check { background-color: var(--check-color) !important; }
 
-/* --- OPTIMIZATION: Controls and Promotion --- */
-#controls {
+/* --- OPTIMIZED: Info Panel Layout --- */
+.game-info-panel {
+    display: flex; flex-direction: column; gap: 15px;
     width: 100%;
-    text-align: center;
-}
-#promotion-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #3e5771;
-    padding: 20px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    z-index: 100;
-    text-align: center;
-    border: 2px solid var(--text-color);
 }
-#promotion-dialog p {
-    margin: 0 0 15px 0;
+#status-panel { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: clamp(1rem, 4vw, 1.2rem); }
+#status { font-weight: bold; }
+#sound-toggle { font-size: 1.5em; background: none; border: none; cursor: pointer; }
+
+/* NEW: Captured Pieces Area */
+.captured-pieces-container { display: flex; justify-content: space-between; gap: 10px; }
+.captured-box {
+    flex: 1; min-height: 40px; background-color: rgba(0,0,0,0.2);
+    border-radius: 5px; padding: 5px;
+    display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px;
 }
-#promotion-dialog button {
-    font-size: 2.5em; /* Make promotion pieces large */
-    background: none;
-    border: none;
-    padding: 10px;
-    color: var(--text-color);
-}
-#promotion-dialog button:hover {
-    background-color: rgba(255,255,255,0.2);
+.captured-box .piece {
+    font-size: 1.5rem; /* Smaller size for captured pieces */
 }
 
-/* Media query for very small screens to reduce padding */
-@media (max-width: 360px) {
-    body {
-        padding: 5px;
+#controls { width: 100%; display: flex; }
+#controls button { width: 100%; }
+
+/* Promotion Dialog */
+#promotion-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #3e5771; padding: 20px; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); z-index: 100; text-align: center; border: 2px solid var(--text-color); }
+#promotion-dialog p { margin: 0 0 15px 0; }
+#promotion-dialog button { font-size: 2.5em; background: none; border: none; padding: 10px; color: var(--text-color); }
+#promotion-dialog button:hover { background-color: rgba(255,255,255,0.2); }
+
+/* --- OPTIMIZATION: Media Query for Larger Screens --- */
+@media (min-width: 768px) {
+    body { align-items: center; } /* Re-center vertically on larger screens */
+    #game-container {
+        flex-direction: row; /* Side-by-side layout */
+        align-items: center;
+        justify-content: center;
     }
-    #status-panel {
-        padding: 5px;
+    .game-info-panel {
+        width: 250px; /* Fixed width for the info panel */
+        height: 90vmin; /* Match board height */
+        max-height: 600px;
+        justify-content: space-between;
+    }
+    .captured-box {
+        height: 100%; /* Allow captured box to grow */
     }
 }
