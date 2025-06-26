@@ -27,26 +27,23 @@
         <button id="home-button">Home</button>
     </div>
 
-    <!-- UPDATED: Game Container now has a better structure -->
+    <!-- UPDATED: Game Container with a new, better structure -->
     <div id="game-container" class="hidden">
-        <div id="board-container">
-            <div id="board"></div>
-        </div>
-
-        <!-- NEW: Panel for all game info, controls, and captured pieces -->
-        <div class="game-info-panel">
+        <div class="game-info-panel top">
+            <div class="captured-box" id="black-captured"></div>
             <div id="status-panel">
                 <div id="status">White's Turn</div>
                 <button id="sound-toggle">🔊</button>
             </div>
+        </div>
+        
+        <div id="board-container">
+            <div id="board"></div>
+        </div>
 
-            <!-- NEW: Area for captured pieces -->
-            <div class="captured-pieces-container">
-                <div class="captured-box" id="white-captured"></div>
-                <div class="captured-box" id="black-captured"></div>
-            </div>
-            
-            <div id="controls">
+        <div class="game-info-panel bottom">
+             <div class="captured-box" id="white-captured"></div>
+             <div id="controls">
                 <button id="back-to-menu">Back to Main Menu</button>
             </div>
         </div>
