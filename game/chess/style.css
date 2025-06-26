@@ -1,9 +1,8 @@
-/* --- Global Styles & Variables --- */
 :root {
     --light-square: #f0d9b5; --dark-square: #b58863;
-    --selected-color: rgba(46, 213, 115, 0.6);
+    --selected-color: rgba(46, 213, 115, 0.5);
     --valid-move-color: rgba(0, 0, 0, 0.25);
-    --last-move-color: rgba(255, 204, 0, 0.5);
+    --last-move-color: rgba(255, 204, 0, 0.4);
     --check-color: rgba(255, 0, 0, 0.5);
     --bg-color: #2c3e50; --text-color: #ecf0f1;
 }
@@ -16,52 +15,32 @@ body {
 h1, h2 { text-align: center; }
 button { font-family: inherit; font-size: 1rem; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; background-color: #3498db; color: white; transition: background-color 0.2s; }
 button:hover { background-color: #2980b9; }
+.hidden { display: none !important; }
 
-/* --- THIS IS THE MOST IMPORTANT RULE --- */
-/* It ensures that ONLY the .hidden class controls visibility */
-.hidden {
-    display: none !important;
-}
-
-/* --- Main Menu --- */
+/* Main Menu */
 #main-menu { background-color: rgba(0,0,0,0.2); padding: 20px 30px; border-radius: 10px; text-align: center; }
 #main-menu > button { margin-top: 10px; width: 100%; }
 .ai-options { margin-top: 15px; padding-top: 15px; border-top: 1px solid #4a657e; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 #ai-difficulty-selector { display: flex; gap: 10px; align-items: center; }
 
-/* --- CORRECTED: Main Game Container --- */
-/* The base style is now 'flex'. The .hidden class in the HTML will hide it initially. */
+/* --- NEW Adaptive Game Container --- */
 #game-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Mobile-first: single column */
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     width: 100%;
     max-width: 900px;
 }
 
 /* Responsive Board */
-#board-container {
-    position: relative;
-    width: 90vmin;
-    height: 90vmin;
-    max-width: 600px;
-    max-height: 600px;
-}
-#board {
-    display: grid; grid-template-columns: repeat(8, 1fr);
-    width: 100%; height: 100%;
-    border: 5px solid #3a3a3a;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3);
-}
+#board-container { width: 95vmin; height: 95vmin; max-width: 600px; max-height: 600px; }
+#board { display: grid; grid-template-columns: repeat(8, 1fr); width: 100%; height: 100%; border: 2px solid #3a3a3a; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
 .square { display: flex; justify-content: center; align-items: center; position: relative; }
 .light { background-color: var(--light-square); } .dark { background-color: var(--dark-square); }
 
 /* Scalable Pieces */
-.piece {
-    font-size: clamp(30px, 9vmin, 60px);
-    cursor: pointer; user-select: none; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+.piece { font-size: clamp(30px, 9vmin, 60px); cursor: pointer; user-select: none; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .white-piece { color: #fff; } .black-piece { color: #000; }
 
 /* Highlighting Styles */
@@ -70,26 +49,25 @@ button:hover { background-color: #2980b9; }
 .last-move { background-color: var(--last-move-color); }
 .in-check { background-color: var(--check-color) !important; }
 
-/* Info Panel Layout */
+/* --- NEW Info Panel Layout --- */
 .game-info-panel {
-    display: flex; flex-direction: column; gap: 15px;
-    width: 100%;
-    background-color: rgba(0,0,0,0.2);
-    padding: 15px;
-    border-radius: 10px;
+    display: flex; flex-direction: column; gap: 10px;
+    width: 95vmin; max-width: 600px;
 }
-#status-panel { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: clamp(1rem, 4vw, 1.2rem); }
+.game-info-panel.top { order: -1; } /* Place on top for mobile */
+.game-info-panel.bottom { order: 1; } /* Place on bottom for mobile */
+
+#status-panel { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: clamp(1rem, 4vw, 1.2rem); padding: 5px; background-color: rgba(0,0,0,0.2); border-radius: 5px; }
 #status { font-weight: bold; }
-#sound-toggle { font-size: 1.5em; background: none; border: none; cursor: pointer; }
+#sound-toggle { font-size: 1.5em; background: none; border: none; cursor: pointer; color: white; }
 
 /* Captured Pieces Area */
-.captured-pieces-container { display: flex; justify-content: space-between; gap: 10px; }
 .captured-box {
-    flex: 1; min-height: 40px; background-color: rgba(0,0,0,0.2);
-    border-radius: 5px; padding: 5px;
-    display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
+    min-height: 32px; background-color: rgba(0,0,0,0.15); border-radius: 5px; padding: 5px;
 }
-.captured-box .piece { font-size: 1.5rem; }
+.captured-box .piece { font-size: clamp(1rem, 3vmin, 1.5rem); } /* Smaller captured pieces */
+.captured-box.white { justify-content: flex-end; } /* Align captured pieces */
 
 #controls { width: 100%; display: flex; }
 #controls button { width: 100%; }
@@ -100,20 +78,25 @@ button:hover { background-color: #2980b9; }
 #promotion-dialog button { font-size: 2.5em; background: none; border: none; padding: 10px; color: var(--text-color); }
 #promotion-dialog button:hover { background-color: rgba(255,255,255,0.2); }
 
-/* Media Query for Larger Screens */
-@media (min-width: 768px) {
+/* --- NEW Media Query for Desktop/Tablet "Dashboard" Layout --- */
+@media (min-width: 768px) and (min-height: 500px) {
     #game-container {
-        flex-direction: row;
+        flex-direction: row; /* Switch to side-by-side */
         align-items: center;
-        justify-content: center;
+        gap: 30px;
     }
-    .game-info-panel {
+    .game-info-panel.top, .game-info-panel.bottom {
+        order: 1; /* Both panels go to the right */
+        flex-direction: column;
         width: 250px;
-        height: 90vmin;
+        height: 95vmin;
         max-height: 600px;
-        justify-content: space-between;
+        padding: 15px;
     }
-    .captured-box {
-        height: 100%;
+    .game-info-panel.top {
+        justify-content: flex-start; /* Opponent info at the top */
+    }
+    .game-info-panel.bottom {
+        justify-content: flex-end; /* Your info and controls at the bottom */
     }
 }
