@@ -14,7 +14,8 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
+            /* UPDATED: Background color changed to black */
+            background-color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -57,10 +58,8 @@
     </div>
 
     <script>
-        // Wait for 3 seconds then redirect.
+        // Wait for 3 seconds then redirect to the home page.
         setTimeout(() => {
-            // THE ONLY CHANGE IS HERE:
-            // The link now points to your specified subfolder.
             window.location.href = 'home/home.html';
         }, 3000); 
     </script>
