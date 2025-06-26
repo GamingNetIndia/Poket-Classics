@@ -1,280 +1,201 @@
-/* ==========================================================================
-   Global Styles & Typography
-   ========================================================================== */
+/* --- Global Styles & Variables --- */
+:root {
+    --light-square: #f0d9b5;
+    --dark-square: #b58863;
+    --selected-color: rgba(30, 144, 255, 0.5); /* DodgerBlue with transparency */
+    --valid-move-color: rgba(46, 213, 115, 0.7); /* A vibrant green */
+    --last-move-color: rgba(255, 255, 0, 0.4);
+    --check-color: rgba(255, 0, 0, 0.5);
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #312e2b; /* Dark, warm background */
-    color: #fff;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
-    overflow: hidden; /* Prevents scrollbars */
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 h1, h2 {
     text-align: center;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-}
-
-h2 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-}
-
-/* ==========================================================================
-   Main Menu
-   ========================================================================== */
-
-#main-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 30px 40px;
-    background-color: #262421;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-#main-menu button {
-    width: 250px;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
+button {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 10px 20px;
     border-radius: 5px;
-    background-color: #4a4a4a;
+    border: none;
+    cursor: pointer;
+    background-color: #3498db;
     color: white;
-    transition: background-color 0.3s, transform 0.1s;
+    transition: background-color 0.2s;
+}
+button:hover {
+    background-color: #2980b9;
 }
 
-#main-menu button:hover {
-    background-color: #6a6a6a;
+.hidden {
+    display: none !important;
 }
 
-#main-menu button:active {
-    transform: scale(0.98);
+/* --- OPTIMIZATION: Flexible Main Menu --- */
+#main-menu {
+    background-color: rgba(0,0,0,0.2);
+    padding: 20px 30px;
+    border-radius: 10px;
 }
-
-#home-button {
-    background-color: #005f73 !important; /* A distinct color for the home button */
-}
-
-#home-button:hover {
-    background-color: #0a9396 !important;
-}
-
-/* --- AI Difficulty Selection --- */
-
 .ai-options {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #4a657e;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    width: 100%;
 }
-
 #ai-difficulty-selector {
     display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 10px;
+    align-items: center;
 }
 
-#ai-difficulty-selector select, 
-#ai-difficulty-selector button {
-    padding: 10px;
-    font-size: 1em;
-    border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #6a6a6a;
-    color: white;
-}
-
-#ai-difficulty-selector button {
-    cursor: pointer;
-    background-color: #4CAF50; /* Green color for "Play" */
-    font-weight: bold;
-    border: none;
-}
-
-#ai-difficulty-selector button:hover {
-    background-color: #45a049;
-}
-
-/* ==========================================================================
-   Game Container & Board
-   ========================================================================== */
-
+/* --- OPTIMIZATION: Main Game Container --- */
 #game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
+    width: 100%;
+    max-width: 600px; /* Limits size on large screens */
 }
 
-#board-container {
-    border: 5px solid #1a1a1a;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    background-color: #1a1a1a;
-}
-
-#board {
-    display: grid;
-    grid-template-columns: repeat(8, 70px);
-    grid-template-rows: repeat(8, 70px);
-    width: 560px;
-    height: 560px;
-}
-
-.square {
-    width: 70px;
-    height: 70px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    position: relative; /* For positioning move dots */
-}
-
-.light { background-color: #f0d9b5; }
-.dark { background-color: #b58863; }
-
-/* ==========================================================================
-   Pieces & Highlights
-   ========================================================================== */
-
-.piece {
-    cursor: pointer;
-    text-shadow: 0 0 5px rgba(0,0,0,0.4);
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
-}
-
-.white-piece {
-    color: #ffffff;
-}
-
-.black-piece {
-    color: #2b2b2b;
-}
-
-/* --- Visual Feedback --- */
-
-.selected {
-    background-color: #6a994e !important; /* Green highlight for selected piece */
-}
-
-.valid-move-dot {
-    width: 25px;
-    height: 25px;
-    background-color: rgba(4, 153, 23, 0.4); /* Semi-transparent green dot */
-    border-radius: 50%;
-    position: absolute;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.last-move {
-    background-color: #cccc66b3 !important; /* Yellow highlight for last move */
-}
-
-/* ==========================================================================
-   Status Panel & Controls
-   ========================================================================== */
-
+/* --- OPTIMIZATION: Status Panel --- */
 #status-panel {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 560px;
-    font-size: 1.5em;
-    padding: 5px 10px;
-    background-color: #262421;
-    border-radius: 5px;
-    box-sizing: border-box; /* Ensures padding is included in the width */
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    font-size: clamp(1rem, 4vw, 1.2rem); /* Responsive font size */
 }
-
+#status {
+    font-weight: bold;
+}
 #sound-toggle {
-    font-size: 1.5rem;
+    font-size: 1.5em;
     background: none;
     border: none;
     cursor: pointer;
-    color: white;
-    padding: 0 10px;
 }
 
+/* --- OPTIMIZATION: The Chess Board --- */
+#board-container {
+    position: relative;
+    /* This makes the board responsive, taking up 95% of the screen width */
+    width: 95vw; 
+    /* This CSS magic forces the board to always be a perfect square */
+    aspect-ratio: 1 / 1; 
+    /* This prevents the board from getting too big on desktops */
+    max-width: 500px; 
+    max-height: 500px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: 100%;
+    height: 100%;
+    border: 5px solid #3a3a3a;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.light { background-color: var(--light-square); }
+.dark { background-color: var(--dark-square); }
+
+/* --- OPTIMIZATION: The Pieces --- */
+.piece {
+    /* Responsive font size for pieces. Min 4vw, preferred 8vw, max 60px */
+    font-size: clamp(4vw, 8vw, 60px); 
+    cursor: pointer;
+    user-select: none;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.white-piece { color: #fff; }
+.black-piece { color: #000; }
+
+/* --- Highlighting Styles --- */
+.selected {
+    background-color: var(--selected-color) !important;
+}
+.valid-move-dot {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background-color: var(--valid-move-color);
+    border-radius: 50%;
+    pointer-events: none; /* Allows clicks to go through to the square */
+}
+.last-move {
+    background-color: var(--last-move-color);
+}
+.in-check {
+    background-color: var(--check-color) !important;
+}
+
+/* --- OPTIMIZATION: Controls and Promotion --- */
 #controls {
     width: 100%;
     text-align: center;
 }
-
-#controls button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #8a2a21; /* Reddish for "back" or "exit" actions */
-    color: white;
-    transition: background-color 0.3s;
-}
-
-#controls button:hover {
-    background-color: #a13e3e;
-}
-
-/* ==========================================================================
-   Dialogs (Pawn Promotion)
-   ========================================================================== */
-
 #promotion-dialog {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #4a4a4a;
+    background-color: #3e5771;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    z-index: 100;
     text-align: center;
+    border: 2px solid var(--text-color);
 }
-
 #promotion-dialog p {
-    margin-top: 0;
-    font-size: 1.2em;
+    margin: 0 0 15px 0;
 }
-
 #promotion-dialog button {
-    font-size: 40px;
+    font-size: 2.5em; /* Make promotion pieces large */
     background: none;
     border: none;
-    cursor: pointer;
     padding: 10px;
-    color: #fff;
-    transition: transform 0.2s;
+    color: var(--text-color);
 }
-
 #promotion-dialog button:hover {
-    transform: scale(1.1);
+    background-color: rgba(255,255,255,0.2);
 }
 
-/* ==========================================================================
-   Utility Classes
-   ========================================================================== */
-
-.hidden {
-    display: none !important;
+/* Media query for very small screens to reduce padding */
+@media (max-width: 360px) {
+    body {
+        padding: 5px;
+    }
+    #status-panel {
+        padding: 5px;
+    }
 }
