@@ -4,16 +4,15 @@
     --player1-color: #1e88e5; --player2-color: #fdd835; --player3-color: #e53935; --player4-color: #8e24aa;
     --menu-bg: #f7f9fc; --menu-shadow: rgba(0,0,0,0.1); --menu-accent: #2ed573; --menu-text: #4a4a4a;
 }
-body { font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #34495e; margin: 0; padding: 20px; box-sizing: border-box; overflow: hidden; }
+body { font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #34495e; margin: 0; padding: 10px; box-sizing: border-box; overflow: hidden; }
 .container { background-color: var(--menu-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 25px var(--menu-shadow); text-align: center; max-width: 500px; }
 
-/* --- NEW Main Menu Styles --- */
+/* --- Main Menu Styles (Unchanged) --- */
 .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 #main-menu h1 { flex-grow: 1; margin: 0; font-size: 2.2em; color: var(--menu-text); }
 .icon-btn { font-size: 1.5em; background: none; border: none; cursor: pointer; padding: 5px; opacity: 0.6; transition: opacity 0.2s, transform 0.2s; }
 .icon-btn:hover { opacity: 1; transform: scale(1.1); }
 #settings-btn.sound-off { text-decoration: line-through; color: #e53935; }
-
 .menu-options { margin: 20px 0; display: flex; flex-direction: column; gap: 25px; }
 .option-section { }
 .option-label { font-size: 1.2em; margin-bottom: 10px; color: var(--menu-text); font-weight: bold; }
@@ -25,10 +24,29 @@ body { font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma; display: flex; j
 .start-button { padding: 15px 30px; font-size: 1.3em; cursor: pointer; border-radius: 12px; border: none; color: white; background-color: var(--menu-accent); width: 100%; margin-top: 20px; font-family: inherit; transition: background-color 0.2s; }
 .start-button:hover { background-color: #25a25a; }
 
-/* --- Game Container (Unchanged) --- */
-#game-container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1000px; }
-#game-board { display: grid; grid-template-columns: repeat(10, 1fr); width: 60vmin; height: 60vmin; max-width: 600px; max-height: 600px; border: 5px solid #4a4a4a; background-color: var(--board-bg); }
-.cell { position: relative; display: flex; justify-content: center; align-items: center; font-size: 1.8vmin; font-weight: bold; border: 1px solid #757575; box-sizing: border-box; }
+/* --- OPTIMIZATION: Adaptive Game Container --- */
+#game-container {
+    display: none; /* JS will change this to flex */
+    flex-direction: column; /* Mobile-first: stack vertically */
+    align-items: center;
+    gap: 20px;
+    max-width: 900px; /* Allow more width for side-by-side layout */
+    width: 100%;
+}
+
+/* --- OPTIMIZATION: Responsive Game Board --- */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    width: 90vw; /* Fit the screen width */
+    aspect-ratio: 1 / 1; /* Keep it square */
+    max-width: 500px; /* Limit size on large screens */
+    max-height: 500px;
+    border: 5px solid #4a4a4a;
+    background-color: var(--board-bg);
+}
+
+.cell { position: relative; display: flex; justify-content: center; align-items: center; font-size: clamp(1.2vmin, 2.5vw, 1rem); font-weight: bold; border: 1px solid #757575; box-sizing: border-box; }
 .cell:nth-child(odd) { background-color: var(--cell-bg-1); }
 .cell:nth-child(even) { background-color: var(--cell-bg-2); }
 .snake-head, .snake-tail, .ladder-start, .ladder-end { color: white; text-shadow: 1px 1px 2px black; }
@@ -39,10 +57,20 @@ body { font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma; display: flex; j
 .player-0 { background-color: var(--player1-color); top: 15%; left: 15%; } .player-1 { background-color: var(--player2-color); top: 15%; right: 15%; }
 .player-2 { background-color: var(--player3-color); bottom: 15%; left: 15%; } .player-3 { background-color: var(--player4-color); bottom: 15%; right: 15%; }
 
-/* --- Game Controls (Unchanged) --- */
-#game-controls { display: flex; flex-direction: column; justify-content: center; gap: 15px; width: 250px; }
-#turn-info { font-size: 1.5em; font-weight: bold; padding: 10px; border-radius: 5px; transition: all 0.3s; }
-#dice { font-size: 5em; height: 1em; position: relative; }
+/* --- OPTIMIZATION: Responsive Game Controls --- */
+#game-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    width: 100%; /* Full width on mobile */
+    max-width: 400px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+#turn-info { font-size: clamp(1.2em, 4vw, 1.5em); font-weight: bold; padding: 10px; border-radius: 5px; transition: all 0.3s; }
+#dice { font-size: clamp(3em, 10vw, 5em); height: 1em; position: relative; }
 .dice-face { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 0.3s; }
 .dice-face.active { opacity: 1; }
 button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px; border: none; color: white; background-color: #4CAF50; }
@@ -58,3 +86,17 @@ button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px
 #play-again-btn { margin-top: 15px; font-size: 1.2em; }
 #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; }
 .hidden { display: none !important; }
+
+/* --- OPTIMIZATION: Media Query for Larger Screens --- */
+@media (min-width: 800px) {
+    #game-container {
+        flex-direction: row; /* Side-by-side on desktop/tablet */
+        align-items: flex-start;
+    }
+
+    #game-controls {
+        width: 250px; /* Fixed width for controls */
+        height: 60vmin; /* Match board height */
+        max-height: 600px;
+    }
+}
