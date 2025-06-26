@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics - Main Menu</title>
     <style>
-        /* CSS is unchanged and correct */
+        /* CSS is unchanged except for the settings button hover effect */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
         :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff; --play-green: #2ed573;}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -16,7 +16,8 @@
         .main-title{font-size:2.5em;font-weight:900;color:var(--title-blue);text-align:center;}
         .settings-btn{background:none;border:none;cursor:pointer;padding:5px;width:40px;height:40px;display:flex;justify-content:center;align-items:center;}
         .settings-btn svg{width:30px;height:30px;fill:var(--medium-grey);transition:transform .3s ease;}
-        .settings-btn:hover svg{transform:rotate(45deg);}
+        /* UPDATED: Hover effect for new button */
+        .settings-btn:hover svg{transform:scale(1.1);}
         .header-placeholder{width:40px;height:40px;}
         .game-grid{flex-grow:1;padding:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;overflow-y:auto;min-height:0;grid-auto-rows:minmax(150px,auto)}
         .game-card{aspect-ratio:1/1;border-radius:20px;position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,.08);transition:transform .2s ease-out; background-color: var(--dark-grey);}
@@ -69,7 +70,10 @@
         <header class="header">
             <div class="header-placeholder"></div>
             <h1 class="main-title">Pocket Classics</h1>
-            <button class="settings-btn" id="settings-btn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61-.25-1.17-.59-1.69-.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69-.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23-.09.49 0 .61-.22l2-3.46c.12-.22.07.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></button>
+            <!-- UPDATED: Settings button icon changed -->
+            <button class="settings-btn" id="settings-btn" aria-label="Settings">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
         </header>
 
         <main class="game-grid">
@@ -91,23 +95,84 @@
             <div class="game-card non-interactive" id="coming-soon"><div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div></div>
         </main>
 
-        <!-- UPDATED: Added GitHub link and corrected all URLs -->
         <footer class="footer">
             <a href="https://youtube.com/@gamingnetindia" target="_blank" class="social-link" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg></a>
-            
-            <a href="https://github.com/GamingNetIndia/Poket-Classics" target="_blank" class="social-link" aria-label="GitHub">
-                <svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></svg>
-            </a>
-
+            <a href="https://github.com/GamingNetIndia/Poket-Classics" target="_blank" class="social-link" aria-label="GitHub"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></svg></a>
             <a href="https://gamingnetindia.great-site.net/" target="_blank" class="social-link" aria-label="Website"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
         </footer>
         
-        <!-- Modals and other elements -->
-        <div class="details-overlay" id="details-overlay"> ... </div>
-        <div class="settings-overlay" id="settings-overlay"> ... </div>
+        <div class="details-overlay" id="details-overlay"><div class="details-header"><button id="details-back-btn" aria-label="Go Back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><img src="" alt="Game Image" id="details-image"></div><div class="details-content"><h2 id="details-title"></h2><div class="details-thumbnails" id="details-thumbnails"></div><p id="details-description"></p><button id="details-play-btn">PLAY</button></div></div>
+        <div class="settings-overlay" id="settings-overlay"><div class="settings-panel"><h2>Settings</h2><div class="setting-item"><span>Music</span><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked><span class="slider"></span></label></div><button class="close-settings-btn" id="close-settings-btn">Close</button></div></div>
     </div>
     
     <audio id="background-music" src="background.mp3" loop></audio>
-    <script> /* The full script is still here and correct */ </script>
+    
+    <!-- SCRIPT FIX: The full, working JavaScript is now included below -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameCards = document.querySelectorAll('.game-card');
+            const backgroundMusic = document.getElementById('background-music');
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsOverlay = document.getElementById('settings-overlay');
+            const closeSettingsBtn = document.getElementById('close-settings-btn');
+            const musicToggle = document.getElementById('music-toggle');
+            const detailsOverlay = document.getElementById('details-overlay');
+            const detailsBackBtn = document.getElementById('details-back-btn');
+            const detailsImage = document.getElementById('details-image');
+            const detailsTitle = document.getElementById('details-title');
+            const detailsDescription = document.getElementById('details-description');
+            const detailsPlayBtn = document.getElementById('details-play-btn');
+            const thumbnailContainer = document.getElementById('details-thumbnails');
+
+            gameCards.forEach(card => {
+                if (card.classList.contains('non-interactive')) { return; }
+                card.addEventListener('click', () => {
+                    detailsImage.src = card.querySelector('.game-card-image').src;
+                    detailsTitle.textContent = card.dataset.title;
+                    detailsDescription.textContent = card.dataset.description;
+                    detailsPlayBtn.dataset.url = card.dataset.url;
+                    thumbnailContainer.innerHTML = '';
+                    const screenshotsData = card.dataset.screenshots;
+                    if (screenshotsData) {
+                        const screenshotUrls = screenshotsData.split(',');
+                        screenshotUrls.forEach(url => {
+                            const img = document.createElement('img');
+                            img.src = url.trim();
+                            img.alt = `${card.dataset.title} Screenshot`;
+                            img.className = 'thumbnail-image';
+                            thumbnailContainer.appendChild(img);
+                        });
+                    }
+                    detailsOverlay.classList.add('visible');
+                });
+            });
+
+            detailsBackBtn.addEventListener('click', () => {
+                detailsOverlay.classList.remove('visible');
+            });
+            detailsPlayBtn.addEventListener('click', function() {
+                const gameUrl = this.dataset.url;
+                if (gameUrl) { window.location.href = gameUrl; }
+            });
+
+            settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
+            function closeMenu() { settingsOverlay.classList.remove('visible'); }
+            closeSettingsBtn.addEventListener('click', closeMenu);
+            settingsOverlay.addEventListener('click', (event) => { if (event.target === settingsOverlay) { closeMenu(); }});
+
+            musicToggle.addEventListener('change', () => {
+                if (musicToggle.checked) {
+                    backgroundMusic.play().catch(e => {});
+                } else {
+                    backgroundMusic.pause();
+                }
+            });
+            document.body.addEventListener('click', () => {
+                if (musicToggle.checked) {
+                    backgroundMusic.play().catch(e => {});
+                }
+            }, { once: true });
+        });
+    </script>
 </body>
 </html>
