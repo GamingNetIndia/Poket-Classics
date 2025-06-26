@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Functions ---
     function showMainMenu() {
-        // This function correctly uses classList to hide the game
         gameContainer.classList.add('hidden');
         mainMenu.classList.remove('hidden');
         aiDifficultySelector.classList.add('hidden');
@@ -39,11 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPlayer = 'w'; selectedPiece = null; validMoves = []; isGameOver = false; gameOverSoundPlayed = false;
         castlingRights = { w: { k: true, q: true }, b: { k: true, q: true } };
         enPassantTarget = null; lastMove = { from: null, to: null };
-
+        
         mainMenu.classList.add('hidden');
+
         // --- THIS IS THE CRITICAL FIX ---
-        // Instead of changing the style directly, we now remove the .hidden class
-        // This allows the CSS to take over and set display to 'flex'.
+        // We now remove the .hidden class, letting the CSS do its job.
+        // This makes it consistent with all your other games.
         gameContainer.classList.remove('hidden'); 
         
         whiteCapturedEl.innerHTML = '';
