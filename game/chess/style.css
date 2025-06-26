@@ -1,192 +1,255 @@
-/* --- Global Styles & Variables --- */
-:root {
-    --light-square: #f0d9b5;
-    --dark-square: #b58863;
-    --selected-color: rgba(46, 213, 115, 0.6);
-    --valid-move-color: rgba(0, 0, 0, 0.25);
-    --last-move-color: rgba(255, 204, 0, 0.5);
-    --check-color: rgba(255, 0, 0, 0.5);
-    --bg-color: #2c3e50;
-    --text-color: #ecf0f1;
-}
+/* ==========================================================================
+   Global Styles & Typography
+   ========================================================================== */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    height: 100vh;
+    background-color: #312e2b;
+    color: #fff;
     margin: 0;
-    padding: 10px;
-    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll, allow vertical if needed */
 }
 
 h1, h2 {
     text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-button {
-    font-family: inherit;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    background-color: #3498db;
-    color: white;
-    transition: background-color 0.2s;
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
 }
 
-button:hover {
-    background-color: #2980b9;
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
 }
 
-.hidden {
-    display: none !important;
-}
+/* ==========================================================================
+   Main Menu
+   ========================================================================== */
 
-/* --- Main Menu Styles --- */
 #main-menu {
-    background-color: rgba(0,0,0,0.2);
-    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 40px;
+    background-color: #262421;
     border-radius: 10px;
-    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-#main-menu > button {
-    margin-top: 10px;
-    width: 100%;
-    max-width: 300px;
+
+#main-menu button {
+    width: 250px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4a4a4a;
+    color: white;
+    transition: background-color 0.3s, transform 0.1s;
 }
+
+#main-menu button:hover {
+    background-color: #6a6a6a;
+}
+
+#main-menu button:active {
+    transform: scale(0.98);
+}
+
+#home-button {
+    background-color: #005f73 !important;
+}
+
+#home-button:hover {
+    background-color: #0a9396 !important;
+}
+
 .ai-options {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #4a657e;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    width: 100%;
 }
+
 #ai-difficulty-selector {
     display: flex;
-    gap: 10px;
     align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-/* --- NEW, CORRECTED STYLES FOR YOUR GAME LAYOUT --- */
+#ai-difficulty-selector select, 
+#ai-difficulty-selector button {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #6a6a6a;
+    color: white;
+}
 
-/* This is the main container for the game screen.
-   It is hidden via the .hidden class in the HTML.
-   Your JS will remove the class, and this style will apply. */
+#ai-difficulty-selector button {
+    cursor: pointer;
+    background-color: #4CAF50;
+    font-weight: bold;
+    border: none;
+}
+
+#ai-difficulty-selector button:hover {
+    background-color: #45a049;
+}
+
+/* ==========================================================================
+   Game Container & Board (Desktop First)
+   ========================================================================== */
+
 #game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 500px; /* Limits size on large screens */
+    gap: 15px;
 }
 
-/* Styles for the top and bottom info panels */
-.game-info-panel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    background-color: rgba(0,0,0,0.2);
-    padding: 5px 10px;
-    border-radius: 8px;
-}
-
-/* Specific alignment for the bottom panel */
-.game-info-panel.bottom {
-    justify-content: space-between;
-}
-
-/* Status panel with turn info and sound toggle */
-#status-panel {
-    flex-grow: 1; /* Allows it to take up remaining space */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-}
-#status {
-    font-weight: bold;
-    font-size: clamp(1rem, 4vw, 1.2rem);
-}
-#sound-toggle {
-    font-size: 1.5em;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* The box that holds captured pieces */
-.captured-box {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1px;
-    min-height: 32px;
-    flex: 1; /* Let it grow but also shrink */
-    max-width: 50%;
-}
-
-/* Make captured pieces smaller than board pieces */
-.captured-box .piece {
-    font-size: clamp(0.8rem, 3vw, 1.2rem);
-    text-shadow: none;
-}
-
-#controls {
-    flex-shrink: 0; /* Prevents the button from shrinking */
-}
-
-/* Responsive Board */
 #board-container {
-    position: relative;
-    width: 95vw;
-    aspect-ratio: 1 / 1;
-    max-width: 500px;
-    max-height: 500px;
+    border: 5px solid #1a1a1a;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background-color: #1a1a1a;
 }
+
 #board {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    width: 100%;
-    height: 100%;
-    border: 5px solid #3a3a3a;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3);
+    /* Desktop size */
+    grid-template-columns: repeat(8, 70px);
+    grid-template-rows: repeat(8, 70px);
+    width: 560px;
+    height: 560px;
 }
+
 .square {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 50px; /* Desktop font size */
     position: relative;
 }
-.light { background-color: var(--light-square); }
-.dark { background-color: var(--dark-square); }
 
-/* Scalable Pieces */
+.light { background-color: #f0d9b5; }
+.dark { background-color: #b58863; }
+
+/* Pieces & Highlights */
 .piece {
-    font-size: clamp(30px, 9.5vmin, 60px);
     cursor: pointer;
+    text-shadow: 0 0 5px rgba(0,0,0,0.4);
     user-select: none;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.white-piece { color: #fff; }
-.black-piece { color: #000; }
+.white-piece { color: #ffffff; }
+.black-piece { color: #2b2b2b; }
+.selected { background-color: #6a994e !important; }
+.valid-move-dot {
+    width: 25px; /* Desktop size */
+    height: 25px; /* Desktop size */
+    background-color: rgba(4, 153, 23, 0.4);
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+}
+.last-move { background-color: #cccc66b3 !important; }
 
-/* Highlighting Styles */
-.selected { background-color: var(--selected-color) !important; }
-.valid-move-dot { position: absolute; width: 30%; height: 30%; background-color: var(--valid-move-color); border-radius: 50%; pointer-events: none; }
-.last-move { background-color: var(--last-move-color); }
-.in-check { background-color: var(--check-color) !important; }
+/* Status Panel & Controls */
+#status-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 560px; /* Desktop size */
+    font-size: 1.5em;
+    padding: 5px 10px;
+    background-color: #262421;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
 
-/* Promotion Dialog (Unchanged) */
-#promotion-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #3e5771; padding: 20px; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); z-index: 100; text-align: center; border: 2px solid var(--text-color); }
-#promotion-dialog p { margin: 0 0 15px 0; }
-#promotion-dialog button { font-size: 2.5em; background: none; border: none; padding: 10px; color: var(--text-color); }
-#promotion-dialog button:hover { background-color: rgba(255,255,255,0.2); }
+#sound-toggle { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: white; padding: 0 10px; }
+#controls { width: 100%; text-align: center; }
+#controls button { padding: 10px 20px; font-size: 1em; cursor: pointer; border: none; border-radius: 5px; background-color: #8a2a21; color: white; transition: background-color 0.3s; }
+#controls button:hover { background-color: #a13e3e; }
+
+/* Dialogs */
+#promotion-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #4a4a4a; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); z-index: 1000; text-align: center; }
+#promotion-dialog p { margin-top: 0; font-size: 1.2em; }
+#promotion-dialog button { font-size: 40px; background: none; border: none; cursor: pointer; padding: 10px; color: #fff; transition: transform 0.2s; }
+#promotion-dialog button:hover { transform: scale(1.1); }
+.hidden { display: none !important; }
+
+
+/* ==========================================================================
+   MOBILE OPTIMIZATION (MEDIA QUERY)
+   These styles apply only when the screen width is 600px or less.
+   ========================================================================== */
+
+@media screen and (max-width: 600px) {
+    body {
+        padding-top: 10px; /* Add some space at the top */
+    }
+
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+
+    /* Make the board and status panel take up 95% of the screen width */
+    #board, #status-panel {
+        width: 95vw;
+    }
+
+    /* The board height must match its width to maintain a square */
+    #board {
+        height: 95vw;
+        /* Let the grid calculate column/row sizes automatically */
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+    }
+
+    /* Scale the font size of the pieces relative to the screen size */
+    .square {
+        font-size: 8vw;
+    }
+
+    /* Scale the move indicator dots */
+    .valid-move-dot {
+        width: 3.5vw;
+        height: 3.5vw;
+    }
+
+    /* Adjust text size in status panel for readability */
+    #status-panel {
+        font-size: 1.2em;
+        padding: 8px;
+    }
+    #sound-toggle {
+        font-size: 1.2rem;
+    }
+
+    /* Make menu buttons slightly smaller */
+    #main-menu button {
+        width: 220px;
+        padding: 12px 20px;
+        font-size: 1.1em;
+    }
+
+    /* Adjust promotion dialog for small screens */
+    #promotion-dialog button {
+        font-size: 35px;
+    }
+}
