@@ -22,7 +22,7 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    overflow: hidden; /* Prevent scrollbars from popup */
+    overflow: hidden; /* Prevent scrollbars from popups */
 }
 
 .container {
@@ -68,6 +68,12 @@ button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px
 #roll-dice-btn:disabled { background-color: #9e9e9e; cursor: not-allowed; }
 #message-log { height: 80px; overflow-y: auto; background: #eee; padding: 8px; border-radius: 5px; text-align: left; font-size: 0.9em; }
 
+/* The Back to Menu button style */
+#back-to-menu-btn { 
+    background-color: #f44336; 
+    margin-top: auto; 
+}
+
 /* --- Popups / Modals --- */
 .popup-overlay {
     position: fixed;
@@ -95,12 +101,15 @@ button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px
     background: none; border: none;
     cursor: pointer; padding: 5px; line-height: 1;
 }
+/* Style for your custom Home button */
 #home-btn {
-    top: 15px; left: 15px; right: auto;
-    z-index: 20;
+    top: 15px; 
+    left: 15px; /* Positioned in the top-left */
+    right: auto;
+    z-index: 20; /* Ensure it's above other elements */
 }
 
-/* --- Settings Modal Specifics --- */
+/* --- Settings Modal --- */
 .modal-content {
     background: white; padding: 25px 35px; border-radius: 15px;
     text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
