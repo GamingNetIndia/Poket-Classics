@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicToggle = document.getElementById('music-toggle');
     const playAgainButton = document.getElementById('play-again-button');
     const backToMenuIngameButton = document.getElementById('back-to-menu-ingame-button');
-    
-    // NEW: Get the home button
     const homeButton = document.getElementById('home-button');
 
     // Other elements
@@ -57,32 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (screen === 'game') gameContainer.style.display = 'block';
     }
 
-    // Main Menu Buttons
+    // Main Menu Buttons - These already play the click sound!
     pvpButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pvp'; startGame(); });
     pvaButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pva'; showScreen('difficulty'); });
     settingsButton.addEventListener('click', () => { playSound(clickSound); showScreen('settings'); });
-
-    // NEW: Add event listener for the Home button
     homeButton.addEventListener('click', () => {
         playSound(clickSound);
         window.location.href = '../../home/home.html';
     });
 
-    // Difficulty Menu Buttons
     difficultyMenu.querySelectorAll('button[data-difficulty]').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); difficulty = button.dataset.difficulty; startGame(); }); });
     document.querySelectorAll('.back-button').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); showScreen('main'); }); });
     playAgainButton.addEventListener('click', () => { playSound(clickSound); winPopup.style.display = 'none'; stopParticleAnimation(); showScreen('main'); stopMusic(); });
     backToMenuIngameButton.addEventListener('click', () => { playSound(clickSound); stopMusic(); cancelAnimationFrame(animationId); animationId = null; showScreen('main'); });
     
-    // Settings toggle
-    musicToggle.addEventListener('change', (e) => {
-        isMusicEnabled = e.target.checked;
-        localStorage.setItem('musicEnabled', isMusicEnabled);
-        if (animationId) { isMusicEnabled ? playMusic() : stopMusic(); }
-    });
+    musicToggle.addEventListener('change', (e) => { isMusicEnabled = e.target.checked; localStorage.setItem('musicEnabled', isMusicEnabled); if (animationId) { isMusicEnabled ? playMusic() : stopMusic(); } });
     function loadSettings() { const savedMusicSetting = localStorage.getItem('musicEnabled'); if (savedMusicSetting !== null) { isMusicEnabled = savedMusicSetting === 'true'; } musicToggle.checked = isMusicEnabled; }
 
-    // --- The rest of your game logic is completely unchanged ---
+    // --- The rest of your game logic ---
     function resizeCanvas() { const rect = gameWrapper.getBoundingClientRect(); canvas.width = rect.width; canvas.height = rect.height; initGameObjects(); }
     function initGameObjects() { const paddleRadius = canvas.width * 0.08; const puckRadius = canvas.width * 0.05; paddle1 = { x: canvas.width / 2, y: canvas.height * 0.75, radius: paddleRadius, score: paddle1 ? paddle1.score : 0, color: '#ff00ff', active: false }; paddle2 = { x: canvas.width / 2, y: canvas.height * 0.25, radius: paddleRadius, score: paddle2 ? paddle2.score : 0, color: '#00ffff', active: false }; puck = { x: canvas.width / 2, y: canvas.height / 2, radius: puckRadius, speed: 6, dx: 0, dy: 0, color: '#ffffff' }; }
     window.addEventListener('resize', resizeCanvas);
