@@ -9,11 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainMenu = document.getElementById('main-menu');
     const aiDifficultyMenu = document.getElementById('ai-difficulty-menu');
     const gameScreen = document.getElementById('game-screen');
-    const settingsBtn = document.getElementById('settings-btn');
     const settingsMenu = document.getElementById('settings-menu');
     const musicToggle = document.getElementById('music-toggle');
     const sfxToggle = document.getElementById('sfx-toggle');
-    const musicFileInput = document.getElementById('music-file-input');
     const sfxFileInput = document.getElementById('sfx-file-input');
     const bgMusic = document.getElementById('bg-music');
     const sfxSound = document.getElementById('sfx-sound');
@@ -23,8 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const winScoreEl = document.getElementById('win-score');
     const winSound = document.getElementById('win-sound');
     const winFileInput = document.getElementById('win-file-input');
-    const homeBtn = document.getElementById('home-btn');
-
+    
     // --- Game State ---
     const BOARD_SIZE = 8, PLAYER_BLACK = 1, PLAYER_WHITE = 2;
     const DIRECTIONS = [ [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1] ];
@@ -35,57 +32,140 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Audio Logic ---
     function playSfx() { if(isSfxOn && sfxSound.src) { sfxSound.currentTime = 0; sfxSound.play().catch(e => {}); } }
     function playWinSound() { if(isSfxOn && winSound.src) { winSound.currentTime = 0; winSound.play().catch(e => {}); } }
+
     musicToggle.addEventListener('change', (e) => {
         isMusicOn = e.target.checked;
-        isMusicOn && bgMusic.src ? bgMusic.play().catch(e => {}) : bgMusic.pause();
+        if (isMusicOn && bgMusic.src) {
+            bgMusic.play().catch(e => console.error("Error playing background music:", e));
+        } else {
+            bgMusic.pause();
+        }
     });
     sfxToggle.addEventListener('change', (e) => isSfxOn = e.target.checked);
-    const setupFileInput = (input, audioElement) => { input.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) audioElement.src = URL.createObjectURL(file); }); };
-    setupFileInput(musicFileInput, bgMusic);
+    
+    const setupFileInput = (input, audioElement) => {
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) audioElement.src = URL.createObjectURL(file);
+        });
+    };
     setupFileInput(sfxFileInput, sfxSound);
     setupFileInput(winFileInput, winSound);
-    musicFileInput.addEventListener('change', () => { if (isMusicOn) bgMusic.play().catch(e => {}); });
-    document.addEventListener('click', (e) => { if (e.target.matches('button, #settings-btn')) playSfx(); });
     
-    // --- Menu & Navigation Logic (with corrected button listeners) ---
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('button')) playSfx();
+    });
+    
+    // --- Menu & Navigation Logic ---
     const setupButton = (id, callback) => document.getElementById(id).addEventListener('click', callback);
+
     setupButton('pvp-btn', () => { gameMode = 'pvp'; startGame(); });
     setupButton('pvai-btn', () => { mainMenu.classList.add('hidden'); aiDifficultyMenu.classList.remove('hidden'); });
     aiDifficultyMenu.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON' && e.target.dataset.difficulty) { gameMode = 'pvai'; aiDifficulty = e.target.dataset.difficulty; startGame(); } });
     setupButton('back-to-main-btn', () => { aiDifficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
-    
-    // This is the function for all "Back to Menu" buttons inside the Othello game
-    const goBackToMenu = () => {
-        winPopupOverlay.classList.add('invisible');
-        gameScreen.classList.add('hidden');
-        menuOverlay.classList.remove('invisible');
-        mainMenu.classList.remove('hidden');
-        aiDifficultyMenu.classList.add('hidden'); // Ensure AI menu is also hidden
-        particles = []; // Stop particle animation
-    };
-    
-    // Wire up all the "Back to Menu" buttons to the function above
+    const goBackToMenu = () => { winPopupOverlay.classList.add('invisible'); gameScreen.classList.add('hidden'); menuOverlay.classList.remove('invisible'); mainMenu.classList.remove('hidden'); particles = []; };
     setupButton('back-to-menu-game-btn', goBackToMenu);
     setupButton('win-back-to-menu-btn', goBackToMenu);
-    
     setupButton('play-again-btn', () => { winPopupOverlay.classList.add('invisible'); particles = []; initGame(); });
-    setupButton('settings-btn', () => settingsMenu.classList.remove('invisible'));
-    setupButton('close-settings-btn', () => settingsMenu.classList.add('invisible'));
+    setupButton('open-settings-btn', () => { menuOverlay.classList.add('invisible'); settingsMenu.classList.remove('invisible'); });
+    setupButton('close-settings-btn', () => { settingsMenu.classList.add('invisible'); menuOverlay.classList.remove('invisible'); });
 
-    // The "Home" button to go back to Pocket Classics
-    homeBtn.addEventListener('click', () => {
-        window.location.href = '../../home/home.html';
+    function startGame() {
+        menuOverlay.classList.add('invisible'); gameScreen.classList.remove('hidden'); aiDifficultyMenu.classList.add('hidden');
+        if (isMusicOn && bgMusic.src) bgMusic.play().catch(e => console.error("Error playing music on start:", e));
+        initGame();
+    }
+    function initGame() {
+        board = Array(BOARD_SIZE).fill(0).map(() => Array(BOARD_SIZE).fill(0));
+        board[3][3] = PLAYER_WHITE; board[3][4] = PLAYER_BLACK; board[4][3] = PLAYER_BLACK; board[4][4] = PLAYER_WHITE;
+        currentPlayer = PLAYER_BLACK; gameOver = false;
+        statusMessageEl.textContent = ''; boardContainer.style.pointerEvents = 'auto';
+        renderBoard(); updateUI(); highlightValidMoves();
+    }
+    
+    // --- Core Game Logic ---
+    boardContainer.addEventListener('click', (e) => {
+        if (gameOver) return;
+        const highlighter = e.target.closest('.valid-move-highlighter');
+        if (highlighter) {
+            playSfx();
+            const cell = highlighter.parentElement;
+            makeMove(parseInt(cell.dataset.row), parseInt(cell.dataset.col));
+        }
     });
 
-    // --- Core Game & UI Logic (Now Complete) ---
-    function startGame() { menuOverlay.classList.add('invisible'); gameScreen.classList.remove('hidden'); aiDifficultyMenu.classList.add('hidden'); initGame(); }
-    function initGame() { board = Array(BOARD_SIZE).fill(0).map(() => Array(BOARD_SIZE).fill(0)); board[3][3] = PLAYER_WHITE; board[3][4] = PLAYER_BLACK; board[4][3] = PLAYER_BLACK; board[4][4] = PLAYER_WHITE; currentPlayer = PLAYER_BLACK; gameOver = false; statusMessageEl.textContent = ''; boardContainer.style.pointerEvents = 'auto'; renderBoard(); updateUI(); highlightValidMoves(); }
-    boardContainer.addEventListener('click', (e) => { if (gameOver) return; const highlighter = e.target.closest('.valid-move-highlighter'); if (highlighter) { playSfx(); const cell = highlighter.parentElement; makeMove(parseInt(cell.dataset.row), parseInt(cell.dataset.col)); } });
-    function makeMove(row, col) { const piecesToFlip = getPiecesToFlip(row, col, currentPlayer); if (piecesToFlip.length === 0) return; boardContainer.style.pointerEvents = 'none'; document.querySelectorAll('.valid-move-highlighter').forEach(h => h.remove()); statusMessageEl.textContent = ''; board[row][col] = currentPlayer; piecesToFlip.forEach(p => { board[p.row][p.col] = currentPlayer; }); const playerClass = currentPlayer === PLAYER_BLACK ? 'black' : 'white'; const opponentClass = currentPlayer === PLAYER_BLACK ? 'white' : 'black'; const newPieceCell = boardContainer.children[row * BOARD_SIZE + col]; const newPiece = document.createElement('div'); newPiece.className = `piece ${playerClass}`; newPiece.style.transform = 'scale(0)'; newPieceCell.appendChild(newPiece); requestAnimationFrame(() => { newPiece.style.transform = 'scale(1)'; }); let maxDelay = 0; piecesToFlip.forEach((p, i) => { const delay = 100 + 50 * i; maxDelay = delay; setTimeout(() => { const pieceToFlip = boardContainer.children[p.row * BOARD_SIZE + p.col].querySelector('.piece'); if (pieceToFlip) { pieceToFlip.style.transform = 'rotateY(180deg)'; setTimeout(() => { pieceToFlip.classList.remove(opponentClass); pieceToFlip.classList.add(playerClass); pieceToFlip.style.transform = ''; }, 300); } }, delay); }); setTimeout(switchPlayer, maxDelay + 600); }
-    function switchPlayer() { updateUI(); const opponent = (currentPlayer === PLAYER_BLACK) ? PLAYER_WHITE : PLAYER_BLACK; if (getValidMoves(opponent).length > 0) { currentPlayer = opponent; } else if (getValidMoves(currentPlayer).length > 0) { statusMessageEl.textContent = `${opponent === PLAYER_BLACK ? 'Black' : 'White'} has no moves! Turn skipped.`; } else { endGame(); return; } updateUI(); highlightValidMoves(); if (!gameOver && gameMode === 'pvai' && currentPlayer === PLAYER_WHITE) { setTimeout(makeAiMove, 800); } else { boardContainer.style.pointerEvents = 'auto'; } }
-    function getValidMoves(player) { const moves = []; for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { if (board[r][c] === 0 && getPiecesToFlip(r, c, player).length > 0) moves.push({ row: r, col: c }); } return moves; }
-    function getPiecesToFlip(row, col, player) { const opponent = (player === 1) ? 2 : 1; let allPiecesToFlip = []; for (const [dr, dc] of DIRECTIONS) { let path = [], r = row + dr, c = col + dc; while (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === opponent) { path.push({ row: r, col: c }); r += dr; c += dc; } if (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === player) { allPiecesToFlip.push(...path); } } return allPiecesToFlip; }
-    function endGame() { playWinSound(); gameOver = true; boardContainer.style.pointerEvents = 'none'; const scores = getScores(); let winner; if (scores.black > scores.white) { winResultEl.textContent = "Black Wins!"; winner = 'black'; } else if (scores.white > scores.black) { winResultEl.textContent = "White Wins!"; winner = 'white'; } else { winResultEl.textContent = "It's a Draw!"; winner = 'draw'; } winScoreEl.textContent = `Final Score: Black ${scores.black} - ${scores.white} White`; winPopupOverlay.classList.remove('invisible'); initParticles(winner); }
+    function makeMove(row, col) {
+        const piecesToFlip = getPiecesToFlip(row, col, currentPlayer);
+        if (piecesToFlip.length === 0) return;
+        boardContainer.style.pointerEvents = 'none';
+        document.querySelectorAll('.valid-move-highlighter').forEach(h => h.remove());
+        statusMessageEl.textContent = '';
+        board[row][col] = currentPlayer;
+        piecesToFlip.forEach(p => { board[p.row][p.col] = currentPlayer; });
+        const playerClass = currentPlayer === 1 ? 'black' : 'white';
+        const opponentClass = currentPlayer === 1 ? 'white' : 'black';
+        const newPieceCell = boardContainer.children[row * 8 + col];
+        const newPiece = document.createElement('div');
+        newPiece.className = `piece ${playerClass}`;
+        newPiece.style.transform = 'scale(0)';
+        newPieceCell.appendChild(newPiece);
+        requestAnimationFrame(() => { newPiece.style.transform = 'scale(1)'; });
+        let maxDelay = 0;
+        piecesToFlip.forEach((p, i) => {
+            const delay = 100 + 50 * i; maxDelay = delay;
+            setTimeout(() => {
+                const pieceToFlip = boardContainer.children[p.row * 8 + p.col].querySelector('.piece');
+                if (pieceToFlip) {
+                    pieceToFlip.style.transform = 'rotateY(180deg)';
+                    setTimeout(() => { pieceToFlip.classList.remove(opponentClass); pieceToFlip.classList.add(playerClass); pieceToFlip.style.transform = ''; }, 300);
+                }
+            }, delay);
+        });
+        setTimeout(switchPlayer, maxDelay + 600);
+    }
+
+    function switchPlayer() {
+        updateUI();
+        const opponent = (currentPlayer === 1) ? 2 : 1;
+        if (getValidMoves(opponent).length > 0) { currentPlayer = opponent; } 
+        else if (getValidMoves(currentPlayer).length > 0) { statusMessageEl.textContent = `${opponent === 1 ? 'Black' : 'White'} has no moves! Turn skipped.`; } 
+        else { endGame(); return; }
+        updateUI(); highlightValidMoves();
+        if (!gameOver && gameMode === 'pvai' && currentPlayer === 2) { setTimeout(makeAiMove, 800); } 
+        else { boardContainer.style.pointerEvents = 'auto'; }
+    }
+    
+    function getValidMoves(player) {
+        const moves = [];
+        for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { if (board[r][c] === 0 && getPiecesToFlip(r, c, player).length > 0) moves.push({ row: r, col: c }); }
+        return moves;
+    }
+
+    function getPiecesToFlip(row, col, player) {
+        const opponent = (player === 1) ? 2 : 1; let allPiecesToFlip = [];
+        for (const [dr, dc] of DIRECTIONS) {
+            let path = [], r = row + dr, c = col + dc;
+            while (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === opponent) { path.push({ row: r, col: c }); r += dr; c += dc; }
+            if (r >= 0 && r < 8 && c >= 0 && c < 8 && board[r][c] === player) { allPiecesToFlip.push(...path); }
+        }
+        return allPiecesToFlip;
+    }
+
+    function endGame() {
+        playWinSound();
+        gameOver = true;
+        boardContainer.style.pointerEvents = 'none';
+        const scores = getScores();
+        let winner;
+        if (scores.black > scores.white) { winResultEl.textContent = "Black Wins!"; winner = 'black'; }
+        else if (scores.white > scores.black) { winResultEl.textContent = "White Wins!"; winner = 'white'; }
+        else { winResultEl.textContent = "It's a Draw!"; winner = 'draw'; }
+        winScoreEl.textContent = `Final Score: Black ${scores.black} - ${scores.white} White`;
+        winPopupOverlay.classList.remove('invisible');
+        initParticles(winner);
+    }
+
+    // --- Rendering, UI, AI, and Particles ---
     function renderBoard() { boardContainer.innerHTML = ''; for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const cell = document.createElement('div'); cell.className = 'cell'; cell.dataset.row = r; cell.dataset.col = c; if (board[r][c] !== 0) { const piece = document.createElement('div'); piece.className = `piece ${board[r][c] === 1 ? 'black' : 'white'}`; cell.appendChild(piece); } boardContainer.appendChild(cell); } }
     function updateUI() { const scores = getScores(); blackScoreEl.textContent = scores.black; whiteScoreEl.textContent = scores.white; if (!gameOver) { playerTurnEl.innerHTML = `<div class="piece ${currentPlayer === 1 ? 'black' : 'white'}" style="width:24px; height:24px; display:inline-block; vertical-align:middle; margin: 0 10px;"></div>`; } else { playerTurnEl.innerHTML = ''; } }
     function getScores() { return board.flat().reduce((acc, cell) => { if (cell === 1) acc.black++; else if (cell === 2) acc.white++; return acc; }, { black: 0, white: 0 });}
