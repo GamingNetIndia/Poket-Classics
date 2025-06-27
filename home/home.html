@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics - Main Menu</title>
     <style>
-        /* CSS is unchanged and correct */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
         :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff; --play-green: #2ed573;}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -71,6 +70,7 @@
             <h1 class="main-title">Pocket Classics</h1>
             <button class="settings-btn" id="settings-btn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
         </header>
+
         <main class="game-grid">
             <div class="game-card" data-url="../game/chess/" data-title="Chess" data-image="chess-icon.png" data-description="A classic strategy game. The goal is to checkmate the opponent's king, putting it under an inescapable threat of capture." data-screenshots="../game/chess/screenshot.png">
                 <img src="chess-icon.png" alt="Chess" class="game-card-image"><h3 class="game-title">CHESS</h3>
@@ -89,6 +89,7 @@
             </div>
             <div class="game-card non-interactive" id="coming-soon"><div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div></div>
         </main>
+
         <footer class="footer">
             <a href="https://youtube.com/@gamingnetindia" target="_blank" class="social-link" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg></a>
             <a href="https://gamingnetindia.great-site.net/" target="_blank" class="social-link" aria-label="Website"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
@@ -103,6 +104,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
             const allButtons = document.querySelectorAll('button, .game-card, .social-link');
             const backgroundMusic = document.getElementById('background-music');
             const clickSound = document.getElementById('click-sound');
@@ -119,9 +121,12 @@
             const detailsPlayBtn = document.getElementById('details-play-btn');
             const thumbnailContainer = document.getElementById('details-thumbnails');
 
-            let isMusicEnabled, isSfxEnabled;
-            let hasInteracted = false;
+            // --- State Variables ---
+            let isMusicEnabled = true;
+            let isSfxEnabled = true;
+            let hasInteracted = false; // To track the first user interaction
 
+            // --- Functions ---
             function playSound(sound) {
                 if (!sound || !isSfxEnabled) return;
                 sound.currentTime = 0;
@@ -129,6 +134,7 @@
             }
 
             function updateMusicState() {
+                // Only try to play music if the user has interacted with the page
                 if (isMusicEnabled && hasInteracted) {
                     backgroundMusic.play().catch(e => {});
                 } else {
@@ -144,8 +150,10 @@
             function loadSettings() {
                 const savedMusic = localStorage.getItem('pocketClassicsMusic');
                 const savedSfx = localStorage.getItem('pocketClassicsSfx');
+                
                 isMusicEnabled = savedMusic === null ? true : JSON.parse(savedMusic);
-                isSfxEnabled = savedSfx === null ? true : JSON.parse(sfxEnabled);
+                isSfxEnabled = savedSfx === null ? true : JSON.parse(savedSfx);
+
                 musicToggle.checked = isMusicEnabled;
                 sfxToggle.checked = isSfxEnabled;
             }
@@ -210,10 +218,13 @@
             
             // CORRECTED: First user interaction listener
             document.body.addEventListener('click', () => {
+                // If we've already handled the first interaction, do nothing.
                 if (hasInteracted) return;
+                // Mark that the user has interacted.
                 hasInteracted = true;
-                updateMusicState(); // Try to play music if it's enabled
-            }, { once: true });
+                // Now, try to play the music based on the current setting.
+                updateMusicState();
+            }, { once: true }); // This listener will automatically remove itself after firing once.
         });
     </script>
 </body>
