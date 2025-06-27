@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainMenu = document.getElementById('main-menu');
     const gameContainer = document.getElementById('game-container');
     const startGameBtn = document.getElementById('start-game-btn');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn'); 
     const homeBtn = document.getElementById('home-btn');
     const gameModeSelect = document.getElementById('game-mode');
     const playerCountSelect = document.getElementById('player-count');
@@ -51,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSettingsUI() {
         musicToggle.checked = isMusicOn;
         sfxToggle.checked = isSfxOn;
-        
         if (isMusicOn && !gameContainer.classList.contains('hidden')) {
             audio.bgMusic.play().catch(e => {});
         } else {
@@ -67,37 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- EVENT LISTENERS ---
-    openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-    closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+    openSettingsBtn.addEventListener('click', () => { playSoundEffect(audio.click); settingsModal.classList.remove('hidden'); });
+    closeSettingsBtn.addEventListener('click', () => { playSoundEffect(audio.click); settingsModal.classList.add('hidden'); });
     settingsModal.addEventListener('click', (e) => {
         if (e.target === settingsModal) settingsModal.classList.add('hidden');
     });
 
-    musicToggle.addEventListener('change', () => {
-        isMusicOn = musicToggle.checked;
-        localStorage.setItem('snakeLadderMusic', isMusicOn);
-        updateSettingsUI();
-    });
-
-    sfxToggle.addEventListener('change', () => {
-        isSfxOn = sfxToggle.checked;
-        localStorage.setItem('snakeLadderSfx', isSfxOn);
-    });
+    musicToggle.addEventListener('change', () => { isMusicOn = musicToggle.checked; localStorage.setItem('snakeLadderMusic', isMusicOn); updateSettingsUI(); });
+    sfxToggle.addEventListener('change', () => { isSfxOn = sfxToggle.checked; localStorage.setItem('snakeLadderSfx', isSfxOn); });
 
     startGameBtn.addEventListener('click', () => { playSoundEffect(audio.click); startGame(); });
+    
+    // Listener for the "Back to Menu" button
+    backToMenuBtn.addEventListener('click', () => {
+        playSoundEffect(audio.click);
+        gameContainer.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+        audio.bgMusic.pause();
+        winPopup.classList.add('hidden');
+        if (confettiAnimationId) stopConfetti();
+    });
+
+    // Listener for your custom "Home" button
     homeBtn.addEventListener('click', () => {
         playSoundEffect(audio.click);
-        // This is the action for the home button.
-        // It currently reloads the page to go to the main menu.
-        // Replace this with the URL to your game catalogue if needed.
-        // Example: window.location.href = "https://your-games-catalogue.com";
-        window.location.reload();
+        // IMPORTANT: Replace this placeholder with the actual URL of your games catalogue.
+        window.location.href = "https://your-games-catalogue-url.com";
     });
+
     rollDiceBtn.addEventListener('click', () => { playSoundEffect(audio.click); handleTurn(); });
+    
     playAgainBtn.addEventListener('click', () => {
         playSoundEffect(audio.click);
         winPopup.classList.add('hidden');
-        stopConfetti();
+        if (confettiAnimationId) stopConfetti();
         startGame();
     });
 
@@ -105,19 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         gameMode = gameModeSelect.value;
         numPlayers = parseInt(playerCountSelect.value);
-
         if (isMusicOn) audio.bgMusic.play().catch(e => {});
-        
         mainMenu.classList.add('hidden');
         gameContainer.classList.remove('hidden');
-
         resetGame();
         generateBoard();
         generateSnakesAndLadders();
         renderBoard();
         updateTurnInfo();
     }
-
+    
     function resetGame() {
         playerPositions = Array(numPlayers).fill(1);
         currentPlayerIndex = 0;
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.player-token').forEach(token => token.remove());
     }
 
-    // --- BOARD GENERATION (unchanged) ---
+    // --- BOARD GENERATION ---
     function generateBoard() {
         gameBoard.innerHTML = '';
         for (let i = 0; i < BOARD_SIZE; i++) { gameBoard.appendChild(document.createElement('div')).classList.add('cell'); }
@@ -141,11 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function generateSnakesAndLadders() {
         const occupied = new Set([1, BOARD_SIZE]);
+        snakes = {}; ladders = {};
         for (let i = 0; i < NUM_SNAKES; i++) { let start, end; do { start = Math.floor(Math.random() * (BOARD_SIZE-20))+21; end = Math.floor(Math.random() * (start-11))+1; } while (occupied.has(start) || occupied.has(end)); occupied.add(start); occupied.add(end); snakes[start] = end; }
         for (let i = 0; i < NUM_LADDERS; i++) { let start, end; do { start = Math.floor(Math.random() * (BOARD_SIZE-20))+2; end = Math.floor(Math.random() * (BOARD_SIZE-start-10))+start+11; } while (occupied.has(start) || occupied.has(end) || end > BOARD_SIZE); occupied.add(start); occupied.add(end); ladders[start] = end; }
     }
 
-    // --- RENDERING (unchanged) ---
+    // --- RENDERING ---
     function renderBoard() {
         document.querySelectorAll('.cell').forEach(cell => { cell.classList.remove('snake-head', 'snake-tail', 'ladder-start', 'ladder-end'); delete cell.dataset.goto; });
         for (const [s, e] of Object.entries(snakes)) { const sc = document.querySelector(`[data-cell='${s}']`), ec = document.querySelector(`[data-cell='${e}']`); sc.classList.add('snake-head'); sc.dataset.goto = `🐍 to ${e}`; ec.classList.add('snake-tail'); }
@@ -222,11 +223,32 @@ document.addEventListener('DOMContentLoaded', () => {
         rollDiceBtn.disabled = true;
         startConfetti();
     }
+    
+    // --- CONFETTI LOGIC ---
+    let confetti = [];
     function startConfetti() {
-        // ... confetti logic remains the same
+        const ctx = confettiCanvas.getContext('2d');
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+        confetti = [];
+        const confettiCount = 200, colors = ['#fde19a', '#ff9a9a', '#a2d2ff', '#bde0fe', '#ffc8dd'];
+        for (let i = 0; i < confettiCount; i++) {
+            confetti.push({ x: Math.random() * confettiCanvas.width, y: Math.random() * confettiCanvas.height - confettiCanvas.height, radius: Math.random() * 5 + 2, color: colors[Math.floor(Math.random() * colors.length)], speedX: Math.random() * 6 - 3, speedY: Math.random() * 5 + 2, opacity: 1 });
+        }
+        function animateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confetti.forEach((p, i) => { p.x += p.speedX; p.y += p.speedY; p.opacity -= 0.01; if(p.opacity <= 0) confetti.splice(i, 1); ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(${parseInt(p.color.slice(1,3),16)}, ${parseInt(p.color.slice(3,5),16)}, ${parseInt(p.color.slice(5,7),16)}, ${p.opacity})`; ctx.fill(); });
+            if (confetti.length > 0) confettiAnimationId = requestAnimationFrame(animateConfetti); else { ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); confettiAnimationId = null; }
+        }
+        animateConfetti();
     }
+
     function stopConfetti() {
-        // ... confetti logic remains the same
+        if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+        confetti = [];
+        const ctx = confettiCanvas.getContext('2d');
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiAnimationId = null;
     }
 
     // --- INITIAL LOAD ---
