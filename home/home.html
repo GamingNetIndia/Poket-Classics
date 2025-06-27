@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics - Main Menu</title>
     <style>
-        /* CSS FIX: The entire style block has been restored */
+        /* CSS is unchanged and correct */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
         :root{--bg-color:#f0f4f7;--main-white:#fff;--dark-grey:#212121;--medium-grey:#424242;--title-blue:#448aff; --play-green: #2ed573;}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -71,7 +71,6 @@
             <h1 class="main-title">Pocket Classics</h1>
             <button class="settings-btn" id="settings-btn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
         </header>
-
         <main class="game-grid">
             <div class="game-card" data-url="../game/chess/" data-title="Chess" data-image="chess-icon.png" data-description="A classic strategy game. The goal is to checkmate the opponent's king, putting it under an inescapable threat of capture." data-screenshots="../game/chess/screenshot.png">
                 <img src="chess-icon.png" alt="Chess" class="game-card-image"><h3 class="game-title">CHESS</h3>
@@ -90,29 +89,28 @@
             </div>
             <div class="game-card non-interactive" id="coming-soon"><div class="coming-soon-text"><h3>MORE GAMES</h3><p>COMING SOON</p></div></div>
         </main>
-
         <footer class="footer">
             <a href="https://youtube.com/@gamingnetindia" target="_blank" class="social-link" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg></a>
-            <a href="https://github.com/GamingNetIndia/Poket-Classics" target="_blank" class="social-link" aria-label="GitHub"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
             <a href="https://gamingnetindia.great-site.net/" target="_blank" class="social-link" aria-label="Website"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></a>
         </footer>
         
         <div class="details-overlay" id="details-overlay"><div class="details-header"><button id="details-back-btn" aria-label="Go Back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><img src="" alt="Game Image" id="details-image"></div><div class="details-content"><h2 id="details-title"></h2><div class="details-thumbnails" id="details-thumbnails"></div><p id="details-description"></p><button id="details-play-btn">PLAY</button></div></div>
-        <div class="settings-overlay" id="settings-overlay"><div class="settings-panel"><h2>Settings</h2><div class="setting-item"><span>Music</span><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked><span class="slider"></span></label></div><button class="close-settings-btn" id="close-settings-btn">Close</button></div></div>
+        <div class="settings-overlay" id="settings-overlay"><div class="settings-panel"><h2>Settings</h2><div class="setting-item"><span>Music</span><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked><span class="slider"></span></label></div><div class="setting-item"><span>Sound FX</span><label class="toggle-switch"><input type="checkbox" id="sfx-toggle" checked><span class="slider"></span></label></div><button class="close-settings-btn" id="close-settings-btn">Close</button></div></div>
     </div>
     
     <audio id="background-music" src="background.mp3" loop></audio>
     <audio id="click-sound" src="click.mp3"></audio>
 
-    <!-- SCRIPT FIX: The full, working JavaScript has been restored -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const gameCards = document.querySelectorAll('.game-card');
+            const allButtons = document.querySelectorAll('button, .game-card, .social-link');
             const backgroundMusic = document.getElementById('background-music');
+            const clickSound = document.getElementById('click-sound');
             const settingsBtn = document.getElementById('settings-btn');
             const settingsOverlay = document.getElementById('settings-overlay');
             const closeSettingsBtn = document.getElementById('close-settings-btn');
             const musicToggle = document.getElementById('music-toggle');
+            const sfxToggle = document.getElementById('sfx-toggle');
             const detailsOverlay = document.getElementById('details-overlay');
             const detailsBackBtn = document.getElementById('details-back-btn');
             const detailsImage = document.getElementById('details-image');
@@ -120,21 +118,52 @@
             const detailsDescription = document.getElementById('details-description');
             const detailsPlayBtn = document.getElementById('details-play-btn');
             const thumbnailContainer = document.getElementById('details-thumbnails');
-            const socialLinks = document.querySelectorAll('.social-link');
-            const clickSound = document.getElementById('click-sound');
-            let isMusicEnabled = true;
+
+            let isMusicEnabled, isSfxEnabled;
+            let hasInteracted = false;
 
             function playSound(sound) {
-                if (isMusicEnabled) {
-                    sound.currentTime = 0;
-                    sound.play().catch(e => {});
+                if (!sound || !isSfxEnabled) return;
+                sound.currentTime = 0;
+                sound.play().catch(e => {});
+            }
+
+            function updateMusicState() {
+                if (isMusicEnabled && hasInteracted) {
+                    backgroundMusic.play().catch(e => {});
+                } else {
+                    backgroundMusic.pause();
                 }
             }
             
-            gameCards.forEach(card => {
-                if (card.classList.contains('non-interactive')) { return; }
+            function saveSettings() {
+                localStorage.setItem('pocketClassicsMusic', isMusicEnabled);
+                localStorage.setItem('pocketClassicsSfx', isSfxEnabled);
+            }
+
+            function loadSettings() {
+                const savedMusic = localStorage.getItem('pocketClassicsMusic');
+                const savedSfx = localStorage.getItem('pocketClassicsSfx');
+                isMusicEnabled = savedMusic === null ? true : JSON.parse(savedMusic);
+                isSfxEnabled = savedSfx === null ? true : JSON.parse(sfxEnabled);
+                musicToggle.checked = isMusicEnabled;
+                sfxToggle.checked = isSfxEnabled;
+            }
+
+            // --- Event Listeners Setup ---
+            loadSettings();
+
+            // Universal Click Sound
+            allButtons.forEach(button => {
+                if (!button.classList.contains('non-interactive')) {
+                    button.addEventListener('click', () => playSound(clickSound));
+                }
+            });
+            
+            // Game Card Interaction
+            document.querySelectorAll('.game-card').forEach(card => {
+                if (card.classList.contains('non-interactive')) return;
                 card.addEventListener('click', () => {
-                    playSound(clickSound);
                     detailsImage.src = card.querySelector('.game-card-image').src;
                     detailsTitle.textContent = card.dataset.title;
                     detailsDescription.textContent = card.dataset.description;
@@ -155,47 +184,36 @@
                 });
             });
 
-            detailsBackBtn.addEventListener('click', () => {
-                playSound(clickSound);
-                detailsOverlay.classList.remove('visible');
-            });
+            // Details Modal Controls
+            detailsBackBtn.addEventListener('click', () => detailsOverlay.classList.remove('visible'));
             detailsPlayBtn.addEventListener('click', function() {
-                playSound(clickSound);
                 const gameUrl = this.dataset.url;
                 if (gameUrl) { window.location.href = gameUrl; }
             });
 
-            settingsBtn.addEventListener('click', () => {
-                playSound(clickSound);
-                settingsOverlay.classList.add('visible');
-            });
-            function closeMenu() { settingsOverlay.classList.remove('visible'); }
-            closeSettingsBtn.addEventListener('click', () => {
-                playSound(clickSound);
-                closeMenu();
-            });
-            settingsOverlay.addEventListener('click', (event) => { if (event.target === settingsOverlay) { playSound(clickSound); closeMenu(); }});
+            // Settings Menu Controls
+            settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
+            const closeMenu = () => settingsOverlay.classList.remove('visible');
+            closeSettingsBtn.addEventListener('click', closeMenu);
+            settingsOverlay.addEventListener('click', (event) => { if (event.target === settingsOverlay) closeMenu(); });
 
+            // Sound Toggles
             musicToggle.addEventListener('change', () => {
-                playSound(clickSound);
                 isMusicEnabled = musicToggle.checked;
-                if (isMusicEnabled) {
-                    backgroundMusic.play().catch(e => {});
-                } else {
-                    backgroundMusic.pause();
-                }
+                updateMusicState();
+                saveSettings();
             });
+            sfxToggle.addEventListener('change', () => {
+                isSfxEnabled = sfxToggle.checked;
+                saveSettings();
+            });
+            
+            // CORRECTED: First user interaction listener
             document.body.addEventListener('click', () => {
-                if (isMusicEnabled) {
-                    backgroundMusic.play().catch(e => {});
-                }
+                if (hasInteracted) return;
+                hasInteracted = true;
+                updateMusicState(); // Try to play music if it's enabled
             }, { once: true });
-
-            socialLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    playSound(clickSound);
-                });
-            });
         });
     </script>
 </body>
