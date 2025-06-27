@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pvaButton = document.getElementById('pva-button');
     const settingsButton = document.getElementById('settings-button');
     const musicToggle = document.getElementById('music-toggle');
+    const sfxToggle = document.getElementById('sfx-toggle'); // NEW: Get the SFX toggle
     const playAgainButton = document.getElementById('play-again-button');
     const backToMenuIngameButton = document.getElementById('back-to-menu-ingame-button');
     const homeButton = document.getElementById('home-button');
@@ -31,9 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreSound = new Audio('sounds/score.wav');
     const winSound = new Audio('sounds/win.wav');
     const clickSound = new Audio('sounds/click.wav');
-    let isMusicEnabled = true;
 
-    function playSound(sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
+    let isMusicEnabled = true;
+    let areSfxEnabled = true; // NEW: State variable for SFX
+
+    // UPDATED: This function now checks if SFX are enabled
+    function playSound(sound) {
+        if (areSfxEnabled) {
+            sound.currentTime = 0;
+            sound.play().catch(e => {});
+        }
+    }
+
     function playMusic() { if (isMusicEnabled) { bgMusic.loop = true; bgMusic.volume = 0.5; bgMusic.play().catch(e => {}); } }
     function stopMusic() { bgMusic.pause(); bgMusic.currentTime = 0; }
     
@@ -55,24 +65,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (screen === 'game') gameContainer.style.display = 'block';
     }
 
-    // Main Menu Buttons - These already play the click sound!
     pvpButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pvp'; startGame(); });
     pvaButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pva'; showScreen('difficulty'); });
     settingsButton.addEventListener('click', () => { playSound(clickSound); showScreen('settings'); });
-    homeButton.addEventListener('click', () => {
-        playSound(clickSound);
-        window.location.href = '../../home/home.html';
-    });
-
+    homeButton.addEventListener('click', () => { playSound(clickSound); window.location.href = '../../home/home.html'; });
     difficultyMenu.querySelectorAll('button[data-difficulty]').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); difficulty = button.dataset.difficulty; startGame(); }); });
     document.querySelectorAll('.back-button').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); showScreen('main'); }); });
     playAgainButton.addEventListener('click', () => { playSound(clickSound); winPopup.style.display = 'none'; stopParticleAnimation(); showScreen('main'); stopMusic(); });
     backToMenuIngameButton.addEventListener('click', () => { playSound(clickSound); stopMusic(); cancelAnimationFrame(animationId); animationId = null; showScreen('main'); });
     
-    musicToggle.addEventListener('change', (e) => { isMusicEnabled = e.target.checked; localStorage.setItem('musicEnabled', isMusicEnabled); if (animationId) { isMusicEnabled ? playMusic() : stopMusic(); } });
-    function loadSettings() { const savedMusicSetting = localStorage.getItem('musicEnabled'); if (savedMusicSetting !== null) { isMusicEnabled = savedMusicSetting === 'true'; } musicToggle.checked = isMusicEnabled; }
+    // --- Settings Listeners ---
+    musicToggle.addEventListener('change', (e) => {
+        isMusicEnabled = e.target.checked;
+        localStorage.setItem('musicEnabled', isMusicEnabled);
+        if (animationId) { isMusicEnabled ? playMusic() : stopMusic(); }
+    });
+    
+    // NEW: Listener for the SFX toggle
+    sfxToggle.addEventListener('change', (e) => {
+        areSfxEnabled = e.target.checked;
+        localStorage.setItem('sfxEnabled', areSfxEnabled);
+        // Play the click sound unconditionally here as direct user feedback
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    });
 
-    // --- The rest of your game logic ---
+    // UPDATED: Load both settings now
+    function loadSettings() {
+        const savedMusicSetting = localStorage.getItem('musicEnabled');
+        if (savedMusicSetting !== null) {
+            isMusicEnabled = savedMusicSetting === 'true';
+        }
+        musicToggle.checked = isMusicEnabled;
+
+        const savedSfxSetting = localStorage.getItem('sfxEnabled');
+        if (savedSfxSetting !== null) {
+            areSfxEnabled = savedSfxSetting === 'true';
+        }
+        sfxToggle.checked = areSfxEnabled;
+    }
+
+    // --- The rest of your game logic remains unchanged ---
     function resizeCanvas() { const rect = gameWrapper.getBoundingClientRect(); canvas.width = rect.width; canvas.height = rect.height; initGameObjects(); }
     function initGameObjects() { const paddleRadius = canvas.width * 0.08; const puckRadius = canvas.width * 0.05; paddle1 = { x: canvas.width / 2, y: canvas.height * 0.75, radius: paddleRadius, score: paddle1 ? paddle1.score : 0, color: '#ff00ff', active: false }; paddle2 = { x: canvas.width / 2, y: canvas.height * 0.25, radius: paddleRadius, score: paddle2 ? paddle2.score : 0, color: '#00ffff', active: false }; puck = { x: canvas.width / 2, y: canvas.height / 2, radius: puckRadius, speed: 6, dx: 0, dy: 0, color: '#ffffff' }; }
     window.addEventListener('resize', resizeCanvas);
@@ -88,5 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkWin() { if (paddle1.score >= WINNING_SCORE) { endGame("Player 1 Wins!"); return true; } else if (paddle2.score >= WINNING_SCORE) { endGame(`${gameMode === 'pvp' ? "Player 2" : "AI"} Wins!`); return true; } return false; } function endGame(message) { stopMusic(); playSound(winSound); cancelAnimationFrame(animationId); animationId = null; winMessageEl.textContent = message; winPopup.style.display = 'flex'; startParticleAnimation(); }
     function gameLoop() { puck.x += puck.dx; puck.y += puck.dy; clampPaddlePositions(); if (gameMode === 'pva') { moveAI(); } checkCollisions(); drawTable(); drawCircle(paddle1.x, paddle1.y, paddle1.radius, paddle1.color); drawCircle(paddle2.x, paddle2.y, paddle2.radius, paddle2.color); drawCircle(puck.x, puck.y, puck.radius, puck.color); animationId = requestAnimationFrame(gameLoop); }
     let particles = []; function Particle(x, y, radius, color, velocity) { this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity; this.alpha = 1; this.draw = () => { particleCtx.save(); particleCtx.globalAlpha = this.alpha; particleCtx.beginPath(); particleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false); particleCtx.fillStyle = this.color; particleCtx.fill(); particleCtx.restore(); }; this.update = () => { this.draw(); this.velocity.y += 0.05; this.x += this.velocity.x; this.y += this.velocity.y; this.alpha -= 0.015; }; } function initParticles() { particles = []; particleCanvas.width = window.innerWidth; particleCanvas.height = window.innerHeight; const particleCount = 250; const colors = ['#00ffff', '#ff00ff', '#ffffff', '#ff1b4c']; const centerX = particleCanvas.width / 2; const centerY = particleCanvas.height / 2; for (let i = 0; i < particleCount; i++) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 12 + 2; const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }; particles.push(new Particle(centerX, centerY, Math.random() * 3 + 1, colors[Math.floor(Math.random() * colors.length)], velocity)); } } function animateParticles() { particleCtx.fillStyle = 'rgba(0, 0, 0, 0.1)'; particleCtx.fillRect(0, 0, particleCanvas.width, particleCanvas.height); particles.forEach((p, i) => { p.alpha > 0 ? p.update() : particles.splice(i, 1); }); particleAnimationId = (particles.length > 0) ? requestAnimationFrame(animateParticles) : null; } function startParticleAnimation() { initParticles(); animateParticles(); } function stopParticleAnimation() { cancelAnimationFrame(particleAnimationId); particleAnimationId = null; particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height); }
-    loadSettings(); showScreen('main');
+    
+    // --- Initial setup ---
+    loadSettings();
+    showScreen('main');
 });
