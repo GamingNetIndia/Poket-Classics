@@ -9,7 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #312e2b;
+    background-color: #312e2b; /* Dark, warm background */
     color: #fff;
     margin: 0;
     overflow-x: hidden; /* Prevent horizontal scroll, allow vertical if needed */
@@ -180,27 +180,108 @@ h2 {
     box-sizing: border-box;
 }
 
-#sound-toggle { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: white; padding: 0 10px; }
 #controls { width: 100%; text-align: center; }
 #controls button { padding: 10px 20px; font-size: 1em; cursor: pointer; border: none; border-radius: 5px; background-color: #8a2a21; color: white; transition: background-color 0.3s; }
 #controls button:hover { background-color: #a13e3e; }
 
-/* Dialogs */
-#promotion-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #4a4a4a; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); z-index: 1000; text-align: center; }
-#promotion-dialog p { margin-top: 0; font-size: 1.2em; }
-#promotion-dialog button { font-size: 40px; background: none; border: none; cursor: pointer; padding: 10px; color: #fff; transition: transform 0.2s; }
-#promotion-dialog button:hover { transform: scale(1.1); }
-.hidden { display: none !important; }
+
+/* ==========================================================================
+   Dialogs (Pawn Promotion & Settings)
+   ========================================================================== */
+
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-box {
+    background-color: #4a4a4a;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    min-width: 300px;
+}
+
+#promotion-dialog p {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+#promotion-dialog button {
+    font-size: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    color: #fff;
+    transition: transform 0.2s;
+}
+
+#promotion-dialog button:hover {
+    transform: scale(1.1);
+}
+
+/* --- New Settings Dialog Styles --- */
+.settings-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 1.2em;
+}
+
+.settings-option label {
+    margin-right: 20px;
+}
+
+.settings-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+#close-settings-button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#close-settings-button:hover {
+    background-color: #45a049;
+}
+
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.hidden {
+    display: none !important;
+}
 
 
 /* ==========================================================================
    MOBILE OPTIMIZATION (MEDIA QUERY)
-   These styles apply only when the screen width is 600px or less.
    ========================================================================== */
 
 @media screen and (max-width: 600px) {
     body {
-        padding-top: 10px; /* Add some space at the top */
+        padding-top: 10px;
     }
 
     h1 {
@@ -208,48 +289,38 @@ h2 {
         margin-bottom: 15px;
     }
 
-    /* Make the board and status panel take up 95% of the screen width */
     #board, #status-panel {
         width: 95vw;
     }
 
-    /* The board height must match its width to maintain a square */
     #board {
         height: 95vw;
-        /* Let the grid calculate column/row sizes automatically */
         grid-template-columns: repeat(8, 1fr);
         grid-template-rows: repeat(8, 1fr);
     }
 
-    /* Scale the font size of the pieces relative to the screen size */
     .square {
         font-size: 8vw;
     }
 
-    /* Scale the move indicator dots */
     .valid-move-dot {
         width: 3.5vw;
         height: 3.5vw;
     }
 
-    /* Adjust text size in status panel for readability */
     #status-panel {
         font-size: 1.2em;
         padding: 8px;
     }
-    #sound-toggle {
-        font-size: 1.2rem;
-    }
 
-    /* Make menu buttons slightly smaller */
     #main-menu button {
         width: 220px;
         padding: 12px 20px;
         font-size: 1.1em;
     }
 
-    /* Adjust promotion dialog for small screens */
-    #promotion-dialog button {
+    #promotion-dialog button, .dialog-box {
         font-size: 35px;
+        min-width: 80vw;
     }
 }
