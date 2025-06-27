@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Audio Elements pointing to sounds/ subfolder -->
+    <!-- ALL AUDIO ELEMENTS -->
     <audio id="sound-move" src="sounds/move.wav" preload="auto"></audio>
     <audio id="sound-capture" src="sounds/capture.wav" preload="auto"></audio>
     <audio id="sound-check" src="sounds/check.wav" preload="auto"></audio>
@@ -15,8 +15,18 @@
     <audio id="music-menu" src="sounds/menu-music.mp3" preload="auto" loop></audio>
     <audio id="music-game" src="sounds/game-music.mp3" preload="auto" loop></audio>
 
+    <!-- NEW SOUND EFFECTS -->
+    <audio id="sound-ui-click" src="sounds/ui_click.wav" preload="auto"></audio>
+    <audio id="sound-game-start" src="sounds/game_start.wav" preload="auto"></audio>
+    <audio id="sound-castling" src="sounds/castling.wav" preload="auto"></audio>
+    <audio id="sound-promotion" src="sounds/promotion.wav" preload="auto"></audio>
+    <audio id="sound-select" src="sounds/select.wav" preload="auto"></audio>
+    <audio id="sound-invalid" src="sounds/invalid.wav" preload="auto"></audio>
+    <!-- END NEW SOUND EFFECTS -->
+
     <h1>Chess Master</h1>
 
+    <!-- The rest of your HTML is unchanged -->
     <div id="main-menu">
         <h2>Game Menu</h2>
         <button id="play-player">Player vs Player</button>
@@ -27,11 +37,9 @@
                 <button id="start-ai-game">Play</button>
             </div>
         </div>
-        <!-- NEW: "Home" button added for integration -->
         <button id="home-button">Home</button>
     </div>
 
-    <!-- The rest of the HTML is unchanged -->
     <div id="game-container" class="hidden">
         <div id="status-panel"><div id="status">White's Turn</div><button id="sound-toggle">🔊</button></div>
         <div id="board-container"><div id="board"></div></div>
