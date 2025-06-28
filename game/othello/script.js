@@ -46,7 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const setupFileInput = (input, audioElement) => {
         input.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (file) audioElement.src = URL.createObjectURL(file);
+            if (file) {
+                audioElement.src = URL.createObjectURL(file);
+                // **THE FIX IS HERE:** Explicitly tell the audio element to load the new source.
+                audioElement.load();
+            }
         });
     };
     setupFileInput(sfxFileInput, sfxSound);
@@ -165,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticles(winner);
     }
 
-    // --- Rendering, UI, AI, and Particles ---
+    // --- Rendering, UI, AI, and Particles (all unchanged) ---
     function renderBoard() { boardContainer.innerHTML = ''; for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const cell = document.createElement('div'); cell.className = 'cell'; cell.dataset.row = r; cell.dataset.col = c; if (board[r][c] !== 0) { const piece = document.createElement('div'); piece.className = `piece ${board[r][c] === 1 ? 'black' : 'white'}`; cell.appendChild(piece); } boardContainer.appendChild(cell); } }
     function updateUI() { const scores = getScores(); blackScoreEl.textContent = scores.black; whiteScoreEl.textContent = scores.white; if (!gameOver) { playerTurnEl.innerHTML = `<div class="piece ${currentPlayer === 1 ? 'black' : 'white'}" style="width:24px; height:24px; display:inline-block; vertical-align:middle; margin: 0 10px;"></div>`; } else { playerTurnEl.innerHTML = ''; } }
     function getScores() { return board.flat().reduce((acc, cell) => { if (cell === 1) acc.black++; else if (cell === 2) acc.white++; return acc; }, { black: 0, white: 0 });}
