@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake and Ladder</title>
-    <!-- New font for the modern look -->
+    <!-- Font for the modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
@@ -12,12 +12,13 @@
 </head>
 <body>
 
-    <!-- Main Menu Container (Redesigned to match your image) -->
+    <!-- Main Menu Container (Modern Design) -->
     <div id="main-menu" class="container">
         <div class="menu-header">
             <button id="home-btn" class="icon-btn">🏠</button>
             <h1>Snake & Ladder</h1>
-            <button id="settings-btn" class="icon-btn sound-on">🔊</button>
+            <!-- This button opens the settings modal -->
+            <button id="open-settings-btn" class="icon-btn">⚙️</button>
         </div>
 
         <div class="menu-options">
@@ -40,7 +41,29 @@
         <button id="start-game-btn" class="start-button">Start Game</button>
     </div>
 
-    <!-- Game Container (This part is unchanged) -->
+    <!-- Settings Modal (Initially Hidden) -->
+    <div id="settings-modal" class="popup-overlay hidden">
+        <div class="modal-content">
+            <button id="close-settings-btn" class="close-btn">✖️</button>
+            <h2>Settings</h2>
+            <div class="setting-item">
+                <label for="music-toggle">Background Music</label>
+                <label class="switch">
+                    <input type="checkbox" id="music-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <label for="sfx-toggle">Sound Effects</label>
+                <label class="switch">
+                    <input type="checkbox" id="sfx-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Container (Unchanged from original) -->
     <div id="game-container" class="container hidden">
         <div id="game-board"></div>
         <div id="game-controls">
@@ -54,13 +77,17 @@
         </div>
     </div>
 
-    <!-- Win Popup (This part is unchanged) -->
+    <!-- Win Popup (Unchanged from original) -->
     <div id="win-popup" class="popup-overlay hidden">
         <canvas id="confetti-canvas"></canvas>
-        <div class="popup-content"><h2 id="win-message">Player 1 Wins!</h2><p>Congratulations!</p><button id="play-again-btn">Play Again</button></div>
+        <div class="popup-content">
+            <h2 id="win-message">Player 1 Wins!</h2>
+            <p>Congratulations!</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
     </div>
 
-    <!-- Audio Elements (This part is unchanged) -->
+    <!-- Audio Elements (Unchanged from original) -->
     <audio id="bg-music" src="assets/music.mp3" loop></audio>
     <audio id="dice-sound" src="assets/dice.mp3"></audio>
     <audio id="move-sound" src="assets/move.mp3"></audio>
