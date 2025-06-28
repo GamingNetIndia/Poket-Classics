@@ -28,6 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMusicOn = true, isSfxOn = true;
 
     // --- Audio Logic ---
+    // NEW CODE: This function will run on the user's very first click to "unlock" audio.
+    function unlockAudio() {
+        bgMusic.play().catch(() => {}); // Try to play, ignore errors if it fails
+        bgMusic.pause(); // Immediately pause it. We just needed the interaction.
+        console.log("Audio context unlocked.");
+        // Remove this event listener so it only ever runs once.
+        document.body.removeEventListener('click', unlockAudio);
+    }
+    document.body.addEventListener('click', unlockAudio);
+
+
     function playSfx() { if(isSfxOn && sfxSound.src) { sfxSound.currentTime = 0; sfxSound.play().catch(e => {}); } }
     function playWinSound() { if(isSfxOn && winSound.src) { winSound.currentTime = 0; winSound.play().catch(e => {}); } }
 
@@ -40,8 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     sfxToggle.addEventListener('change', (e) => isSfxOn = e.target.checked);
-    
-    // REMOVED: All file input logic has been deleted.
     
     document.addEventListener('click', (e) => {
         if (e.target.matches('button')) playSfx();
@@ -63,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         menuOverlay.classList.add('invisible'); gameScreen.classList.remove('hidden'); aiDifficultyMenu.classList.add('hidden');
+        // MODIFIED: The .play() call is still here to ensure music starts when the game does.
         if (isMusicOn && bgMusic.src) bgMusic.play().catch(e => console.error("Error playing music on start:", e));
         initGame();
     }
@@ -74,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderBoard(); updateUI(); highlightValidMoves();
     }
     
-    // --- Core Game Logic ---
+    // --- Core Game Logic --- (The rest of the file is unchanged)
     boardContainer.addEventListener('click', (e) => {
         if (gameOver) return;
         const highlighter = e.target.closest('.valid-move-highlighter');
