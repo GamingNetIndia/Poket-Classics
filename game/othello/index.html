@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reversi Clone</title>
+    <title>Reversi</title> <!-- Changed from Reversi Clone -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Paths now point to your specific files in the 'sounds/' folder -->
+    <!-- Paths point to your specific files in the 'sounds/' folder -->
     <audio id="bg-music" src="sounds/music.mp3" loop></audio>
     <audio id="sfx-sound" src="sounds/click.wav"></audio>
-
-    <!-- CORRECTED: The path now points to your 'game over.wav' file -->
     <audio id="win-sound" src="sounds/game over.wav"></audio>
 
     <div id="menu-overlay" class="overlay">
@@ -19,7 +17,8 @@
             <h1>Reversi</h1>
             <button id="pvp-btn">Player vs Player</button>
             <button id="pvai-btn">Player vs AI</button>
-            <button id="open-settings-btn">Settings</button>
+            <!-- NEW "HOME" BUTTON ADDED -->
+            <button id="home-btn">Home</button>
         </div>
         <div id="ai-difficulty-menu" class="menu hidden">
             <h1>Select AI Difficulty</h1>
@@ -57,6 +56,8 @@
         </div>
         <div class="status-bar">
              <div id="status-message"></div>
+             <!-- This is your new in-game settings button -->
+             <div id="settings-btn">⚙️</div>
         </div>
         <div id="board-container"></div>
         <button id="back-to-menu-game-btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1em;">Back to Menu</button>
