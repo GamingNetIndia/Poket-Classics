@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reversi Clone</title>
-    <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 
-      IMPORTANT: Change "music.mp3" to the path of your music file.
-      It must be in the same folder as this HTML file.
-    -->
-    <audio id="bg-music" src="music.mp3" loop></audio>
-    <audio id="sfx-sound"></audio>
-    <audio id="win-sound"></audio>
+    <!-- CORRECTED: Paths now point to the 'sounds/' folder -->
+    <audio id="bg-music" src="sounds/music.mp3" loop></audio>
+    <audio id="sfx-sound" src="sounds/click.wav"></audio>
+    <audio id="win-sound" src="sounds/victory.mp3"></audio>
 
     <div id="menu-overlay" class="overlay">
         <div id="main-menu" class="menu">
@@ -35,15 +31,9 @@
     <div id="settings-menu" class="overlay invisible">
         <div class="menu">
             <h2>Settings</h2>
+            <!-- REMOVED: All file upload inputs are gone for a cleaner menu -->
             <div class="settings-row"><label>Background Music</label><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked> <span class="slider"></span></label></div>
-            
-            <div class="settings-row" style="margin-top: 20px;"><label>Sound Effects (SFX)</label><label class="toggle-switch"><input type="checkbox" id="sfx-toggle" checked> <span class="slider"></span></label></div>
-            <label for="sfx-file-input" style="font-size:0.9em; color:#ccc;">Click & Piece Sound</label>
-            <input type="file" id="sfx-file-input" accept="audio/*" class="settings-file-input">
-            
-            <label for="win-file-input" style="font-size:0.9em; color:#ccc;">Win/Game Over Sound</label>
-            <input type="file" id="win-file-input" accept="audio/*" class="settings-file-input">
-
+            <div class="settings-row"><label>Sound Effects (SFX)</label><label class="toggle-switch"><input type="checkbox" id="sfx-toggle" checked> <span class="slider"></span></label></div>
             <button id="close-settings-btn" style="margin-top: 20px;">Close</button>
         </div>
     </div>
@@ -71,7 +61,6 @@
         <button id="back-to-menu-game-btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1em;">Back to Menu</button>
     </div>
 
-    <!-- Link to the external JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
