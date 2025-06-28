@@ -2,7 +2,7 @@
     --board-bg: #c8e6c9; --cell-bg-1: #a5d6a7; --cell-bg-2: #81c784;
     --snake-head: #d32f2f; --snake-tail: #ffcdd2; --ladder-start: #388e3c; --ladder-end: #c8e6c9;
     --player1-color: #1e88e5; --player2-color: #fdd835; --player3-color: #e53935; --player4-color: #8e24aa;
-    /* New variables for the modern menu */
+    /* Variables for the modern menu */
     --menu-bg: #f7f9fc;
     --menu-shadow: rgba(0,0,0,0.1);
     --menu-accent: #2ed573;
@@ -11,7 +11,7 @@
 }
 
 body {
-    font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma; /* Using the new font */
+    font-family: 'Fredoka One', cursive, 'Segoe UI', Tahoma;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,11 +66,6 @@ body {
     transform: scale(1.1);
 }
 
-#settings-btn.sound-off {
-    text-decoration: line-through;
-    color: #e53935;
-}
-
 .menu-options {
     margin: 20px 0;
     display: flex;
@@ -101,7 +96,7 @@ body {
     border-radius: 10px;
     font-family: inherit;
     transition: all 0.2s ease;
-    flex: 1; /* Make buttons take up equal space */
+    flex: 1;
 }
 
 #player-count-btns .option-btn {
@@ -138,28 +133,22 @@ body {
     background-color: #25a25a;
 }
 
-/* --- Game Screen Styles (Largely Unchanged) --- */
-#game-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 900px;
-    width: 100%;
-}
+/* --- Popups / Modals (for Win and Settings) --- */
+.popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: white; padding: 25px 35px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; width: 90%; max-width: 400px; }
+.close-btn { position: absolute; top: 5px; right: 10px; font-size: 1.5em; color: #aaa; background: none; border: none; cursor: pointer; }
+.modal-content h2 { margin-top: 0; margin-bottom: 25px; font-size: 2em; color: #333;}
+.setting-item { display: flex; justify-content: space-between; align-items: center; font-size: 1.2em; margin-bottom: 20px; }
+.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #4CAF50; }
+input:checked + .slider:before { transform: translateX(26px); }
 
-@media (min-width: 800px) {
-    #game-container {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-    #game-controls {
-        width: 250px;
-        height: 90vmin;
-        max-height: 500px;
-    }
-}
-
+/* --- Game Screen Styles --- */
+#game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; max-width: 900px; width: 100%; }
+@media (min-width: 800px) { #game-container { flex-direction: row; align-items: flex-start; } #game-controls { width: 250px; height: 90vmin; max-height: 500px; } }
 #game-board { display: grid; grid-template-columns: repeat(10, 1fr); width: 90vw; aspect-ratio: 1 / 1; max-width: 500px; max-height: 500px; border: 5px solid #4a4a4a; background-color: var(--board-bg); }
 .cell { position: relative; display: flex; justify-content: center; align-items: center; font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: bold; border: 1px solid #757575; box-sizing: border-box; }
 .cell:nth-child(odd) { background-color: var(--cell-bg-1); } .cell:nth-child(even) { background-color: var(--cell-bg-2); }
@@ -178,7 +167,6 @@ button { padding: 10px 15px; font-size: 1em; cursor: pointer; border-radius: 5px
 #roll-dice-btn:disabled { background-color: #9e9e9e; cursor: not-allowed; }
 #back-to-menu-btn { background-color: #f44336; margin-top: auto; }
 #message-log { height: 80px; overflow-y: auto; background: #eee; padding: 8px; border-radius: 5px; text-align: left; font-size: 0.9em; }
-.popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .popup-content { background: white; padding: 30px 50px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; z-index: 1001; }
 .popup-content h2 { margin-top: 0; font-size: 2.5em; color: #4CAF50; }
 #play-again-btn { margin-top: 15px; font-size: 1.2em; }
