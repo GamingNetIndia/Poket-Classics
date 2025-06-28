@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainMenu = document.getElementById('main-menu');
     const aiDifficultyMenu = document.getElementById('ai-difficulty-menu');
     const gameScreen = document.getElementById('game-screen');
-    const settingsBtn = document.getElementById('settings-btn');
     const settingsMenu = document.getElementById('settings-menu');
     const musicToggle = document.getElementById('music-toggle');
     const sfxToggle = document.getElementById('sfx-toggle');
@@ -21,14 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const winResultEl = document.getElementById('win-result');
     const winScoreEl = document.getElementById('win-score');
     
-    // --- Game State ---
+    // --- Game State (unchanged) ---
     const BOARD_SIZE = 8, PLAYER_BLACK = 1, PLAYER_WHITE = 2;
     const DIRECTIONS = [ [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1] ];
     let board = [], currentPlayer, gameMode, aiDifficulty, gameOver;
     let particles = [];
     let isMusicOn = true, isSfxOn = true;
 
-    // --- Audio Logic ---
+    // --- Audio Logic (unchanged) ---
     function unlockAudio() {
         bgMusic.play().catch(() => {});
         bgMusic.pause();
@@ -58,13 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
     aiDifficultyMenu.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON' && e.target.dataset.difficulty) { gameMode = 'pvai'; aiDifficulty = e.target.dataset.difficulty; startGame(); } });
     setupButton('back-to-main-btn', () => { aiDifficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
     
-    // NEW: Add the Home button logic
+    // UPDATED: Settings button is now on the main menu
+    setupButton('open-settings-btn', () => {
+        menuOverlay.classList.add('invisible'); // Hide main menu overlay
+        settingsMenu.classList.remove('invisible'); // Show settings overlay
+    });
+    setupButton('close-settings-btn', () => {
+        settingsMenu.classList.add('invisible'); // Hide settings overlay
+        menuOverlay.classList.remove('invisible'); // Show main menu overlay
+    });
+
+    // Home button logic
     setupButton('home-btn', () => {
         window.location.href = '../../home/home.html';
     });
     
     const goBackToMenu = () => {
-        bgMusic.pause(); // Stop game music when returning to menu
+        bgMusic.pause();
         winPopupOverlay.classList.add('invisible');
         gameScreen.classList.add('hidden');
         menuOverlay.classList.remove('invisible');
@@ -75,10 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupButton('back-to-menu-game-btn', goBackToMenu);
     setupButton('win-back-to-menu-btn', goBackToMenu);
     setupButton('play-again-btn', () => { winPopupOverlay.classList.add('invisible'); particles = []; initGame(); });
-    
-    // Your new in-game settings button logic
-    settingsBtn.addEventListener('click', () => settingsMenu.classList.remove('invisible'));
-    setupButton('close-settings-btn', () => settingsMenu.classList.add('invisible'));
 
     function startGame() {
         menuOverlay.classList.add('invisible'); gameScreen.classList.remove('hidden'); aiDifficultyMenu.classList.add('hidden');
@@ -87,14 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // The rest of your game logic is completely unchanged.
-    function initGame() {
-        board = Array(BOARD_SIZE).fill(0).map(() => Array(BOARD_SIZE).fill(0));
-        board[3][3] = PLAYER_WHITE; board[3][4] = PLAYER_BLACK;
-        board[4][3] = PLAYER_BLACK; board[4][4] = PLAYER_WHITE;
-        currentPlayer = PLAYER_BLACK; gameOver = false;
-        statusMessageEl.textContent = ''; boardContainer.style.pointerEvents = 'auto';
-        renderBoard(); updateUI(); highlightValidMoves();
-    }
+    function initGame() { board = Array(BOARD_SIZE).fill(0).map(() => Array(BOARD_SIZE).fill(0)); board[3][3] = PLAYER_WHITE; board[3][4] = PLAYER_BLACK; board[4][3] = PLAYER_BLACK; board[4][4] = PLAYER_WHITE; currentPlayer = PLAYER_BLACK; gameOver = false; statusMessageEl.textContent = ''; boardContainer.style.pointerEvents = 'auto'; renderBoard(); updateUI(); highlightValidMoves(); }
     boardContainer.addEventListener('click', (e) => { if (gameOver) return; const highlighter = e.target.closest('.valid-move-highlighter'); if (highlighter) { playSfx(); const cell = highlighter.parentElement; makeMove(parseInt(cell.dataset.row), parseInt(cell.dataset.col)); } });
     function makeMove(row, col) { const piecesToFlip = getPiecesToFlip(row, col, currentPlayer); if (piecesToFlip.length === 0) return; boardContainer.style.pointerEvents = 'none'; document.querySelectorAll('.valid-move-highlighter').forEach(h => h.remove()); statusMessageEl.textContent = ''; board[row][col] = currentPlayer; piecesToFlip.forEach(p => { board[p.row][p.col] = currentPlayer; }); const playerClass = currentPlayer === 1 ? 'black' : 'white'; const opponentClass = currentPlayer === 1 ? 'white' : 'black'; const newPieceCell = boardContainer.children[row * 8 + col]; const newPiece = document.createElement('div'); newPiece.className = `piece ${playerClass}`; newPiece.style.transform = 'scale(0)'; newPieceCell.appendChild(newPiece); requestAnimationFrame(() => { newPiece.style.transform = 'scale(1)'; }); let maxDelay = 0; piecesToFlip.forEach((p, i) => { const delay = 100 + 50 * i; maxDelay = delay; setTimeout(() => { const pieceToFlip = boardContainer.children[p.row * 8 + p.col].querySelector('.piece'); if (pieceToFlip) { pieceToFlip.style.transform = 'rotateY(180deg)'; setTimeout(() => { pieceToFlip.classList.remove(opponentClass); pieceToFlip.classList.add(playerClass); pieceToFlip.style.transform = ''; }, 300); } }, delay); }); setTimeout(switchPlayer, maxDelay + 600); }
     function switchPlayer() { updateUI(); const opponent = (currentPlayer === 1) ? 2 : 1; if (getValidMoves(opponent).length > 0) { currentPlayer = opponent; } else if (getValidMoves(currentPlayer).length > 0) { statusMessageEl.textContent = `${opponent === 1 ? 'Black' : 'White'} has no moves! Turn skipped.`; } else { endGame(); return; } updateUI(); highlightValidMoves(); if (!gameOver && gameMode === 'pvai' && currentPlayer === 2) { setTimeout(makeAiMove, 800); } else { boardContainer.style.pointerEvents = 'auto'; } }
