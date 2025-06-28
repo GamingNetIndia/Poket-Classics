@@ -157,12 +157,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 20px 0;
     gap: 20px;
-}
-.settings-file-input {
-    margin-top: 5px;
-    margin-bottom: 20px;
 }
 .toggle-switch {
     position: relative;
@@ -202,9 +198,6 @@ input:checked + .slider {
 }
 input:checked + .slider:before {
     transform: translateX(24px);
-}
-input[type="file"] {
-    color: var(--text-light);
 }
 #win-particles-canvas {
     position: absolute;
