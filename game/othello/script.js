@@ -27,10 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let particles = [];
     let isMusicOn = true, isSfxOn = true;
 
-    // --- Audio Logic (unchanged) ---
+    // --- Audio Logic (UPDATED) ---
     function unlockAudio() {
+        // --- THIS IS THE FIX ---
+        // We attempt to play and immediately pause EACH sound file.
+        // This grants the browser permission to play them later.
         bgMusic.play().catch(() => {});
         bgMusic.pause();
+
+        sfxSound.play().catch(() => {});
+        sfxSound.pause();
+
+        winSound.play().catch(() => {});
+        winSound.pause();
+        
+        console.log("All audio contexts unlocked.");
+        // This listener only needs to run once, so we remove it after the first click.
         document.body.removeEventListener('click', unlockAudio);
     }
     document.body.addEventListener('click', unlockAudio);
@@ -57,17 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
     aiDifficultyMenu.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON' && e.target.dataset.difficulty) { gameMode = 'pvai'; aiDifficulty = e.target.dataset.difficulty; startGame(); } });
     setupButton('back-to-main-btn', () => { aiDifficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
     
-    // UPDATED: Settings button is now on the main menu
     setupButton('open-settings-btn', () => {
-        menuOverlay.classList.add('invisible'); // Hide main menu overlay
-        settingsMenu.classList.remove('invisible'); // Show settings overlay
+        menuOverlay.classList.add('invisible');
+        settingsMenu.classList.remove('invisible');
     });
     setupButton('close-settings-btn', () => {
-        settingsMenu.classList.add('invisible'); // Hide settings overlay
-        menuOverlay.classList.remove('invisible'); // Show main menu overlay
+        settingsMenu.classList.add('invisible');
+        menuOverlay.classList.remove('invisible');
     });
 
-    // Home button logic
     setupButton('home-btn', () => {
         window.location.href = '../../home/home.html';
     });
