@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPlayerIndex: 0,
         snakes: {},
         ladders: {},
-        isMusicOn: true,      // For Background Music
-        isSfxOn: true,        // For Sound Effects
+        isMusicOn: true,
+        isSfxOn: true,
         isGameOver: false,
         confettiAnimationId: null
     };
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer: document.getElementById('game-container'),
         startGameBtn: document.getElementById('start-game-btn'),
         backToMenuBtn: document.getElementById('back-to-menu-btn'),
-        homeBtn: document.getElementById('home-btn'),
+        homeBtn: document.getElementById('home-btn'), // Get the home button
         gameBoard: document.getElementById('game-board'),
         rollDiceBtn: document.getElementById('roll-dice-btn'),
         turnInfo: document.getElementById('turn-info'),
@@ -36,10 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         winMessage: document.getElementById('win-message'),
         playAgainBtn: document.getElementById('play-again-btn'),
         confettiCanvas: document.getElementById('confetti-canvas'),
-        // New menu buttons
         gameModeBtns: document.getElementById('game-mode-btns'),
         playerCountBtns: document.getElementById('player-count-btns'),
-        // New Settings Modal Elements
         openSettingsBtn: document.getElementById('open-settings-btn'),
         settingsModal: document.getElementById('settings-modal'),
         closeSettingsBtn: document.getElementById('close-settings-btn'),
@@ -81,14 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- EVENT LISTENERS ---
-    // Settings Modal Listeners
     dom.openSettingsBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.settingsModal.classList.remove('hidden'); });
     dom.closeSettingsBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.settingsModal.classList.add('hidden'); });
     dom.settingsModal.addEventListener('click', (e) => { if (e.target === dom.settingsModal) dom.settingsModal.classList.add('hidden'); });
     dom.musicToggle.addEventListener('change', () => { state.isMusicOn = dom.musicToggle.checked; localStorage.setItem('snakeLadderMusic', state.isMusicOn); updateMusicPlayback(); });
     dom.sfxToggle.addEventListener('change', () => { state.isSfxOn = dom.sfxToggle.checked; localStorage.setItem('snakeLadderSfx', state.isSfxOn); });
 
-    // Menu Selection Listeners
     function updateActiveButton(buttonGroup, clickedButton) {
         Array.from(buttonGroup.children).forEach(button => button.classList.remove('active'));
         clickedButton.classList.add('active');
@@ -96,14 +92,19 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.gameModeBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.gameMode = e.target.dataset.mode; updateActiveButton(dom.gameModeBtns, e.target); } });
     dom.playerCountBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.numPlayers = parseInt(e.target.dataset.count, 10); updateActiveButton(dom.playerCountBtns, e.target); } });
 
-    // Game Control Listeners
     dom.startGameBtn.addEventListener('click', () => { playSoundEffect(audio.click); startGame(); });
-    dom.homeBtn.addEventListener('click', () => { playSoundEffect(audio.click); window.location.href = "https://your-games-catalogue.com"; });
+    
+    // THIS IS THE FIX: The event listener for the home button was missing.
+    dom.homeBtn.addEventListener('click', () => {
+        playSoundEffect(audio.click);
+        window.location.href = '../../home/home.html';
+    });
+
     dom.backToMenuBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.gameContainer.classList.add('hidden'); dom.mainMenu.classList.remove('hidden'); audio.bgMusic.pause(); if (state.confettiAnimationId) stopConfetti(); });
     dom.rollDiceBtn.addEventListener('click', () => { playSoundEffect(audio.click); handleTurn(); });
     dom.playAgainBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.winPopup.classList.add('hidden'); if (state.confettiAnimationId) stopConfetti(); startGame(); });
     
-    // --- CORE GAME LOGIC (UNCHANGED) ---
+    // --- The rest of your game logic is unchanged ---
     function startGame() { updateMusicPlayback(); dom.mainMenu.classList.add('hidden'); dom.gameContainer.classList.remove('hidden'); resetGame(); generateBoard(); generateSnakesAndLadders(); renderBoard(); updateTurnInfo(); }
     function resetGame() { state.isGameOver = false; state.playerPositions = Array(state.numPlayers).fill(1); state.currentPlayerIndex = 0; state.snakes = {}; state.ladders = {}; dom.messageLog.innerHTML = ''; dom.rollDiceBtn.disabled = false; document.querySelectorAll('.player-token').forEach(t => t.remove()); }
     async function handleTurn() { if (state.isGameOver) return; dom.rollDiceBtn.disabled = true; const diceRoll = await rollDice(); logMessage(`Player ${state.currentPlayerIndex + 1} rolled a ${diceRoll}.`); let startPos = state.playerPositions[state.currentPlayerIndex]; let targetPos = startPos + diceRoll; if (targetPos > config.BOARD_SIZE) targetPos = startPos; await movePlayer(startPos, targetPos); let finalPos = state.playerPositions[state.currentPlayerIndex]; if (state.snakes[finalPos]) { logMessage(`Oh no! Player ${state.currentPlayerIndex + 1} found a snake! 🐍`); playSoundEffect(audio.snake); await movePlayer(finalPos, state.snakes[finalPos], 800, false); } else if (state.ladders[finalPos]) { logMessage(`Yay! Player ${state.currentPlayerIndex + 1} found a ladder! 🪜`); playSoundEffect(audio.ladder); await movePlayer(finalPos, state.ladders[finalPos], 100); } if (state.playerPositions[state.currentPlayerIndex] === config.BOARD_SIZE) { showWinPopup(); return; } state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.numPlayers; updateTurnInfo(); if (state.gameMode === 'pva' && state.currentPlayerIndex > 0) { setTimeout(handleTurn, config.AI_THINK_TIME); } else { dom.rollDiceBtn.disabled = false; } }
@@ -119,6 +120,5 @@ document.addEventListener('DOMContentLoaded', () => {
     let confetti = []; function startConfetti() { const ctx = dom.confettiCanvas.getContext('2d'); dom.confettiCanvas.width = window.innerWidth; dom.confettiCanvas.height = window.innerHeight; confetti = []; const confettiCount = 200, colors = ['#fde19a', '#ff9a9a', '#a2d2ff', '#bde0fe', '#ffc8dd']; for (let i=0; i<confettiCount; i++) { confetti.push({x:Math.random()*dom.confettiCanvas.width, y:Math.random()*dom.confettiCanvas.height - dom.confettiCanvas.height, radius:Math.random()*5+2, color:colors[Math.floor(Math.random()*colors.length)], speedX:Math.random()*6-3, speedY:Math.random()*5+2, opacity:1}); } function animate() { ctx.clearRect(0,0,dom.confettiCanvas.width,dom.confettiCanvas.height); confetti.forEach((p,i)=>{p.x+=p.speedX; p.y+=p.speedY; p.opacity-=0.01; if(p.opacity<=0)confetti.splice(i,1); ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fillStyle=`rgba(${parseInt(p.color.slice(1,3),16)}, ${parseInt(p.color.slice(3,5),16)}, ${parseInt(p.color.slice(5,7),16)}, ${p.opacity})`;ctx.fill();}); if(confetti.length > 0) state.confettiAnimationId = requestAnimationFrame(animate); else { state.confettiAnimationId = null; } } animate(); }
     function stopConfetti() { if (state.confettiAnimationId) cancelAnimationFrame(state.confettiAnimationId); confetti = []; const ctx = dom.confettiCanvas.getContext('2d'); ctx.clearRect(0, 0, dom.confettiCanvas.width, dom.confettiCanvas.height); state.confettiAnimationId = null; }
     
-    // --- INITIALIZATION ---
     loadSettings();
 });
