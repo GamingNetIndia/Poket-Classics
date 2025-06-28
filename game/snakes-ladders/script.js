@@ -1,12 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE AND CONFIGURATION ---
-    const config = { BOARD_SIZE: 100, NUM_SNAKES: 8, NUM_LADDERS: 8, AI_THINK_TIME: 1500 };
+    const config = {
+        BOARD_SIZE: 100,
+        NUM_SNAKES: 8,
+        NUM_LADDERS: 8,
+        AI_THINK_TIME: 1500
+    };
+
     let state = {
-        gameMode: 'pvp', numPlayers: 2, playerPositions: [], currentPlayerIndex: 0,
-        snakes: {}, ladders: {},
-        isMusicOn: true, // For Background Music
-        isSfxOn: true,   // For Sound Effects
-        isGameOver: false, confettiAnimationId: null
+        gameMode: 'pvp',
+        numPlayers: 2,
+        playerPositions: [],
+        currentPlayerIndex: 0,
+        snakes: {},
+        ladders: {},
+        isMusicOn: true,      // For Background Music
+        isSfxOn: true,        // For Sound Effects
+        isGameOver: false,
+        confettiAnimationId: null
     };
 
     // --- DOM ELEMENTS ---
@@ -47,10 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- SOUND & SETTINGS LOGIC ---
-    function playSoundEffect(sound) { if (state.isSfxOn) { sound.currentTime = 0; sound.play().catch(e => {}); } }
+    function playSoundEffect(sound) {
+        if (state.isSfxOn) {
+            sound.currentTime = 0;
+            sound.play().catch(e => {});
+        }
+    }
     
     function updateMusicPlayback() {
-        if (state.isMusicOn && !dom.mainMenu.classList.contains('hidden')) {
+        if (state.isMusicOn && !dom.gameContainer.classList.contains('hidden')) {
              audio.bgMusic.play().catch(e => {});
         } else {
             audio.bgMusic.pause();
@@ -62,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.isSfxOn = localStorage.getItem('snakeLadderSfx') !== 'false';
         dom.musicToggle.checked = state.isMusicOn;
         dom.sfxToggle.checked = state.isSfxOn;
-        updateMusicPlayback();
     }
 
     // --- EVENT LISTENERS ---
@@ -74,8 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.sfxToggle.addEventListener('change', () => { state.isSfxOn = dom.sfxToggle.checked; localStorage.setItem('snakeLadderSfx', state.isSfxOn); });
 
     // Menu Selection Listeners
-    dom.gameModeBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.gameMode = e.target.dataset.mode; Array.from(dom.gameModeBtns.children).forEach(b => b.classList.remove('active')); e.target.classList.add('active'); } });
-    dom.playerCountBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.numPlayers = parseInt(e.target.dataset.count, 10); Array.from(dom.playerCountBtns.children).forEach(b => b.classList.remove('active')); e.target.classList.add('active'); } });
+    function updateActiveButton(buttonGroup, clickedButton) {
+        Array.from(buttonGroup.children).forEach(button => button.classList.remove('active'));
+        clickedButton.classList.add('active');
+    }
+    dom.gameModeBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.gameMode = e.target.dataset.mode; updateActiveButton(dom.gameModeBtns, e.target); } });
+    dom.playerCountBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.numPlayers = parseInt(e.target.dataset.count, 10); updateActiveButton(dom.playerCountBtns, e.target); } });
 
     // Game Control Listeners
     dom.startGameBtn.addEventListener('click', () => { playSoundEffect(audio.click); startGame(); });
@@ -84,8 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.rollDiceBtn.addEventListener('click', () => { playSoundEffect(audio.click); handleTurn(); });
     dom.playAgainBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.winPopup.classList.add('hidden'); if (state.confettiAnimationId) stopConfetti(); startGame(); });
     
-    // --- CORE GAME LOGIC (Unchanged from your preferred version) ---
-    function startGame() { if (state.isMusicOn) audio.bgMusic.play().catch(e => {}); dom.mainMenu.classList.add('hidden'); dom.gameContainer.classList.remove('hidden'); resetGame(); generateBoard(); generateSnakesAndLadders(); renderBoard(); updateTurnInfo(); }
+    // --- CORE GAME LOGIC (UNCHANGED) ---
+    function startGame() { updateMusicPlayback(); dom.mainMenu.classList.add('hidden'); dom.gameContainer.classList.remove('hidden'); resetGame(); generateBoard(); generateSnakesAndLadders(); renderBoard(); updateTurnInfo(); }
     function resetGame() { state.isGameOver = false; state.playerPositions = Array(state.numPlayers).fill(1); state.currentPlayerIndex = 0; state.snakes = {}; state.ladders = {}; dom.messageLog.innerHTML = ''; dom.rollDiceBtn.disabled = false; document.querySelectorAll('.player-token').forEach(t => t.remove()); }
     async function handleTurn() { if (state.isGameOver) return; dom.rollDiceBtn.disabled = true; const diceRoll = await rollDice(); logMessage(`Player ${state.currentPlayerIndex + 1} rolled a ${diceRoll}.`); let startPos = state.playerPositions[state.currentPlayerIndex]; let targetPos = startPos + diceRoll; if (targetPos > config.BOARD_SIZE) targetPos = startPos; await movePlayer(startPos, targetPos); let finalPos = state.playerPositions[state.currentPlayerIndex]; if (state.snakes[finalPos]) { logMessage(`Oh no! Player ${state.currentPlayerIndex + 1} found a snake! 🐍`); playSoundEffect(audio.snake); await movePlayer(finalPos, state.snakes[finalPos], 800, false); } else if (state.ladders[finalPos]) { logMessage(`Yay! Player ${state.currentPlayerIndex + 1} found a ladder! 🪜`); playSoundEffect(audio.ladder); await movePlayer(finalPos, state.ladders[finalPos], 100); } if (state.playerPositions[state.currentPlayerIndex] === config.BOARD_SIZE) { showWinPopup(); return; } state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.numPlayers; updateTurnInfo(); if (state.gameMode === 'pva' && state.currentPlayerIndex > 0) { setTimeout(handleTurn, config.AI_THINK_TIME); } else { dom.rollDiceBtn.disabled = false; } }
     function generateBoard() { dom.gameBoard.innerHTML = ''; for (let i = 0; i < config.BOARD_SIZE; i++) { dom.gameBoard.appendChild(document.createElement('div')).classList.add('cell'); } const cells = Array.from(dom.gameBoard.children); let num = config.BOARD_SIZE; for (let row = 0; row < 10; row++) { const rowCells = cells.slice(row * 10, (row * 10) + 10); if (row % 2 !== 0) rowCells.reverse(); for (const cell of rowCells) { cell.textContent = num; cell.dataset.cell = num--; } } }
