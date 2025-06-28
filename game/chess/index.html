@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Audio Elements (no changes here) -->
+    <!-- Audio Elements -->
     <audio id="sound-move" src="sounds/move.wav" preload="auto"></audio>
     <audio id="sound-capture" src="sounds/capture.wav" preload="auto"></audio>
     <audio id="sound-check" src="sounds/check.wav" preload="auto"></audio>
@@ -23,7 +23,6 @@
 
     <h1>Chess Master</h1>
 
-    <!-- Main Menu Updated -->
     <div id="main-menu">
         <h2>Game Menu</h2>
         <button id="play-player">Player vs Player</button>
@@ -34,26 +33,29 @@
                 <button id="start-ai-game">Play</button>
             </div>
         </div>
-        <!-- NEW SETTINGS BUTTON -->
         <button id="settings-button">⚙️ Settings</button>
         <button id="home-button">Home</button>
     </div>
 
-    <!-- Game Container Updated (Sound Toggle Removed) -->
     <div id="game-container" class="hidden">
         <div id="status-panel">
             <div id="status">White's Turn</div>
-            <!-- The old sound toggle button is gone from here -->
         </div>
         <div id="board-container"><div id="board"></div></div>
         <div id="controls"><button id="back-to-menu">Back to Main Menu</button></div>
-        <div id="promotion-dialog" class="hidden">
+    </div>
+    
+    <!-- UPDATED PROMOTION DIALOG STRUCTURE -->
+    <div id="promotion-dialog" class="dialog-overlay hidden">
+        <div class="dialog-box">
             <p>Promote your pawn to:</p>
-            <button data-piece="q">♕</button><button data-piece="r">♖</button><button data-piece="b">♗</button><button data-piece="n">♘</button>
+            <button data-piece="q">♕</button>
+            <button data-piece="r">♖</button>
+            <button data-piece="b">♗</button>
+            <button data-piece="n">♘</button>
         </div>
     </div>
 
-    <!-- NEW SETTINGS DIALOG (MODAL) -->
     <div id="settings-dialog" class="dialog-overlay hidden">
         <div class="dialog-box">
             <h2>Settings</h2>
