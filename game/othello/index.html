@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- CORRECTED: Paths now point to the 'sounds/' folder -->
+    <!-- Paths now point to your specific files in the 'sounds/' folder -->
     <audio id="bg-music" src="sounds/music.mp3" loop></audio>
     <audio id="sfx-sound" src="sounds/click.wav"></audio>
-    <audio id="win-sound" src="sounds/victory.mp3"></audio>
+
+    <!-- CORRECTED: The path now points to your 'game over.wav' file -->
+    <audio id="win-sound" src="sounds/game over.wav"></audio>
 
     <div id="menu-overlay" class="overlay">
         <div id="main-menu" class="menu">
@@ -31,7 +33,6 @@
     <div id="settings-menu" class="overlay invisible">
         <div class="menu">
             <h2>Settings</h2>
-            <!-- REMOVED: All file upload inputs are gone for a cleaner menu -->
             <div class="settings-row"><label>Background Music</label><label class="toggle-switch"><input type="checkbox" id="music-toggle" checked> <span class="slider"></span></label></div>
             <div class="settings-row"><label>Sound Effects (SFX)</label><label class="toggle-switch"><input type="checkbox" id="sfx-toggle" checked> <span class="slider"></span></label></div>
             <button id="close-settings-btn" style="margin-top: 20px;">Close</button>
