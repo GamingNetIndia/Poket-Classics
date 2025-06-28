@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reversi</title> <!-- Changed from Reversi Clone -->
+    <title>Reversi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Paths point to your specific files in the 'sounds/' folder -->
     <audio id="bg-music" src="sounds/music.mp3" loop></audio>
     <audio id="sfx-sound" src="sounds/click.wav"></audio>
     <audio id="win-sound" src="sounds/game over.wav"></audio>
@@ -17,7 +16,8 @@
             <h1>Reversi</h1>
             <button id="pvp-btn">Player vs Player</button>
             <button id="pvai-btn">Player vs AI</button>
-            <!-- NEW "HOME" BUTTON ADDED -->
+            <!-- UPDATED: Settings button is now here -->
+            <button id="open-settings-btn">Settings</button>
             <button id="home-btn">Home</button>
         </div>
         <div id="ai-difficulty-menu" class="menu hidden">
@@ -41,8 +41,7 @@
     <div id="win-popup-overlay" class="overlay invisible">
         <canvas id="win-particles-canvas"></canvas>
         <div id="win-popup-content" class="menu">
-            <h1 id="win-result"></h1>
-            <p id="win-score"></p>
+            <h1 id="win-result"></h1><p id="win-score"></p>
             <button id="play-again-btn">Play Again</button>
             <button id="win-back-to-menu-btn">Back to Menu</button>
         </div>
@@ -54,11 +53,8 @@
             <div id="player-turn"></div>
             <div class="score"><div class="piece white"></div><div id="white-score">2</div></div>
         </div>
-        <div class="status-bar">
-             <div id="status-message"></div>
-             <!-- This is your new in-game settings button -->
-             <div id="settings-btn">⚙️</div>
-        </div>
+        <!-- UPDATED: Settings icon removed from here -->
+        <div class="status-bar"><div id="status-message"></div></div>
         <div id="board-container"></div>
         <button id="back-to-menu-game-btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1em;">Back to Menu</button>
     </div>
