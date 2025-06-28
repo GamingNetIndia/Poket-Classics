@@ -9,10 +9,10 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #312e2b; /* Dark, warm background */
+    background-color: #312e2b;
     color: #fff;
     margin: 0;
-    overflow-x: hidden; /* Prevent horizontal scroll, allow vertical if needed */
+    overflow-x: hidden;
 }
 
 h1, h2 {
@@ -129,7 +129,6 @@ h2 {
 
 #board {
     display: grid;
-    /* Desktop size */
     grid-template-columns: repeat(8, 70px);
     grid-template-rows: repeat(8, 70px);
     width: 560px;
@@ -140,7 +139,7 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px; /* Desktop font size */
+    font-size: 50px;
     position: relative;
 }
 
@@ -148,38 +147,15 @@ h2 {
 .dark { background-color: #b58863; }
 
 /* Pieces & Highlights */
-.piece {
-    cursor: pointer;
-    text-shadow: 0 0 5px rgba(0,0,0,0.4);
-    user-select: none;
-}
+.piece { cursor: pointer; text-shadow: 0 0 5px rgba(0,0,0,0.4); user-select: none; }
 .white-piece { color: #ffffff; }
 .black-piece { color: #2b2b2b; }
 .selected { background-color: #6a994e !important; }
-.valid-move-dot {
-    width: 25px; /* Desktop size */
-    height: 25px; /* Desktop size */
-    background-color: rgba(4, 153, 23, 0.4);
-    border-radius: 50%;
-    position: absolute;
-    cursor: pointer;
-    z-index: 10;
-}
+.valid-move-dot { width: 25px; height: 25px; background-color: rgba(4, 153, 23, 0.4); border-radius: 50%; position: absolute; cursor: pointer; z-index: 10; }
 .last-move { background-color: #cccc66b3 !important; }
 
 /* Status Panel & Controls */
-#status-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 560px; /* Desktop size */
-    font-size: 1.5em;
-    padding: 5px 10px;
-    background-color: #262421;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
+#status-panel { display: flex; justify-content: space-between; align-items: center; width: 560px; font-size: 1.5em; padding: 5px 10px; background-color: #262421; border-radius: 5px; box-sizing: border-box; }
 #controls { width: 100%; text-align: center; }
 #controls button { padding: 10px 20px; font-size: 1em; cursor: pointer; border: none; border-radius: 5px; background-color: #8a2a21; color: white; transition: background-color 0.3s; }
 #controls button:hover { background-color: #a13e3e; }
@@ -200,6 +176,8 @@ h2 {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 15px; /* Add padding for small screens */
+    box-sizing: border-box;
 }
 
 .dialog-box {
@@ -211,12 +189,12 @@ h2 {
     min-width: 300px;
 }
 
-#promotion-dialog p {
+#promotion-dialog .dialog-box p {
     margin-top: 0;
     font-size: 1.2em;
 }
 
-#promotion-dialog button {
+#promotion-dialog .dialog-box button {
     font-size: 40px;
     background: none;
     border: none;
@@ -226,11 +204,10 @@ h2 {
     transition: transform 0.2s;
 }
 
-#promotion-dialog button:hover {
+#promotion-dialog .dialog-box button:hover {
     transform: scale(1.1);
 }
 
-/* --- New Settings Dialog Styles --- */
 .settings-option {
     display: flex;
     justify-content: space-between;
@@ -319,8 +296,25 @@ h2 {
         font-size: 1.1em;
     }
 
-    #promotion-dialog button, .dialog-box {
-        font-size: 35px;
-        min-width: 80vw;
+    /* --- UPDATED DIALOG STYLES for Mobile --- */
+    .dialog-box {
+        width: 90%; /* Make dialogs take up more screen width */
+        max-width: 400px;
+        min-width: unset; /* Remove the desktop min-width */
+    }
+
+    #promotion-dialog .dialog-box p {
+        font-size: 1.3em; /* Make text more readable */
+    }
+
+    #promotion-dialog .dialog-box button {
+        display: block; /* Stack buttons vertically */
+        width: 100%;    /* Make them full-width */
+        margin: 10px 0; /* Add vertical spacing */
+        font-size: 45px; /* Large font for easy tapping */
+        padding: 10px;
+        border: 1px solid #666; /* Add a border to define the tap area */
+        border-radius: 8px;
+        background-color: #5a5a5a;
     }
 }
