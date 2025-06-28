@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
+    // --- DOM Elements --- (No changes here)
     const boardContainer = document.getElementById('board-container');
     const playerTurnEl = document.getElementById('player-turn');
     const blackScoreEl = document.getElementById('black-score');
@@ -20,88 +20,84 @@ document.addEventListener('DOMContentLoaded', () => {
     const winResultEl = document.getElementById('win-result');
     const winScoreEl = document.getElementById('win-score');
     
-    // --- Game State (unchanged) ---
+    // --- Game State --- (No changes here)
     const BOARD_SIZE = 8, PLAYER_BLACK = 1, PLAYER_WHITE = 2;
     const DIRECTIONS = [ [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1] ];
     let board = [], currentPlayer, gameMode, aiDifficulty, gameOver;
     let particles = [];
     let isMusicOn = true, isSfxOn = true;
 
-    // --- Audio Logic (UPDATED) ---
-    function unlockAudio() {
-        // --- THIS IS THE FIX ---
-        // We attempt to play and immediately pause EACH sound file.
-        // This grants the browser permission to play them later.
-        bgMusic.play().catch(() => {});
-        bgMusic.pause();
+    // --- NEW, ROBUST AUDIO LOGIC ---
+    let audioContextUnlocked = false;
 
-        sfxSound.play().catch(() => {});
-        sfxSound.pause();
+    function unlockAllAudio() {
+        if (audioContextUnlocked) return; // Only run this once
 
-        winSound.play().catch(() => {});
-        winSound.pause();
-        
-        console.log("All audio contexts unlocked.");
-        // This listener only needs to run once, so we remove it after the first click.
-        document.body.removeEventListener('click', unlockAudio);
+        // The play() function returns a Promise. We'll try to play and pause each.
+        // The browser only needs the *attempt* to be made during a user interaction.
+        bgMusic.play().catch(() => {}); bgMusic.pause();
+        sfxSound.play().catch(() => {}); sfxSound.pause();
+        winSound.play().catch(() => {}); winSound.pause();
+
+        audioContextUnlocked = true;
+        console.log("Audio contexts have been unlocked by user interaction.");
     }
-    document.body.addEventListener('click', unlockAudio);
 
-    function playSfx() { if(isSfxOn && sfxSound.src) { sfxSound.currentTime = 0; sfxSound.play().catch(e => {}); } }
-    function playWinSound() { if(isSfxOn && winSound.src) { winSound.currentTime = 0; winSound.play().catch(e => {}); } }
+    function playSfx() {
+        unlockAllAudio(); // Gatekeeper: Ensure audio is unlocked before playing.
+        if (isSfxOn && sfxSound.src) {
+            sfxSound.currentTime = 0;
+            sfxSound.play().catch(e => {});
+        }
+    }
+    
+    function playWinSound() {
+        unlockAllAudio(); // Gatekeeper: Ensure audio is unlocked before playing.
+        if (isSfxOn && winSound.src) {
+            winSound.currentTime = 0;
+            winSound.play().catch(e => {});
+        }
+    }
 
     musicToggle.addEventListener('change', (e) => {
         isMusicOn = e.target.checked;
-        if (isMusicOn && bgMusic.src) {
+        if (isMusicOn) {
+            unlockAllAudio(); // Gatekeeper for music toggle
             bgMusic.play().catch(e => console.error("Error playing background music:", e));
         } else {
             bgMusic.pause();
         }
     });
-    sfxToggle.addEventListener('change', (e) => isSfxOn = e.target.checked);
-    document.addEventListener('click', (e) => { if (e.target.matches('button')) playSfx(); });
-    
-    // --- Menu & Navigation Logic ---
-    const setupButton = (id, callback) => document.getElementById(id).addEventListener('click', callback);
 
+    sfxToggle.addEventListener('change', (e) => isSfxOn = e.target.checked);
+    
+    // This listener now correctly calls our robust playSfx function
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('button')) playSfx();
+    });
+    
+    // --- Menu & Navigation Logic (unchanged from your version) ---
+    const setupButton = (id, callback) => document.getElementById(id).addEventListener('click', callback);
     setupButton('pvp-btn', () => { gameMode = 'pvp'; startGame(); });
     setupButton('pvai-btn', () => { mainMenu.classList.add('hidden'); aiDifficultyMenu.classList.remove('hidden'); });
     aiDifficultyMenu.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON' && e.target.dataset.difficulty) { gameMode = 'pvai'; aiDifficulty = e.target.dataset.difficulty; startGame(); } });
     setupButton('back-to-main-btn', () => { aiDifficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
-    
-    setupButton('open-settings-btn', () => {
-        menuOverlay.classList.add('invisible');
-        settingsMenu.classList.remove('invisible');
-    });
-    setupButton('close-settings-btn', () => {
-        settingsMenu.classList.add('invisible');
-        menuOverlay.classList.remove('invisible');
-    });
-
-    setupButton('home-btn', () => {
-        window.location.href = '../../home/home.html';
-    });
-    
-    const goBackToMenu = () => {
-        bgMusic.pause();
-        winPopupOverlay.classList.add('invisible');
-        gameScreen.classList.add('hidden');
-        menuOverlay.classList.remove('invisible');
-        mainMenu.classList.remove('hidden');
-        particles = [];
-    };
-
+    setupButton('open-settings-btn', () => { menuOverlay.classList.add('invisible'); settingsMenu.classList.remove('invisible'); });
+    setupButton('close-settings-btn', () => { settingsMenu.classList.add('invisible'); menuOverlay.classList.remove('invisible'); });
+    setupButton('home-btn', () => { window.location.href = '../../home/home.html'; });
+    const goBackToMenu = () => { bgMusic.pause(); winPopupOverlay.classList.add('invisible'); gameScreen.classList.add('hidden'); menuOverlay.classList.remove('invisible'); mainMenu.classList.remove('hidden'); particles = []; };
     setupButton('back-to-menu-game-btn', goBackToMenu);
     setupButton('win-back-to-menu-btn', goBackToMenu);
     setupButton('play-again-btn', () => { winPopupOverlay.classList.add('invisible'); particles = []; initGame(); });
 
     function startGame() {
+        unlockAllAudio(); // Gatekeeper: Ensure audio is unlocked before starting game music
         menuOverlay.classList.add('invisible'); gameScreen.classList.remove('hidden'); aiDifficultyMenu.classList.add('hidden');
         if (isMusicOn && bgMusic.src) bgMusic.play().catch(e => console.error("Error playing music on start:", e));
         initGame();
     }
     
-    // The rest of your game logic is completely unchanged.
+    // --- Core Game Logic and Rendering (The rest of the file is unchanged) ---
     function initGame() { board = Array(BOARD_SIZE).fill(0).map(() => Array(BOARD_SIZE).fill(0)); board[3][3] = PLAYER_WHITE; board[3][4] = PLAYER_BLACK; board[4][3] = PLAYER_BLACK; board[4][4] = PLAYER_WHITE; currentPlayer = PLAYER_BLACK; gameOver = false; statusMessageEl.textContent = ''; boardContainer.style.pointerEvents = 'auto'; renderBoard(); updateUI(); highlightValidMoves(); }
     boardContainer.addEventListener('click', (e) => { if (gameOver) return; const highlighter = e.target.closest('.valid-move-highlighter'); if (highlighter) { playSfx(); const cell = highlighter.parentElement; makeMove(parseInt(cell.dataset.row), parseInt(cell.dataset.col)); } });
     function makeMove(row, col) { const piecesToFlip = getPiecesToFlip(row, col, currentPlayer); if (piecesToFlip.length === 0) return; boardContainer.style.pointerEvents = 'none'; document.querySelectorAll('.valid-move-highlighter').forEach(h => h.remove()); statusMessageEl.textContent = ''; board[row][col] = currentPlayer; piecesToFlip.forEach(p => { board[p.row][p.col] = currentPlayer; }); const playerClass = currentPlayer === 1 ? 'black' : 'white'; const opponentClass = currentPlayer === 1 ? 'white' : 'black'; const newPieceCell = boardContainer.children[row * 8 + col]; const newPiece = document.createElement('div'); newPiece.className = `piece ${playerClass}`; newPiece.style.transform = 'scale(0)'; newPieceCell.appendChild(newPiece); requestAnimationFrame(() => { newPiece.style.transform = 'scale(1)'; }); let maxDelay = 0; piecesToFlip.forEach((p, i) => { const delay = 100 + 50 * i; maxDelay = delay; setTimeout(() => { const pieceToFlip = boardContainer.children[p.row * 8 + p.col].querySelector('.piece'); if (pieceToFlip) { pieceToFlip.style.transform = 'rotateY(180deg)'; setTimeout(() => { pieceToFlip.classList.remove(opponentClass); pieceToFlip.classList.add(playerClass); pieceToFlip.style.transform = ''; }, 300); } }, delay); }); setTimeout(switchPlayer, maxDelay + 600); }
