@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Link to external CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,7 +17,6 @@
             <button id="pvp-button">Player vs Player</button>
             <button id="pva-button">Player vs AI</button>
             <button id="settings-button">Settings</button>
-            <!-- NEW "HOME" BUTTON ADDED -->
             <button id="home-button" class="back-button">Home</button>
         </div>
 
@@ -28,10 +26,9 @@
             <button data-difficulty="easy">Easy</button>
             <button data-difficulty="medium">Medium</button>
             <button data-difficulty="hard">Hard</button>
-            <button class="back-button">Back</button>
+            <button id="difficulty-back-button" class="back-button">Back</button>
         </div>
 
- <!-- ... -->
         <!-- Settings Menu -->
         <div id="settings-menu" class="menu-screen">
             <h2>SETTINGS</h2>
@@ -42,7 +39,6 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <!-- NEW: Add this entire div for the SFX toggle -->
             <div class="setting-item">
                 <span>Sound Effects</span>
                 <label class="toggle-switch">
@@ -50,9 +46,15 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div class="setting-item">
+                <span>Puck Speed</span>
+                <div class="slider-container">
+                    <input type="range" min="0.5" max="1.5" value="1" step="0.1" class="speed-slider" id="puck-speed-slider">
+                    <span id="puck-speed-value">1.0x</span>
+                </div>
+            </div>
             <button id="settings-back-button" class="back-button">Back</button>
         </div>
-<!-- ... -->
         
         <!-- Game Container -->
         <div id="game-container">
@@ -73,7 +75,6 @@
             </div>
         </div>
     </div>
-    <!-- Link to external JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
