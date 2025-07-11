@@ -11,12 +11,14 @@
     <audio id="sfx-sound" src="sounds/click.wav"></audio>
     <audio id="win-sound" src="sounds/game over.wav"></audio>
 
+    <!-- NEW: Added a separate audio element for UI button clicks -->
+    <audio id="ui-click-sound" src="sounds/pop.wav"></audio>
+
     <div id="menu-overlay" class="overlay">
         <div id="main-menu" class="menu">
-            <h1>Reversi</h1>
+            <h1>Othello</h1>
             <button id="pvp-btn">Player vs Player</button>
             <button id="pvai-btn">Player vs AI</button>
-            <!-- UPDATED: Settings button is now here -->
             <button id="open-settings-btn">Settings</button>
             <button id="home-btn">Home</button>
         </div>
@@ -53,7 +55,6 @@
             <div id="player-turn"></div>
             <div class="score"><div class="piece white"></div><div id="white-score">2</div></div>
         </div>
-        <!-- UPDATED: Settings icon removed from here -->
         <div class="status-bar"><div id="status-message"></div></div>
         <div id="board-container"></div>
         <button id="back-to-menu-game-btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1em;">Back to Menu</button>
