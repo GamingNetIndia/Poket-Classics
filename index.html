@@ -4,91 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics</title>
+    <link rel="manifest" href="manifest.json"> <!-- Keep this for PWA/Homescreen Icon -->
     <style>
-        /* CSS is identical to your other splash screen */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
-        :root { --title-blue: #0000FF; --love-pink: #E0128A; }
-        body { margin: 0; padding: 0; background-color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Nunito', sans-serif; }
-        .splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none; }
+        :root { 
+            --title-blue: #0000FF; 
+            --love-pink: #E0128A;
+            --error-red: #e74c3c;
+        }
+        body { 
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden; font-family: 'Nunito', sans-serif;
+            transition: background-color 0.5s ease-in-out;
+        }
+        .splash-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none;
+            background-color: transparent;
+        }
         .splash-screen.active { opacity: 1; pointer-events: auto; }
-        #developer-screen { background-color: #000000; }
-        #game-screen { background-color: #ffffff; }
         .logo-image { max-width: 180px; width: 50%; height: auto; margin-bottom: 30px; }
         .splash-header { font-size: 2.5em; font-weight: 900; color: var(--title-blue); margin-bottom: 30px; }
         .loading-bar { width: 80%; max-width: 250px; height: 8px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; }
         .loading-progress { width: 0%; height: 100%; background-color: var(--title-blue); border-radius: 4px; transition: width 0.3s ease-out; }
-        .loading-status { margin-top: 15px; color: #555; font-weight: 600; }
+        .loading-status { margin-top: 15px; color: #555; font-weight: 600; text-align: center; }
         footer { position: absolute; bottom: 25px; width: 100%; text-align: center; }
         .tagline { font-size: 1em; font-weight: 700; }
-        #developer-screen .tagline { color: #E0128A; }
+        #developer-screen .tagline { color: var(--love-pink); }
     </style>
 </head>
-<body>
+<body style="background-color: #000000;">
+
     <div id="developer-screen" class="splash-screen">
         <img class="logo-image" src="developer-logo.png" alt="Developer Logo">
         <footer>
             <p class="tagline">Coded With Love</p>
         </footer>
     </div>
+
     <div id="game-screen" class="splash-screen">
         <h1 class="splash-header">Pocket Classics</h1>
         <img class="logo-image" src="logo.png" alt="Pocket Classics Logo">
-        <div class="loading-bar">
+        <div class="loading-bar" role="progressbar" aria-label="Loading progress">
             <div id="loading-progress" class="loading-progress"></div>
         </div>
-        <div id="loading-status" class="loading-status">Checking files...</div>
+        <div id="loading-status" class="loading-status">Loading Assets...</div>
     </div>
+    
     <script>
-        // This script uses manifest.json and will work on GitHub Pages
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements and Constants ---
             const developerScreen = document.getElementById('developer-screen');
             const gameScreen = document.getElementById('game-screen');
             const progressBar = document.getElementById('loading-progress');
             const loadingStatus = document.getElementById('loading-status');
-            const DEVELOPER_SCREEN_DURATION = 2500;
+            const body = document.body;
 
-            function redirectToHome() {
-                loadingStatus.textContent = 'Ready!';
-                setTimeout(() => { window.location.href = 'home/'; }, 500);
+            const DEVELOPER_SCREEN_DURATION = 2500;
+            const FADE_DURATION = 500;
+            const REDIRECT_DELAY = 500;
+
+            // --- THE COMPLETE FILE LIST (MOVED FROM PHP) ---
+            const files_to_preload = [
+                // Only list files that need to be loaded into memory, primarily images and audio.
+                // HTML, CSS, and JS files are loaded by the browser automatically when needed.
+                "developer-logo.png", "logo.png",
+                "home/background.mp3", "home/click.mp3", "home/2048-icon.png", "home/airhockey-icon.png",
+                "home/checkers-icon.png", "home/chess-icon.png", "home/minesweeper-icon.png",
+                "home/othello-icon.png", "home/rps-icon.png", "home/snake-icon.png",
+                "home/snakes-ladders-icon.png", "home/tictactoe-icon.png",
+                "game/2048/sounds/music.mp3", "game/2048/sounds/move.wav", "game/2048/sounds/merge.wav", "game/2048/sounds/win.wav",
+                "game/2048/sounds/lose.wav", "game/2048/sounds/click.wav", "game/2048/ss1.png", "game/2048/ss2.png",
+                "game/air-hockey/sounds/background.mp3", "game/air-hockey/sounds/hit.wav", "game/air-hockey/sounds/score.wav",
+                "game/air-hockey/sounds/win.wav", "game/air-hockey/sounds/click.wav", "game/air-hockey/ss1.png", "game/air-hockey/ss2.png",
+                "game/checkers/sounds/move.wav", "game/checkers/sounds/capture.wav", "game/checkers/sounds/game-over.wav",
+                "game/checkers/sounds/ui_click.wav", "game/checkers/sounds/game_start.wav", "game/checkers/sounds/select.wav",
+                "game/checkers/sounds/invalid.wav", "game/checkers/sounds/menu-music.mp3", "game/checkers/sounds/game-music.mp3",
+                "game/checkers/ss1.png", "game/checkers/ss2.png",
+                "game/chess/sounds/move.wav", "game/chess/sounds/capture.wav", "game/chess/sounds/check.wav", "game/chess/sounds/game-over.wav",
+                "game/chess/sounds/ui_click.wav", "game/chess/sounds/game_start.wav", "game/chess/sounds/castling.wav",
+                "game/chess/sounds/promotion.wav", "game/chess/sounds/select.wav", "game/chess/sounds/invalid.wav",
+                "game/chess/sounds/menu-music.mp3", "game/chess/sounds/game-music.mp3", "game/chess/ss1.png", "game/chess/ss2.png",
+                "game/minesweeper/sounds/music-background.mp3", "game/minesweeper/sounds/sfx-click.wav", "game/minesweeper/sounds/sfx-flag.wav",
+                "game/minesweeper/sounds/sfx-reveal.wav", "game/minesweeper/sounds/sfx-explode.wav", "game/minesweeper/sounds/sfx-win.mp3",
+                "game/minesweeper/sounds/sfx-lose.mp3", "game/minesweeper/ss1.png", "game/minesweeper/ss2.png",
+                "game/othello/sounds/music.mp3", "game/othello/sounds/click.wav", "game/othello/sounds/game over.wav", "game/othello/sounds/pop.wav",
+                "game/othello/ss1.png", "game/othello/ss2.png",
+                "game/rock-paper-scissors/sounds/bg-music.mp3", "game/rock-paper-scissors/sounds/click.wav", "game/rock-paper-scissors/sounds/win.wav",
+                "game/rock-paper-scissors/sounds/lose.wav", "game/rock-paper-scissors/sounds/tie.wav", "game/rock-paper-scissors/ss1.png", "game/rock-paper-scissors/ss2.png",
+                "game/snake/sounds/bg-music.mp3", "game/snake/sounds/eat.wav", "game/snake/sounds/game-over.wav", "game/snake/sounds/click.wav",
+                "game/snake/sounds/turn.wav", "game/snake/ss1.png", "game/snake/ss2.png",
+                "game/snakes-ladders/assets/dice.mp3", "game/snakes-ladders/ss1.png", "game/snakes-ladders/ss2.png",
+                "game/tictactoe/audio/background.mp3", "game/tictactoe/audio/click.wav", "game/tictactoe/audio/win.wav",
+                "game/tictactoe/audio/draw.wav", "game/tictactoe/ss1.png", "game/tictactoe/ss2.png"
+            ];
+
+            // --- Real Asset Preloader ---
+            async function preloadAssets() {
+                let loadedCount = 0;
+                const totalCount = files_to_preload.length;
+
+                const loadPromises = files_to_preload.map(fileUrl => {
+                    return new Promise((resolve, reject) => {
+                        // Check file type
+                        if (/\.(png|jpg|jpeg|gif)$/.test(fileUrl)) {
+                            const img = new Image();
+                            img.onload = resolve;
+                            img.onerror = reject;
+                            img.src = fileUrl;
+                        } else if (/\.(mp3|wav|ogg)$/.test(fileUrl)) {
+                            const audio = new Audio();
+                            audio.oncanplaythrough = resolve;
+                            audio.onerror = reject;
+                            audio.src = fileUrl;
+                        } else {
+                            // We don't need to preload other file types like html/css/js
+                            resolve(); 
+                        }
+                    }).finally(() => {
+                        // Update progress bar regardless of success or failure
+                        loadedCount++;
+                        const progress = (loadedCount / totalCount) * 100;
+                        progressBar.style.width = `${progress}%`;
+                        loadingStatus.textContent = `Loading ${loadedCount} / ${totalCount}`;
+                    });
+                });
+
+                // Wait for all files to either load or fail
+                await Promise.all(loadPromises.map(p => p.catch(e => e))); // Don't let one failure stop all
             }
-            
-            async function checkGameFiles() {
-                try {
-                    const response = await fetch('manifest.json');
-                    if (!response.ok) throw new Error('Could not load manifest.json');
-                    const data = await response.json();
-                    const filesToCheck = data.critical_files;
-                    const totalFiles = filesToCheck.length;
-                    let filesChecked = 0;
-                    const checkPromises = filesToCheck.map(fileUrl => 
-                        fetch(fileUrl, { method: 'HEAD' })
-                            .finally(() => {
-                                filesChecked++;
-                                const progress = (filesChecked / totalFiles) * 100;
-                                progressBar.style.width = `${progress}%`;
-                            })
-                    );
-                    await Promise.all(checkPromises);
-                    redirectToHome();
-                } catch (error) {
-                    console.error("File check failed:", error);
-                    loadingStatus.textContent = 'Error! Continuing anyway...';
-                    progressBar.style.backgroundColor = '#e74c3c';
-                    progressBar.style.width = '100%';
-                    setTimeout(redirectToHome, 1500);
-                }
-            }
-            
-            function startSequence() {
+
+            // --- Main Sequence ---
+            async function startSequence() {
                 developerScreen.classList.add('active');
-                setTimeout(() => {
-                    developerScreen.classList.remove('active');
-                    setTimeout(() => {
-                        gameScreen.classList.add('active');
-                        checkGameFiles();
-                    }, 500);
-                }, DEVELOPER_SCREEN_DURATION);
+                await new Promise(res => setTimeout(res, DEVELOPER_SCREEN_DURATION));
+                
+                developerScreen.classList.remove('active');
+                await new Promise(res => setTimeout(res, FADE_DURATION));
+                
+                body.style.backgroundColor = '#ffffff';
+                gameScreen.classList.add('active');
+                
+                // Start the real asset preloading
+                await preloadAssets();
+
+                loadingStatus.textContent = 'Ready!';
+                await new Promise(res => setTimeout(res, REDIRECT_DELAY));
+                window.location.href = 'home/';
             }
+
             startSequence();
         });
     </script>
