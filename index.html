@@ -4,158 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Classics</title>
-    <!-- Add manifest for PWA capabilities like add-to-homescreen icon -->
-    <link rel="manifest" href="manifest.json">
     <style>
+        /* CSS is identical to your other splash screen */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
-        :root { 
-            --title-blue: #0000FF; 
-            --love-pink: #E0128A;
-            --error-red: #e74c3c;
-        }
-        /* IMPROVEMENT: Smoother background color transition */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            overflow: hidden; 
-            font-family: 'Nunito', sans-serif;
-            transition: background-color 0.5s ease-in-out;
-        }
-        .splash-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none;
-            background-color: transparent;
-        }
+        :root { --title-blue: #0000FF; --love-pink: #E0128A; }
+        body { margin: 0; padding: 0; background-color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Nunito', sans-serif; }
+        .splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none; }
         .splash-screen.active { opacity: 1; pointer-events: auto; }
-        
+        #developer-screen { background-color: #000000; }
+        #game-screen { background-color: #ffffff; }
         .logo-image { max-width: 180px; width: 50%; height: auto; margin-bottom: 30px; }
         .splash-header { font-size: 2.5em; font-weight: 900; color: var(--title-blue); margin-bottom: 30px; }
         .loading-bar { width: 80%; max-width: 250px; height: 8px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; }
         .loading-progress { width: 0%; height: 100%; background-color: var(--title-blue); border-radius: 4px; transition: width 0.3s ease-out; }
-        .loading-status { margin-top: 15px; color: #555; font-weight: 600; text-align: center; }
+        .loading-status { margin-top: 15px; color: #555; font-weight: 600; }
         footer { position: absolute; bottom: 25px; width: 100%; text-align: center; }
         .tagline { font-size: 1em; font-weight: 700; }
-        
-        #developer-screen .tagline { color: var(--love-pink); }
+        #developer-screen .tagline { color: #E0128A; }
     </style>
 </head>
-<body style="background-color: #000000;"> <!-- Start with black background -->
-
-    <!-- IMPROVEMENT: Add a noscript tag for users with JS disabled -->
-    <noscript>
-        <div style="width: 100%; text-align: center; color: #000000;">
-            <h1>JavaScript is required to play Pocket Classics.</h1>
-            <p>Please enable JavaScript in your browser settings.</p>
-        </div>
-    </noscript>
-
+<body>
     <div id="developer-screen" class="splash-screen">
         <img class="logo-image" src="developer-logo.png" alt="Developer Logo">
         <footer>
             <p class="tagline">Coded With Love</p>
         </footer>
     </div>
-
     <div id="game-screen" class="splash-screen">
         <h1 class="splash-header">Pocket Classics</h1>
         <img class="logo-image" src="logo.png" alt="Pocket Classics Logo">
-        <!-- IMPROVEMENT: Added ARIA role for accessibility -->
-        <div class="loading-bar" role="progressbar" aria-label="Loading progress">
+        <div class="loading-bar">
             <div id="loading-progress" class="loading-progress"></div>
         </div>
-        <div id="loading-status" class="loading-status">Verifying Game Files...</div>
+        <div id="loading-status" class="loading-status">Checking files...</div>
     </div>
-    
     <script>
+        // This script uses manifest.json and will work on GitHub Pages
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Elements and Timing Constants ---
             const developerScreen = document.getElementById('developer-screen');
             const gameScreen = document.getElementById('game-screen');
             const progressBar = document.getElementById('loading-progress');
             const loadingStatus = document.getElementById('loading-status');
-            const body = document.body;
-
             const DEVELOPER_SCREEN_DURATION = 2500;
-            const FADE_DURATION = 500;
-            const REDIRECT_DELAY = 500;
-
-            // --- Helper Functions ---
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
             function redirectToHome() {
                 loadingStatus.textContent = 'Ready!';
-                setTimeout(() => {
-                    window.location.href = 'home/';
-                }, REDIRECT_DELAY);
+                setTimeout(() => { window.location.href = 'home/'; }, 500);
             }
             
-            async function checkGameFilesWithPHP() {
+            async function checkGameFiles() {
                 try {
-                    const response = await fetch('check_files.php');
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-
-                    // IMPROVEMENT: Animate progress bar after a short delay for a better feel
-                    await sleep(100);
-                    progressBar.style.width = '100%';
-                    await sleep(300); // Wait for animation to finish
-
-                    if (result.success) {
-                        redirectToHome();
-                    } else {
-                        // IMPROVEMENT: Stop the loader and give a clearer error
-                        console.error("Missing critical files:", result.missing_files);
-                        loadingStatus.innerHTML = 'Error! Missing files.<br>Cannot start game.';
-                        progressBar.style.backgroundColor = 'var(--error-red)';
-                        // We DO NOT redirect if files are missing. The loader stops here.
-                    }
-
+                    const response = await fetch('manifest.json');
+                    if (!response.ok) throw new Error('Could not load manifest.json');
+                    const data = await response.json();
+                    const filesToCheck = data.critical_files;
+                    const totalFiles = filesToCheck.length;
+                    let filesChecked = 0;
+                    const checkPromises = filesToCheck.map(fileUrl => 
+                        fetch(fileUrl, { method: 'HEAD' })
+                            .finally(() => {
+                                filesChecked++;
+                                const progress = (filesChecked / totalFiles) * 100;
+                                progressBar.style.width = `${progress}%`;
+                            })
+                    );
+                    await Promise.all(checkPromises);
+                    redirectToHome();
                 } catch (error) {
-                    // IMPROVEMENT: Stop the loader on network/PHP errors
-                    console.error("PHP file check failed:", error);
-                    loadingStatus.innerHTML = 'Error! Cannot verify files.<br>Check your connection.';
-                    progressBar.style.backgroundColor = 'var(--error-red)';
+                    console.error("File check failed:", error);
+                    loadingStatus.textContent = 'Error! Continuing anyway...';
+                    progressBar.style.backgroundColor = '#e74c3c';
                     progressBar.style.width = '100%';
+                    setTimeout(redirectToHome, 1500);
                 }
             }
             
-            // IMPROVEMENT: Refactored sequence using async/await for clarity
-            async function startSequence() {
-                // 1. Show developer screen
+            function startSequence() {
                 developerScreen.classList.add('active');
-                await sleep(DEVELOPER_SCREEN_DURATION);
-
-                // 2. Fade out developer screen
-                developerScreen.classList.remove('active');
-                await sleep(FADE_DURATION);
-                
-                // 3. Change background to white and show game screen
-                body.style.backgroundColor = '#ffffff';
-                gameScreen.classList.add('active');
-                
-                // 4. Start the file check
-                await checkGameFilesWithPHP();
+                setTimeout(() => {
+                    developerScreen.classList.remove('active');
+                    setTimeout(() => {
+                        gameScreen.classList.add('active');
+                        checkGameFiles();
+                    }, 500);
+                }, DEVELOPER_SCREEN_DURATION);
             }
-
-            // IMPROVEMENT: Add a simple service worker for offline caching of the loader
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js').then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }).catch(error => {
-                        console.log('ServiceWorker registration failed: ', error);
-                    });
-                });
-            }
-
             startSequence();
         });
     </script>
