@@ -26,51 +26,80 @@ document.addEventListener('DOMContentLoaded', () => {
         capture: document.getElementById('sound-capture'),
         check: document.getElementById('sound-check'),
         gameOver: document.getElementById('sound-game-over'),
-        menuMusic: document.getElementById('music-menu'),
-        gameMusic: document.getElementById('music-game'),
         uiClick: document.getElementById('sound-ui-click'),
         gameStart: document.getElementById('sound-game-start'),
         castling: document.getElementById('sound-castling'),
         promotion: document.getElementById('sound-promotion'),
         select: document.getElementById('sound-select'),
-        invalid: document.getElementById('sound-invalid')
+        invalid: document.getElementById('sound-invalid'),
+        menuMusic: document.getElementById('music-menu'),
+        gameMusic: document.getElementById('music-game')
     };
     
     let board = [], currentPlayer = 'w', selectedPiece = null, validMoves = [], gameMode = null, aiLevel = 'easy', isGameOver = false, lastMove = { from: null, to: null }, castlingRights = { w: { k: true, q: true }, b: { k: true, q: true } }, enPassantTarget = null;
     const pieces = { 'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚' };
 
-    // New Sound State
+    // Sound State
     let isMusicEnabled = true;
     let isSfxEnabled = true;
     let gameOverSoundPlayed = false;
 
     // --- INITIALIZATION & MENU ---
-    function showMainMenu() { gameContainer.classList.add('hidden'); mainMenu.classList.remove('hidden'); aiDifficultySelector.classList.add('hidden'); stopAllMusic(); playMusic('menuMusic'); }
+    function showMainMenu() {
+        gameContainer.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+        aiDifficultySelector.classList.add('hidden');
+        stopAllMusic();
+        playMusic('menuMusic');
+    }
+
     function initializeGame(mode) {
         playSound('gameStart');
         gameMode = mode;
-        if (mode === 'pvai') { aiLevel = aiDifficulty.value; }
-        board = setupBoard(); currentPlayer = 'w'; selectedPiece = null; validMoves = []; isGameOver = false; gameOverSoundPlayed = false; castlingRights = { w: { k: true, q: true }, b: { k: true, q: true } }; enPassantTarget = null; lastMove = { from: null, to: null };
-        mainMenu.classList.add('hidden'); gameContainer.classList.remove('hidden');
-        stopAllMusic(); playMusic('gameMusic');
-        renderBoard(); updateStatus();
+        if (mode === 'pvai') {
+            aiLevel = aiDifficulty.value;
+        }
+        board = setupBoard();
+        currentPlayer = 'w';
+        selectedPiece = null;
+        validMoves = [];
+        isGameOver = false;
+        gameOverSoundPlayed = false;
+        castlingRights = { w: { k: true, q: true }, b: { k: true, q: true } };
+        enPassantTarget = null;
+        lastMove = { from: null, to: null };
+        mainMenu.classList.add('hidden');
+        gameContainer.classList.remove('hidden');
+        stopAllMusic();
+        playMusic('gameMusic');
+        renderBoard();
+        updateStatus();
     }
-    showMainMenu();
+    
+    showMainMenu(); // Initial call to display the main menu on page load
 
-    // --- SOUND SYSTEM (UPDATED) ---
+    // --- SOUND SYSTEM ---
     function playSound(soundKey) {
         if (!isSfxEnabled) return;
         const sound = sounds[soundKey];
-        if (sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => {});
+        }
     }
+
     function playMusic(musicKey) {
         if (!isMusicEnabled) return;
         const music = sounds[musicKey];
-        if (music) { music.currentTime = 0; music.play().catch(e => {}); }
+        if (music) {
+            music.currentTime = 0;
+            music.play().catch(e => {});
+        }
     }
+
     function stopAllMusic() {
-        sounds.menuMusic.pause();
-        sounds.gameMusic.pause();
+        if (sounds.menuMusic) sounds.menuMusic.pause();
+        if (sounds.gameMusic) sounds.gameMusic.pause();
     }
 
     // --- EVENT HANDLERS ---
@@ -78,22 +107,33 @@ document.addEventListener('DOMContentLoaded', () => {
     playAiBtn.addEventListener('click', () => { playSound('uiClick'); aiDifficultySelector.classList.toggle('hidden'); });
     startAiGameBtn.addEventListener('click', () => { playSound('uiClick'); initializeGame('pvai'); });
     backToMenuBtn.addEventListener('click', () => { playSound('uiClick'); showMainMenu(); });
-    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '../../home/home.html'; });
+    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '/../home/index.html'; });
 
     // Settings Event Listeners
     settingsBtn.addEventListener('click', () => { playSound('uiClick'); settingsDialog.classList.remove('hidden'); });
     closeSettingsBtn.addEventListener('click', () => { playSound('uiClick'); settingsDialog.classList.add('hidden'); });
     settingsDialog.addEventListener('click', (event) => { if (event.target === settingsDialog) { playSound('uiClick'); settingsDialog.classList.add('hidden'); } });
+
     musicToggle.addEventListener('change', () => {
         isMusicEnabled = musicToggle.checked;
         playSound('uiClick');
         if (isMusicEnabled) {
-            if (!mainMenu.classList.contains('hidden')) { playMusic('menuMusic'); } else { playMusic('gameMusic'); }
-        } else { stopAllMusic(); }
+            if (!mainMenu.classList.contains('hidden')) {
+                playMusic('menuMusic');
+            } else {
+                playMusic('gameMusic');
+            }
+        } else {
+            stopAllMusic();
+        }
     });
-    sfxToggle.addEventListener('change', () => { isSfxEnabled = sfxToggle.checked; playSound('uiClick'); });
 
-    // --- Core Game Logic (Rendering, Interaction) ---
+    sfxToggle.addEventListener('change', () => {
+        isSfxEnabled = sfxToggle.checked;
+        playSound('uiClick');
+    });
+    
+    // --- CORE GAME LOGIC (Rendering, Interaction, Moves) ---
     function renderBoard() {
         boardElement.innerHTML = '';
         for (let r = 0; r < 8; r++) { for (let c = 0; c < 8; c++) { const square = document.createElement('div'); square.classList.add('square', (r + c) % 2 === 0 ? 'light' : 'dark'); square.dataset.row = r; square.dataset.col = c; const pieceChar = board[r][c]; if (pieceChar) { const pieceElement = document.createElement('div'); pieceElement.classList.add('piece'); pieceElement.classList.add(getPieceColor(pieceChar) === 'w' ? 'white-piece' : 'black-piece'); pieceElement.innerText = pieces[pieceChar]; pieceElement.dataset.piece = pieceChar; square.appendChild(pieceElement); } if ((lastMove.from && lastMove.from.r === r && lastMove.from.c === c) || (lastMove.to && lastMove.to.r === r && lastMove.to.c === c)) { square.classList.add('last-move'); } boardElement.appendChild(square); } }
@@ -109,6 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function finishMove(from, to) { updateCastlingRights(from, to); lastMove = { from, to }; deselect(); switchPlayer(); renderBoard(); updateStatus(); if (gameMode === 'pvai' && currentPlayer === 'b' && !isGameOver) { setTimeout(makeAiMove, 500); } }
     function switchPlayer() { currentPlayer = (currentPlayer === 'w') ? 'b' : 'w'; }
     function updateStatus() { let statusText = ''; const kingColor = currentPlayer; const inCheck = isKingInCheck(kingColor); const hasMoves = hasAnyValidMoves(kingColor); if (inCheck && !hasMoves) { isGameOver = true; statusText = `Checkmate! ${kingColor === 'w' ? 'Black' : 'White'} wins.`; } else if (!inCheck && !hasMoves) { isGameOver = true; statusText = 'Stalemate! It\'s a draw.'; } else { statusText = `${kingColor === 'w' ? 'White' : 'Black'}'s Turn`; if (inCheck) { statusText += ' - Check!'; playSound('check'); } } if (isGameOver && !gameOverSoundPlayed) { playSound('gameOver'); gameOverSoundPlayed = true; } statusElement.textContent = statusText; }
+    
+    // --- MOVE VALIDATION & HELPERS ---
     function setupBoard() { return [['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],[null, null, null, null, null, null, null, null],[null, null, null, null, null, null, null, null],[null, null, null, null, null, null, null, null],[null, null, null, null, null, null, null, null],['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']];}
     function updateCastlingRights(from, to) { const piece = board[to.r][to.c] || ''; if (piece.toLowerCase() === 'k') { castlingRights[currentPlayer] = { k: false, q: false }; } if (from.r === 0 && from.c === 0) castlingRights.b.q = false; if (from.r === 0 && from.c === 7) castlingRights.b.k = false; if (from.r === 7 && from.c === 0) castlingRights.w.q = false; if (from.r === 7 && from.c === 7) castlingRights.w.k = false; }
     function getValidMovesForPiece(r, c) { const piece = board[r][c]; if (!piece) return []; const color = getPieceColor(piece); let moves = []; const pseudoLegalMoves = getPseudoLegalMoves(r, c, piece, color); moves = pseudoLegalMoves.filter(move => { const tempBoard = board.map(row => [...row]); tempBoard[move.r][move.c] = piece; tempBoard[r][c] = null; return !isKingInCheck(color, tempBoard); }); return moves; }
@@ -123,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function isValid(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
     function getPieceColor(piece) { return piece === piece.toUpperCase() ? 'w' : 'b'; }
     function findKing(color, boardState = board) { const kingChar = color === 'w' ? 'K' : 'k'; for (let r = 0; r < 8; r++) { for (let c = 0; c < 8; c++) { if (boardState[r][c] === kingChar) { return { r, c }; } } } return null; }
+    
+    // --- ARTIFICIAL INTELLIGENCE ---
     function makeAiMove() { if (isGameOver) return; let bestMove = null; if (aiLevel === 'easy') { bestMove = getEasyAiMove(); } else if (aiLevel === 'medium') { bestMove = getMediumAiMove(); } else if (aiLevel === 'hard') { bestMove = getHardAiMove(); } if (bestMove) { makeMove(bestMove.from, bestMove.to); } }
     function getAllValidMoves(color) { const allMoves = []; for (let r = 0; r < 8; r++) { for (let c = 0; c < 8; c++) { const piece = board[r][c]; if (piece && getPieceColor(piece) === color) { const moves = getValidMovesForPiece(r, c); moves.forEach(move => { allMoves.push({ from: { r, c }, to: move }); }); } } } return allMoves; }
     function getEasyAiMove() { const allMoves = getAllValidMoves('b'); if (allMoves.length === 0) return null; return allMoves[Math.floor(Math.random() * allMoves.length)]; }
