@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Menu Navigation ---
     playBtn.addEventListener('click', () => { handleFirstInteraction(); playUiClick(); mainMenu.classList.add('hidden'); difficultyMenu.classList.remove('hidden'); });
     settingsBtn.addEventListener('click', () => { handleFirstInteraction(); playUiClick(); settingsModal.classList.remove('hidden'); });
-    homeBtn.addEventListener('click', () => { handleFirstInteraction(); playUiClick(); window.location.href = '/../home/index.html'; });
+    homeBtn.addEventListener('click', () => { handleFirstInteraction(); playUiClick(); window.location.href = '../../home/index.html'; });
     backToMainBtn.addEventListener('click', () => { playUiClick(); difficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
     closeSettingsBtn.addEventListener('click', () => { playUiClick(); settingsModal.classList.add('hidden'); });
     musicToggle.addEventListener('change', (e) => { isMusicOn = e.target.checked; isMusicOn ? playBgMusic() : pauseBgMusic(); saveSettings(); });
