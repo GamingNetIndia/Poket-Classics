@@ -83,7 +83,7 @@ homeBtn.addEventListener('click', () => {
     playSfx(clickSound);
     // This path is relative. It goes up two directories from the current one.
     // Adjust if your file structure is different.
-    window.location.href = '/../home/index.html';
+    window.location.href = '../../home/index.html';
 });
 
 // --- Settings Toggles ---
