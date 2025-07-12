@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     playAiBtn.addEventListener('click', () => { playSound('uiClick'); aiDifficultySelector.classList.toggle('hidden'); });
     startAiGameBtn.addEventListener('click', () => { playSound('uiClick'); initializeGame('pvai'); });
     backToMenuBtn.addEventListener('click', () => { playSound('uiClick'); showMainMenu(); });
-    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '/../home/index.html'; });
+    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '../../home/index.html'; });
 
     // Settings Event Listeners
     settingsBtn.addEventListener('click', () => { playSound('uiClick'); settingsDialog.classList.remove('hidden'); });
