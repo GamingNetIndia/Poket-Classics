@@ -1,7 +1,7 @@
 {
   "name": "Pocket Classics",
   "short_name": "Pocket Classics",
-  "start_url": "https://gamingnetindia.github.io/Poket-Classics/",
+  "start_url": "../../index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0000FF",
