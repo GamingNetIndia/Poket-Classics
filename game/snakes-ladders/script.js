@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.gameModeBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.gameMode = e.target.dataset.mode; updateActiveButton(dom.gameModeBtns, e.target); } });
     dom.playerCountBtns.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { playSoundEffect(audio.click); state.numPlayers = parseInt(e.target.dataset.count, 10); updateActiveButton(dom.playerCountBtns, e.target); } });
     dom.startGameBtn.addEventListener('click', () => { playSoundEffect(audio.click); startGame(); });
-    dom.homeBtn.addEventListener('click', () => { playSoundEffect(audio.click); window.location.href = "/../home/index.html"; });
+    dom.homeBtn.addEventListener('click', () => { playSoundEffect(audio.click); window.location.href = "../../home/index.html"; });
     dom.backToMenuBtn.addEventListener('click', goToMainMenu);
     dom.menuFromWinBtn.addEventListener('click', goToMainMenu);
     dom.playAgainBtn.addEventListener('click', () => { playSoundEffect(audio.click); dom.winPopup.classList.add('hidden'); if (state.confettiAnimationId) stopConfetti(); startGame(); });
