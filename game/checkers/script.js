@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     playAiBtn.addEventListener('click', () => { playSound('uiClick'); aiDifficultySelector.classList.toggle('hidden'); });
     startAiGameBtn.addEventListener('click', () => { playSound('uiClick'); initializeGame('pvai'); });
     backToMenuBtn.addEventListener('click', () => { playSound('uiClick'); showMainMenu(); });
-    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '/../home/index.html'; });
+    homeBtn.addEventListener('click', () => { playSound('uiClick'); window.location.href = '../../home/index.html'; });
     settingsBtn.addEventListener('click', () => { playSound('uiClick'); settingsDialog.classList.remove('hidden'); });
     closeSettingsBtn.addEventListener('click', () => { playSound('uiClick'); settingsDialog.classList.add('hidden'); });
     settingsDialog.addEventListener('click', (event) => { if (event.target === settingsDialog) { playSound('uiClick'); settingsDialog.classList.add('hidden'); } });
