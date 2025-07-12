@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupButton('back-to-main-btn', () => { aiDifficultyMenu.classList.add('hidden'); mainMenu.classList.remove('hidden'); });
     setupButton('open-settings-btn', () => { menuOverlay.classList.add('invisible'); settingsMenu.classList.remove('invisible'); });
     setupButton('close-settings-btn', () => { settingsMenu.classList.add('invisible'); menuOverlay.classList.remove('invisible'); });
-    setupButton('home-btn', () => { window.location.href = '/../home/index.html'; });
+    setupButton('home-btn', () => { window.location.href = '../../home/index.html'; });
     const goBackToMenu = () => { bgMusic.pause(); winPopupOverlay.classList.add('invisible'); gameScreen.classList.add('hidden'); menuOverlay.classList.remove('invisible'); mainMenu.classList.remove('hidden'); particles = []; };
     setupButton('back-to-menu-game-btn', goBackToMenu);
     setupButton('win-back-to-menu-btn', goBackToMenu);
