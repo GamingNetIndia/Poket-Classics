@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     homeBtn.addEventListener('click', () => {
         playSound(clickSound);
         // Navigate up two directories (from /game/tictactoe/ to root) then into /home/
-        window.location.href = '/../home/index.html';
+        window.location.href = '../../home/index.html';
     });
 
     difficultyBtns.forEach(button => { button.addEventListener('click', () => { playSound(clickSound); gameMode = 'ai'; aiDifficulty = button.dataset.difficulty; startGame(); }); });
