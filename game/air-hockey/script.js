@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pvpButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pvp'; startGame(); });
     pvaButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pva'; showScreen('difficulty'); });
     settingsButton.addEventListener('click', () => { playSound(clickSound); showScreen('settings'); });
-    homeButton.addEventListener('click', () => { playSound(clickSound); window.location.href = '/../home/index.html'; });
+    homeButton.addEventListener('click', () => { playSound(clickSound); window.location.href = '../../home/index.html'; });
     difficultyMenu.querySelectorAll('button[data-difficulty]').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); difficulty = button.dataset.difficulty; startGame(); }); });
     difficultyBackButton.addEventListener('click', () => { playSound(clickSound); showScreen('main'); });
     settingsBackButton.addEventListener('click', () => { playSound(clickSound); showScreen('main'); });
