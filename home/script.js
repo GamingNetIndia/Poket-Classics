@@ -1,31 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Elements ---
+    // --- 1. ALL Element Selections ---
+    // Get all interactive and UI elements first.
     const allButtons = document.querySelectorAll('button, .game-card, .social-link');
     const backgroundMusic = document.getElementById('background-music');
     const clickSound = document.getElementById('click-sound');
-    const settingsBtn = document.getElementById('settings-btn');
+    
+    // Modals and Overlays
     const settingsOverlay = document.getElementById('settings-overlay');
-    const closeSettingsBtn = document.getElementById('close-settings-btn');
-    const musicToggle = document.getElementById('music-toggle');
-    const sfxToggle = document.getElementById('sfx-toggle');
     const detailsOverlay = document.getElementById('details-overlay');
+    const confirmationOverlay = document.getElementById('confirmation-overlay');
+    const privacyOverlay = document.getElementById('privacy-overlay');
+    
+    // Buttons
+    const settingsBtn = document.getElementById('settings-btn');
+    const closeSettingsBtn = document.getElementById('close-settings-btn');
     const detailsBackBtn = document.getElementById('details-back-btn');
     const detailsPlayBtn = document.getElementById('details-play-btn');
     const socialLinks = document.querySelectorAll('.social-link');
-    const confirmationOverlay = document.getElementById('confirmation-overlay');
     const confirmYesBtn = document.getElementById('confirm-yes');
     const confirmNoBtn = document.getElementById('confirm-no');
     const privacyBtn = document.getElementById('privacy-btn');
-    const privacyOverlay = document.getElementById('privacy-overlay');
     const closePrivacyBtn = document.getElementById('close-privacy-btn');
+    
+    // Toggles
+    const musicToggle = document.getElementById('music-toggle');
+    const sfxToggle = document.getElementById('sfx-toggle');
+    
+    // PWA Elements
+    const installButton = document.getElementById('install-pwa-btn');
+    const iosInstallPrompt = document.getElementById('ios-install-prompt');
 
-    // --- State Variables ---
+    // --- 2. State Variables ---
+    // Define all state variables.
+    let deferredPrompt;
     let isMusicEnabled, isSfxEnabled, hasInteracted = false;
 
-    // --- Functions ---
-    function playSound(sound) { if (!sound || !isSfxEnabled) return; sound.currentTime = 0; sound.play().catch(e => {}); }
-    function updateMusicState() { if (isMusicEnabled && hasInteracted) { backgroundMusic.play().catch(e => {}); } else { backgroundMusic.pause(); } }
-    function saveSettings() { localStorage.setItem('pocketClassicsMusic', isMusicEnabled); localStorage.setItem('pocketClassicsSfx', isSfxEnabled); }
+    // --- 3. Core Functions (Defined before they are used) ---
+    // These helper functions are now available to all other parts of the script.
+    function playSound(sound) {
+        if (!sound || !isSfxEnabled) return;
+        sound.currentTime = 0;
+        sound.play().catch(e => console.error("Sound play failed:", e));
+    }
+
+    function updateMusicState() {
+        if (isMusicEnabled && hasInteracted) {
+            backgroundMusic.play().catch(e => console.error("Music play failed:", e));
+        } else {
+            backgroundMusic.pause();
+        }
+    }
+
+    function saveSettings() {
+        localStorage.setItem('pocketClassicsMusic', isMusicEnabled);
+        localStorage.setItem('pocketClassicsSfx', isSfxEnabled);
+    }
+
     function loadSettings() {
         isMusicEnabled = localStorage.getItem('pocketClassicsMusic') !== 'false';
         isSfxEnabled = localStorage.getItem('pocketClassicsSfx') !== 'false';
@@ -33,8 +63,54 @@ document.addEventListener('DOMContentLoaded', () => {
         sfxToggle.checked = isSfxEnabled;
     }
 
-    // --- Event Listeners Setup ---
-    loadSettings();
+    // --- 4. PWA Installation Logic ---
+    // This logic now safely uses the elements and functions defined above.
+    function handleIosInstallation() {
+        const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isSafari = isIos && !navigator.userAgent.match(/CriOS/i) && !navigator.userAgent.match(/FxiOS/i);
+
+        if (isIos && !isStandalone && iosInstallPrompt) {
+            if (isSafari) {
+                const shareIconSvg = `<svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;fill:white;" viewBox="0 0 24 24"><path d="M13 4.2c-.1-.1-.1-.2-.2-.2s-.2.1-.2.2v8.6c0 .2.1.3.3.3s.3-.1.3-.3V4.2z M12 2c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z M17 8.2c-.1-.1-.1-.2-.2-.2s-.2.1-.2.2v8.6c0 .2.1.3.3.3s.3-.1.3-.3V8.2z M16 7c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z M8 8.2c-.1-.1-.1-.2-.2-.2s-.2.1-.2.2v8.6c0 .2.1.3.3.3s.3-.1.3-.3V8.2z M7 7c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z M18 3.2L6.3 12.3c-.3.2-.3.6 0 .8s.6.2.8 0L18.8 4c.3-.2.3-.6 0-.8s-.6-.2-.8 0z"/></svg>`;
+                iosInstallPrompt.innerHTML = `To install, tap the Share button ${shareIconSvg} and then 'Add to Home Screen'.`;
+            } else {
+                iosInstallPrompt.innerHTML = `To install this app, please open this page in the <b>Safari</b> browser.`;
+            }
+            iosInstallPrompt.style.display = 'block';
+        }
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installButton) {
+            installButton.style.display = 'flex';
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        if (installButton) installButton.style.display = 'none';
+        if (iosInstallPrompt) iosInstallPrompt.style.display = 'none';
+        deferredPrompt = null;
+    });
+
+    // --- 5. Event Listeners ---
+    // All event listeners are grouped together for clarity.
+    
+    // PWA Install Button
+    if (installButton) {
+        installButton.addEventListener('click', async () => {
+            playSound(clickSound);
+            if (deferredPrompt) {
+                installButton.style.display = 'none';
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+        });
+    }
 
     // Universal Click Sound
     allButtons.forEach(button => {
@@ -42,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => playSound(clickSound));
         }
     });
-    
+
     // Game Card Interaction
     document.querySelectorAll('.game-card').forEach(card => {
         if (card.classList.contains('non-interactive')) return;
@@ -76,24 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
     detailsPlayBtn.addEventListener('click', function() { if (this.dataset.url) { window.location.href = this.dataset.url; } });
 
     // Settings & Privacy Modals
-    settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
     const closeSettingsMenu = () => settingsOverlay.classList.remove('visible');
+    const closePrivacyMenu = () => privacyOverlay.classList.remove('visible');
+    settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
     closeSettingsBtn.addEventListener('click', closeSettingsMenu);
     settingsOverlay.addEventListener('click', (event) => { if (event.target === settingsOverlay) closeSettingsMenu(); });
-    
     privacyBtn.addEventListener('click', () => privacyOverlay.classList.add('visible'));
-    const closePrivacyMenu = () => privacyOverlay.classList.remove('visible');
     closePrivacyBtn.addEventListener('click', closePrivacyMenu);
     privacyOverlay.addEventListener('click', (event) => { if(event.target === privacyOverlay) closePrivacyMenu(); });
 
     // Sound Toggles
     musicToggle.addEventListener('change', () => { isMusicEnabled = musicToggle.checked; updateMusicState(); saveSettings(); });
     sfxToggle.addEventListener('change', () => { isSfxEnabled = sfxToggle.checked; saveSettings(); });
-    
+
     // External Link Confirmation
+    const closeConfirmationMenu = () => confirmationOverlay.classList.remove('visible');
     socialLinks.forEach(link => {
         link.addEventListener('click', (event) => {
-            // We only want to intercept clicks on actual links (<a> tags)
             if (link.tagName === 'A') {
                 event.preventDefault();
                 const url = link.href;
@@ -102,15 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    const closeConfirmationMenu = () => confirmationOverlay.classList.remove('visible');
     confirmNoBtn.addEventListener('click', closeConfirmationMenu);
     confirmYesBtn.addEventListener('click', function() {
         const url = this.dataset.url;
         if (url) { window.open(url, '_blank'); }
         closeConfirmationMenu();
     });
-    confirmationOverlay.addEventListener('click', (event) => { if(event.target === confirmationOverlay) closeConfirmationMenu(); });
+    confirmationOverlay.addEventListener('click', (event) => { if (event.target === confirmationOverlay) closeConfirmationMenu(); });
 
     // Smart Music Start
     document.body.addEventListener('click', () => {
@@ -118,4 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hasInteracted = true;
         updateMusicState();
     }, { once: true });
+
+    // --- 6. Initial Setup Calls ---
+    // These run once the DOM is ready and all functions are defined.
+    loadSettings();
+    handleIosInstallation();
 });
