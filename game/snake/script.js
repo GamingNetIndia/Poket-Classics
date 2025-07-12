@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuFromPauseBtn.addEventListener('click', () => { playSound(sounds.click); resetToMainMenu(); });
     restartBtn.addEventListener('click', () => { playSound(sounds.click); initGame(); });
     menuFromGameoverBtn.addEventListener('click', () => { playSound(sounds.click); resetToMainMenu(); });
-    homeBtn.addEventListener('click', () => { playSound(sounds.click); window.location.href = '/../home/index.html'; });
+    homeBtn.addEventListener('click', () => { playSound(sounds.click); window.location.href = '../../home/index.html'; });
     difficultyBtns.forEach(btn => { btn.addEventListener('click', () => { playSound(sounds.click); difficultyBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentDifficulty = btn.dataset.difficulty; }); });
     musicToggleBtn.addEventListener('click', () => { gameSettings.music = !gameSettings.music; musicToggleBtn.classList.toggle('active', gameSettings.music); playSound(sounds.click); toggleMusic(); });
     sfxToggleBtn.addEventListener('click', () => { gameSettings.sfx = !gameSettings.sfx; sfxToggleBtn.classList.toggle('active', gameSettings.sfx); playSound(sounds.click); });
