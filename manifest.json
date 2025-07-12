@@ -2,9 +2,9 @@
   "name": "Pocket Classics",
   "short_name": "Pocket Classics",
   "start_url": "../../index.html",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#0000FF",
   "orientation": "portrait-primary",
   "icons": [
     {
