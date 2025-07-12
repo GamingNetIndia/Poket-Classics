@@ -1,6 +1,6 @@
 {
   "name": "Pocket Classics",
-  "short_name": "Pocket Classics",
+  "short_name": "PocketClassics",
   "start_url": "../../index.html",
   "display": "standalone",
   "background_color": "#ffffff",
