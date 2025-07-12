@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsButton.addEventListener('click', () => { playSound('click'); setTimeout(() => showScreen('settings-view'), 50); });
     backToMainButton.addEventListener('click', () => { playSound('click'); setTimeout(() => showScreen('main-menu-view'), 50); });
     settingsBackButton.addEventListener('click', () => { playSound('click'); setTimeout(() => showScreen('main-menu-view'), 50); });
-    homeButton.addEventListener('click', () => { playSound('click'); setTimeout(() => { window.location.href = '/../home/index.html'; }, 150); });
+    homeButton.addEventListener('click', () => { playSound('click'); setTimeout(() => { window.location.href = '../../home/index.html'; }, 150); });
     
     difficultyButtons.forEach(button => {
         button.addEventListener('click', () => {
