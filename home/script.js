@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. ALL Element Selections ---
+    // 1. ALL Element Selections
     const allButtons = document.querySelectorAll('button, .game-card, .social-link');
     const backgroundMusic = document.getElementById('background-music');
     const clickSound = document.getElementById('click-sound');
@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const iosPromptText = document.getElementById('ios-prompt-text');
     const iosCopyLinkBtn = document.getElementById('ios-copy-link-btn');
 
-    // --- 2. State Variables ---
+    // 2. State Variables
     let deferredPrompt;
     let isMusicEnabled, isSfxEnabled, hasInteracted = false;
 
-    // --- 3. Core Functions ---
+    // 3. Core Functions
     function playSound(sound) {
         if (!sound || !isSfxEnabled) return;
         sound.currentTime = 0;
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sfxToggle.checked = isSfxEnabled;
     }
 
-    // --- 4. PWA Installation Logic ---
+    // 4. PWA Installation Logic
     function handleIosInstallation() {
         const isIosDevice = /iPhone|iPad|iPod/.test(navigator.userAgent);
         if (!isIosDevice) return;
@@ -69,19 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         iosInstallPrompt.style.display = 'flex';
     }
 
-    if (iosCopyLinkBtn) {
-        iosCopyLinkBtn.addEventListener('click', () => {
-            playSound(clickSound);
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                iosPromptText.innerHTML = "Link copied! Now, in Safari, tap the Share button and then 'Add to Home Screen'.";
-                iosCopyLinkBtn.style.display = 'none';
-            }).catch(err => {
-                console.error('Failed to copy link: ', err);
-                iosPromptText.textContent = "Could not copy link. Please open in Safari manually.";
-            });
-        });
-    }
-
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -90,22 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // THIS BLOCK CONTAINS THE FIX
     window.addEventListener('appinstalled', () => {
-        // Hide the custom install button for Android/Desktop
-        if (installButton) {
-            installButton.style.display = 'none';
-        }
-        // Hide the iOS instruction banner
-        if (iosInstallPrompt) {
-            iosInstallPrompt.style.display = 'none';
-        }
-        // Reset the deferred prompt
+        if (installButton) installButton.style.display = 'none';
+        if (iosInstallPrompt) iosInstallPrompt.style.display = 'none';
         deferredPrompt = null;
-        console.log('PWA was installed');
     });
 
-    // --- 5. Event Listeners ---
+    // 5. Event Listeners
+    if (iosCopyLinkBtn) {
+        iosCopyLinkBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                iosPromptText.innerHTML = "Link copied! Now, in Safari, find the Share button, then 'Add to Home Screen'.";
+                iosCopyLinkBtn.style.display = 'none';
+            }).catch(err => {
+                console.error('Failed to copy link: ', err);
+                iosPromptText.textContent = "Could not copy link. Please open in Safari manually.";
+            });
+        });
+    }
+
     if (installButton) {
         installButton.addEventListener('click', async () => {
             playSound(clickSound);
@@ -192,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMusicState();
     }, { once: true });
 
-    // --- 6. Initial Setup Calls ---
+    // 6. Initial Setup Calls
     loadSettings();
     handleIosInstallation();
 });
