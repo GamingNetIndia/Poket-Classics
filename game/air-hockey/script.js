@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const particleCanvas = document.getElementById('particle-canvas');
     const particleCtx = particleCanvas.getContext('2d');
 
-    // --- Sound Management ---
+    // --- Sound Management (No changes) ---
     const bgMusic = new Audio('sounds/background.mp3');
     const hitSound = new Audio('sounds/hit.wav');
     const scoreSound = new Audio('sounds/score.wav');
@@ -34,16 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clickSound = new Audio('sounds/click.wav');
     let isMusicEnabled = true, areSfxEnabled = true;
     function playSound(sound) { if (areSfxEnabled) { sound.currentTime = 0; sound.play().catch(e => {}); } }
-    
-    // UPDATED: This function now checks if music is already playing
-    function playMusic() {
-        if (isMusicEnabled && bgMusic.paused) {
-            bgMusic.loop = true;
-            bgMusic.volume = 0.5;
-            bgMusic.play().catch(e => {});
-        }
-    }
-
+    function playMusic() { if (isMusicEnabled && bgMusic.paused) { bgMusic.loop = true; bgMusic.volume = 0.5; bgMusic.play().catch(e => {}); } }
     function stopMusic() { bgMusic.pause(); bgMusic.currentTime = 0; }
     
     // --- Game State & Physics Constants ---
@@ -54,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let paddle1, paddle2, puck;
     let lastScoredBy = null;
 
-    // --- UI Navigation ---
+    // --- UI Navigation & Settings (No changes) ---
     function showScreen(screen) {
         mainMenu.classList.remove('active');
         difficultyMenu.classList.remove('active');
@@ -65,31 +56,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (screen === 'settings') settingsMenu.classList.add('active');
         if (screen === 'game') gameContainer.style.display = 'block';
     }
-
-    // --- Button & Settings Listeners ---
     pvpButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pvp'; startGame(); });
     pvaButton.addEventListener('click', () => { playSound(clickSound); gameMode = 'pva'; showScreen('difficulty'); });
     settingsButton.addEventListener('click', () => { playSound(clickSound); showScreen('settings'); });
-    homeButton.addEventListener('click', () => { playSound(clickSound); window.location.href = '../../home/index.html'; });
+    homeButton.addEventListener('click', () => { playSound(clickSound); window.location.href = '/../home/index.html'; });
     difficultyMenu.querySelectorAll('button[data-difficulty]').forEach(button => { button.addEventListener('click', () => { playSound(clickSound); difficulty = button.dataset.difficulty; startGame(); }); });
     difficultyBackButton.addEventListener('click', () => { playSound(clickSound); showScreen('main'); });
     settingsBackButton.addEventListener('click', () => { playSound(clickSound); showScreen('main'); });
-    
-    // UPDATED: No longer stop music when returning to menu
     playAgainButton.addEventListener('click', () => { playSound(clickSound); winPopup.style.display = 'none'; stopParticleAnimation(); showScreen('main'); });
     backToMenuIngameButton.addEventListener('click', () => { playSound(clickSound); if(animationId) cancelAnimationFrame(animationId); animationId = null; showScreen('main'); });
-
     musicToggle.addEventListener('change', (e) => { isMusicEnabled = e.target.checked; localStorage.setItem('musicEnabled', isMusicEnabled); isMusicEnabled ? playMusic() : stopMusic(); });
     sfxToggle.addEventListener('change', (e) => { areSfxEnabled = e.target.checked; localStorage.setItem('sfxEnabled', areSfxEnabled); clickSound.currentTime = 0; clickSound.play().catch(e => {}); });
     puckSpeedSlider.addEventListener('input', (e) => { puckSpeedMultiplier = parseFloat(e.target.value); puckSpeedValueEl.textContent = `${puckSpeedMultiplier.toFixed(1)}x`; localStorage.setItem('puckSpeed', puckSpeedMultiplier); });
-
     function loadSettings() {
         const savedMusicSetting = localStorage.getItem('musicEnabled'); if (savedMusicSetting !== null) isMusicEnabled = savedMusicSetting === 'true'; musicToggle.checked = isMusicEnabled;
         const savedSfxSetting = localStorage.getItem('sfxEnabled'); if (savedSfxSetting !== null) areSfxEnabled = savedSfxSetting === 'true'; sfxToggle.checked = areSfxEnabled;
         const savedPuckSpeed = localStorage.getItem('puckSpeed'); if (savedPuckSpeed !== null) { puckSpeedMultiplier = parseFloat(savedPuckSpeed); puckSpeedSlider.value = puckSpeedMultiplier; puckSpeedValueEl.textContent = `${puckSpeedMultiplier.toFixed(1)}x`; }
     }
     
-    // --- Game Setup, Initialization & Drawing ---
+    // --- Game Setup, Initialization & Drawing (No changes) ---
     function resizeCanvas() { const rect = gameWrapper.getBoundingClientRect(); canvas.width = rect.width; canvas.height = rect.height; if (!animationId) initGameObjects(); }
     function initGameObjects() { const paddleRadius = canvas.width * 0.08; const puckRadius = canvas.width * 0.05; const score1 = paddle1 ? paddle1.score : 0; const score2 = paddle2 ? paddle2.score : 0; paddle1 = { x: canvas.width / 2, y: canvas.height * 0.75, radius: paddleRadius, score: score1, color: '#ff00ff', active: false }; paddle2 = { x: canvas.width / 2, y: canvas.height * 0.25, radius: paddleRadius, score: score2, color: '#00ffff', active: false }; puck = { x: canvas.width / 2, y: canvas.height / 2, radius: puckRadius, dx: 0, dy: 0, color: '#ffffff', isStationary: false }; }
     window.addEventListener('resize', resizeCanvas);
@@ -100,14 +85,51 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawTable() { ctx.clearRect(0, 0, canvas.width, canvas.height); const goalWidth = canvas.width * 0.5; const goalHeight = canvas.height * 0.1; ctx.globalAlpha = 0.2; ctx.shadowBlur = 20; ctx.fillStyle = paddle1.color; ctx.shadowColor = paddle1.color; ctx.fillRect(canvas.width / 2 - goalWidth / 2, 0, goalWidth, goalHeight); ctx.fillStyle = paddle2.color; ctx.shadowColor = paddle2.color; ctx.fillRect(canvas.width / 2 - goalWidth / 2, canvas.height - goalHeight, goalWidth, goalHeight); ctx.globalAlpha = 1.0; ctx.shadowBlur = 0; ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 20; ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, canvas.height / 2); ctx.lineTo(canvas.width, canvas.height / 2); ctx.stroke(); ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width * 0.2, 0, Math.PI * 2); ctx.stroke(); const mainGoalWidth = canvas.width * 0.4; ctx.shadowColor = '#ff00ff'; ctx.shadowBlur = 15; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(canvas.width/2 - mainGoalWidth/2, 0); ctx.lineTo(canvas.width/2 + mainGoalWidth/2, 0); ctx.stroke(); ctx.beginPath(); ctx.moveTo(canvas.width/2 - mainGoalWidth/2, canvas.height); ctx.lineTo(canvas.width/2 + mainGoalWidth/2, canvas.height); ctx.stroke(); ctx.shadowBlur = 0; }
     function drawCircle(x, y, radius, color) { ctx.shadowColor = color; ctx.shadowBlur = 15; ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; }
     
-    // --- Input, AI, and Collision Logic (No changes) ---
+    // --- Input and AI Logic (No changes) ---
     const activeTouches = {}; function getTouchPos(e) { const rect = canvas.getBoundingClientRect(); return { x: e.clientX - rect.left, y: e.clientY - rect.top }; } function handleDown(e) { e.preventDefault(); const touches = e.changedTouches ? e.changedTouches : [e]; for (const touch of touches) { const pos = getTouchPos(touch); const id = e.changedTouches ? touch.identifier : 'mouse'; if (pos.y > canvas.height / 2) { activeTouches[id] = { paddle: paddle1, pos }; paddle1.active = true; } else if (gameMode === 'pvp') { activeTouches[id] = { paddle: paddle2, pos }; paddle2.active = true; } } } function handleMove(e) { e.preventDefault(); const touches = e.changedTouches ? e.changedTouches : [e]; for (const touch of touches) { const id = e.changedTouches ? touch.identifier : 'mouse'; if (activeTouches[id]) { const pos = getTouchPos(touch); activeTouches[id].paddle.x = pos.x; activeTouches[id].paddle.y = pos.y; } } } function handleUp(e) { e.preventDefault(); const touches = e.changedTouches ? e.changedTouches : [e]; for (const touch of touches) { const id = e.changedTouches ? touch.identifier : 'mouse'; if (activeTouches[id]) { activeTouches[id].paddle.active = false; delete activeTouches[id]; } } } canvas.addEventListener('mousedown', handleDown); canvas.addEventListener('mousemove', handleMove); window.addEventListener('mouseup', handleUp); canvas.addEventListener('touchstart', handleDown, { passive: false }); canvas.addEventListener('touchmove', handleMove, { passive: false }); canvas.addEventListener('touchend', handleUp); canvas.addEventListener('touchcancel', handleUp);
     function clampPaddlePositions() { if (!paddle1 || !paddle2) return; paddle1.x = Math.max(paddle1.radius, Math.min(paddle1.x, canvas.width - paddle1.radius)); paddle1.y = Math.max(canvas.height / 2 + paddle1.radius, Math.min(paddle1.y, canvas.height - paddle1.radius)); if (gameMode === 'pvp') { paddle2.x = Math.max(paddle2.radius, Math.min(paddle2.x, canvas.width - paddle2.radius)); paddle2.y = Math.max(paddle2.radius, Math.min(paddle2.y, canvas.height / 2 - paddle2.radius)); } }
     function moveAI() { if (paddle2.active) return; let targetX = puck.x, speedMultiplier; switch (difficulty) { case 'easy': speedMultiplier = 0.04; break; case 'medium': speedMultiplier = 0.08; break; case 'hard': speedMultiplier = 0.15; break; } if (puck.dy < 0) { paddle2.x += (targetX - paddle2.x) * speedMultiplier; } else { const defensiveY = canvas.height * 0.25; paddle2.x += (canvas.width / 2 - paddle2.x) * 0.04; paddle2.y += (defensiveY - paddle2.y) * 0.04; } paddle2.x = Math.max(paddle2.radius, Math.min(paddle2.x, canvas.width - paddle2.radius)); paddle2.y = Math.max(paddle2.radius, Math.min(paddle2.y, canvas.height / 2 - paddle2.radius)); }
-    function checkCollisions() { if (!puck || !paddle1 || !paddle2) return; if (puck.x < puck.radius) { puck.x = puck.radius; puck.dx *= -1; } if (puck.x > canvas.width - puck.radius) { puck.x = canvas.width - puck.radius; puck.dx *= -1; } [paddle1, paddle2].forEach(paddle => { const dist = Math.hypot(puck.x - paddle.x, puck.y - paddle.y); if (dist < puck.radius + paddle.radius) { playSound(hitSound); const angle = Math.atan2(puck.y - paddle.y, puck.x - paddle.x); const overlap = (puck.radius + paddle.radius) - dist; puck.x += Math.cos(angle) * overlap; puck.y += Math.sin(angle) * overlap; const maxSpeed = (canvas.height * 0.03) * puckSpeedMultiplier; const currentSpeed = Math.hypot(puck.dx, puck.dy); const newSpeed = currentSpeed * 1.01; const finalSpeed = Math.min(newSpeed, maxSpeed); puck.dx = Math.cos(angle) * finalSpeed; puck.dy = Math.sin(angle) * finalSpeed; if (paddle === paddle2 && gameMode === 'pva') { paddle2.active = true; setTimeout(() => { paddle2.active = false; }, 200); } } }); const goalWidth = canvas.width * 0.4; const goalLeft = canvas.width/2 - goalWidth/2; const goalRight = canvas.width/2 + goalWidth/2; if (puck.y < puck.radius) { if (puck.x > goalLeft && puck.x < goalRight) { playSound(scoreSound); paddle1.score++; lastScoredBy = 1; if (checkWin()) return; resetRound(); } else { puck.y = puck.radius; puck.dy *= -1; } } if (puck.y > canvas.height - puck.radius) { if (puck.x > goalLeft && puck.x < goalRight) { playSound(scoreSound); paddle2.score++; lastScoredBy = 2; if (checkWin()) return; resetRound(); } else { puck.y = canvas.height - puck.radius; puck.dy *= -1; } } }
+    
+    // --- Collision Logic ---
+    function checkCollisions() {
+        if (!puck || !paddle1 || !paddle2) return;
+        if (puck.x < puck.radius) { puck.x = puck.radius; puck.dx *= -1; }
+        if (puck.x > canvas.width - puck.radius) { puck.x = canvas.width - puck.radius; puck.dx *= -1; }
+        [paddle1, paddle2].forEach(paddle => {
+            const dist = Math.hypot(puck.x - paddle.x, puck.y - paddle.y);
+            if (dist < puck.radius + paddle.radius) {
+                playSound(hitSound);
+                const angle = Math.atan2(puck.y - paddle.y, puck.x - paddle.x);
+                const overlap = (puck.radius + paddle.radius) - dist;
+                puck.x += Math.cos(angle) * overlap;
+                puck.y += Math.sin(angle) * overlap;
+
+                // --- THE FIX IS HERE ---
+                // EXPLANATION: Instead of a small boost, we establish a new, powerful base speed on every hit.
+                // This prevents the puck from getting sluggish during long rallies due to friction.
+                const baseHitSpeed = (canvas.height * 0.015) * puckSpeedMultiplier; // A powerful base speed for a satisfying hit
+                const maxSpeed = (canvas.height * 0.03) * puckSpeedMultiplier;     // The absolute maximum speed
+                const currentSpeed = Math.hypot(puck.dx, puck.dy);
+
+                // The new speed will be the base hit speed, or a little faster than the current speed if it was already moving fast.
+                const newSpeed = Math.max(baseHitSpeed, currentSpeed * 1.02);
+
+                // We still cap the speed to prevent it from getting uncontrollably fast.
+                const finalSpeed = Math.min(newSpeed, maxSpeed);
+                
+                puck.dx = Math.cos(angle) * finalSpeed;
+                puck.dy = Math.sin(angle) * finalSpeed;
+                // --- END OF FIX ---
+
+                if (paddle === paddle2 && gameMode === 'pva') { paddle2.active = true; setTimeout(() => { paddle2.active = false; }, 200); }
+            }
+        });
+        const goalWidth = canvas.width * 0.4; const goalLeft = canvas.width/2 - goalWidth/2; const goalRight = canvas.width/2 + goalWidth/2;
+        if (puck.y < puck.radius) { if (puck.x > goalLeft && puck.x < goalRight) { playSound(scoreSound); paddle1.score++; lastScoredBy = 1; if (checkWin()) return; resetRound(); } else { puck.y = puck.radius; puck.dy *= -1; } }
+        if (puck.y > canvas.height - puck.radius) { if (puck.x > goalLeft && puck.x < goalRight) { playSound(scoreSound); paddle2.score++; lastScoredBy = 2; if (checkWin()) return; resetRound(); } else { puck.y = canvas.height - puck.radius; puck.dy *= -1; } }
+    }
     
     // --- Game Loop, Win, and Particle Logic ---
-    // UPDATED: No longer stop music when the game ends
     function checkWin() { if (paddle1.score >= WINNING_SCORE) { endGame("Player 1 Wins!"); return true; } else if (paddle2.score >= WINNING_SCORE) { endGame(`${gameMode === 'pvp' ? "Player 2" : "AI"} Wins!`); return true; } return false; }
     function endGame(message) { playSound(winSound); if(animationId) cancelAnimationFrame(animationId); animationId = null; winMessageEl.textContent = message; winPopup.style.display = 'flex'; startParticleAnimation(); }
     function gameLoop() { if (!puck.isStationary) { puck.dx *= FRICTION; puck.dy *= FRICTION; puck.x += puck.dx; puck.y += puck.dy; } clampPaddlePositions(); if (gameMode === 'pva') { moveAI(); } checkCollisions(); drawTable(); drawCircle(paddle1.x, paddle1.y, paddle1.radius, paddle1.color); drawCircle(paddle2.x, paddle2.y, paddle2.radius, paddle2.color); drawCircle(puck.x, puck.y, puck.radius, puck.color); animationId = requestAnimationFrame(gameLoop); }
@@ -118,10 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopParticleAnimation() { cancelAnimationFrame(particleAnimationId); particleAnimationId = null; particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height); }
     
     // --- Initial setup ---
-    // NEW: Listener to start music on the very first user interaction
     document.body.addEventListener('click', playMusic, { once: true });
     document.body.addEventListener('touchstart', playMusic, { once: true });
-    
     loadSettings();
     resizeCanvas();
     showScreen('main');
